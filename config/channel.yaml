@@ -1,0 +1,52 @@
+# チャンネル共通の設定。回ごとに変えたいときは episodes/<id>/episode.yaml に同じキーを書いて上書きする。
+
+video:
+  fps: 30
+  width: 1280          # Remotion上の作業解像度（文字やラベルはこの座標で配置）
+  height: 720
+  render_scale: 1.5    # 書き出し時の倍率。1.5 → 1920x1080
+
+tts:
+  provider: elevenlabs
+  voice_id: ""                     # 声の候補を聞き比べて決める（pipeline/tts_voice_samples.py）
+  model_id: eleven_multilingual_v2 # 使えるモデルは tts_voice_samples.py --models で確認
+  language_code: null              # multilingual_v2 では指定しない。v3系なら "ja"
+  output_format: mp3_44100_128     # 全プランで使える形式
+  voice_settings:
+    stability: 0.5
+    similarity_boost: 0.75
+    style: 0.0
+    use_speaker_boost: true
+    speed: 1.0
+  stitch: true                     # 前後の文を渡して、区切りごとの抑揚のつながりを良くする
+  seed: 42
+  # 区切りの間（秒）
+  lead: 1.2
+  gap: 0.45
+  chapter_gap: 0.9
+  tail: 6.0
+  trim_silence_db: -45             # 生成音声の頭と末尾の無音を、このレベルで切りそろえる
+
+audio:
+  narration_lufs: -16    # ナレーションの音量（ラウドネス）
+  bgm_lufs: -16          # BGMを一旦この音量にそろえてから、下の倍率で下げる
+  bgm_gain_speech: 0.16  # 話している間（約 -16dB）
+  bgm_gain_gap: 0.32     # 話していない間（約 -10dB）
+  bgm_duck_frames: 12    # 声の前後で音量を切り替える時間
+
+render:
+  gl_linux: swangle    # クラウド（GPUなし）
+  gl_windows: angle    # Windows（GPUあり）
+  gl_mac: angle
+  jpeg_quality: 92
+  crf: 18
+
+qa:
+  flicker_px: 20              # 明るさが上下に反転した画素のうち、3x3以上のまとまりがこれを超えたらチラつき
+  flicker_max_frames: 0
+  black_max_luma: 16          # 縮小画像の最大輝度がこれ未満なら真っ黒なフレーム
+  loudness_lufs: [-17.5, -13.5]
+  bgm_gap_lufs: [-34, -22]    # ナレーションがない区間（冒頭・末尾）でBGMが聞こえるか
+  bgm_under_speech_db: [-24, -10]  # 話している間のBGMが、声に対して何dB下か
+  sync_max_ms: 40
+  asr_min_ratio: 0.85

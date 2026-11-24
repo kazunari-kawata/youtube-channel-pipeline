@@ -1,0 +1,32 @@
+# YouTubeに載せる情報。OKが出たら、この内容でアップロードと公開予約をする（docs/youtube-upload.md）
+
+title: なぜ日本人の7割は、国土のたった3.5%に住んでいるのか【地形と夜の衛星写真で解説】
+description: |
+  日本人の7割は、国土のわずか3.5%に住んでいます。
+  山ばかりの国土、6000年前に関東平野の奥まで入っていた海、江戸時代の利根川の付け替え。
+  3Dの地形と夜の衛星写真で、人が平地に集まった理由をたどります。
+
+  ※ 地形の高さは見やすさのため強調しています。川筋や海岸線の一部は模式図です。
+
+  ■ 主な統計の出典
+  総務省統計局「令和2年国勢調査 人口集中地区の概要」
+  総務省統計局「日本統計年鑑」（国土交通省「土地白書」）
+  内閣府「令和5年版 防災白書」
+  総務省統計局「令和7年国勢調査 結果の概要」
+  内閣府「県民経済計算」
+  国土交通省 関東地方整備局 利根川上流河川事務所
+  笹川平和財団 Ocean Newsletter 第518号
+# 概要欄の末尾に自動で付ける出典（config/attributions.yaml のキー）
+attributions: [copernicus_dem, nasa_black_marble, natural_earth, elevenlabs]
+tags: [地理, 日本地理, 関東平野, 利根川, 江戸, 人口集中, 東京一極集中, 衛星写真, 地形]
+category_id: 27          # Education
+default_language: ja
+default_audio_language: ja
+made_for_kids: false
+# 改変・合成コンテンツの開示。合成音声ナレーションのみで実在の人物・場所を偽る内容はないが、
+# 方針をアップロード前に決める（true / false）
+contains_synthetic_media: null
+privacy: private          # 公開予約するときは private のまま publish_at を入れる
+publish_at: null          # 例 2026-12-05T19:00:00+09:00
+playlist: null
+thumbnail: null           # build/thumbnail.png など

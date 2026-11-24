@@ -1,0 +1,68 @@
+# このリポジトリでの作業ルール
+
+YouTube教養チャンネル（ビジネス・経済・地理）の動画を、毎回同じ品質で作るためのパイプライン。
+**ここに書いたルールが唯一の正本。** 口頭やチャットで受けた指摘は、必ずここと `docs/feedback.md` に反映してから作業を終える。
+
+## 制作の流れ（毎回この順番）
+
+1. 構成案：問いと結論は人が決める。Claude Docs で構成案を作り、`episodes/<id>/plan.md` にリンクと要点を置く
+2. 台本：`episodes/<id>/narration.json`（区間ごとに caption / read / 必要なら tts・chapter・stat）
+3. 動画の定義：`remotion/src/episodes/ep<id>.tsx` を作り、`remotion/src/episodes/index.ts` に登録
+4. 通しで作る：`python pipeline/run.py <id>`（ナレーション → 読み間違いチェック → 準備 → 書き出し → QA）
+5. QAに合格したものだけをユーザーに見せる。不合格のまま見せない
+6. フィードバックをもらったら「フィードバックを受けたとき」の手順
+7. OKが出たら `metadata.yaml` を確定し、アップロードと公開予約（`docs/youtube-upload.md`）
+
+## 絶対ルール（過去の指摘から。番号は docs/feedback.md）
+
+- **字幕を画面に入れない**（F-004）。必要ならYouTubeのキャプションで出す
+- **最後に出典まとめの画面を入れない**（F-002）。出典は概要欄（`config/attributions.yaml`）。数字の画面下の小さな出典は入れる
+- **声は ElevenLabs**（F-003）。Kokoro など無料の軽量モデルには戻さない。声は `config/channel.yaml` の `tts.voice_id`
+- **BGMは必ず入れ、聞こえる音量にする**（F-005）。YouTubeオーディオライブラリの「帰属表示不要」の曲だけ。
+  使う曲は `assets/bgm/LICENSES.md` に記録してから `episode.yaml` の `bgm.tracks` に書く。数字だけでなく、実際に耳で聞いて確認する
+- **チラつきを出さない**（F-001）。海の板は `depthWrite: false, depthTest: false`、近クリップ面はカメラ距離の0.05倍。
+  地形に重なる板や線を足すときは、同じ深さで重ならないようにする
+- **地図は実データだけ**（Copernicus DEM、NASA Black Marble、Natural Earth など）。AIで生成した地図や衛星写真は使わない。
+  商用利用できないデータ（Google Earth Studio、2017年以降の Sentinel-2 cloudless など）は使わない
+- **見せ方の注記を必ず出す**：高さを強調したら倍率、模式図なら「模式図」、海面を上げる演出なら「目安であり復元ではない」
+- **数字には出典を付け、確認できていない数字（plan.md の「要確認」）を残したまま公開しない**
+- **秘密情報をコミットしない**：APIキーは `.env`、OAuthのJSONやトークンは `secrets/`（どちらも .gitignore 済み）。
+  キーをチャットに貼ってもらわない
+- **お客さんのYouTubeチャンネル・アカウントには絶対に触らない**（F-007）。ブラウザでYouTube / YouTube Studioを開いたら、
+  操作の前に、ログイン中のチャンネルがこのチャンネル用のものか確かめる。違えばその場で閉じ、ユーザーに伝えて止まる。
+  見るだけ（ページの移動・読み取り）も含めて、お客さんのチャンネルでは何もしない
+- 政治の時事や特定の政策の良し悪しには触れない
+
+## フィードバックを受けたとき
+
+1. `docs/feedback.md` に1行足す（ID、指摘、原因、対策、状態）
+2. 原因を直す
+3. 同じことが二度と起きないように、**この CLAUDE.md の絶対ルール**か **`qa/check_video.py` の自動チェック**（できれば両方）に足す
+4. 直した動画をQAに通してから見せる。報告では「何を直したか」と「どう再発を防いだか」を分けて書く
+
+## 品質チェック（qa/check_video.py）
+
+合格基準は `config/channel.yaml` の `qa`。チラつき・真っ黒なフレーム・解像度・長さ・音ズレ・全体の音量・
+声のない区間のBGM・声の下のBGM・字幕/出典カードの混入・チラつき対策の有無を検査する。
+一部だけ書き出した確認用は `--partial`。
+
+## 置き場所
+
+| 何 | どこ |
+| --- | --- |
+| チャンネル共通の設定（声・音量・QA基準） | `config/channel.yaml` |
+| 概要欄の出典文 | `config/attributions.yaml` |
+| 回ごとの台本・設定・概要欄 | `episodes/<id>/`（`narration.json`, `episode.yaml`, `metadata.yaml`, `plan.md`） |
+| 回ごとの生成物（音声・動画・QA結果） | `episodes/<id>/build/`（Gitに入らない） |
+| 処理スクリプト | `pipeline/` |
+| 動画の部品（地形・カメラ・カード・音） | `remotion/src/lib/` |
+| 回ごとの動画の定義 | `remotion/src/episodes/` |
+| BGMとその記録 | `assets/bgm/` |
+| 元データ・加工データ | `data/raw/`, `data/processed/`（Gitに入らない。`fetch_data.py` と `process_geo.py` で作り直せる） |
+
+## 書き出し環境
+
+- 本番の書き出しはユーザーの Windows PC（GPUあり）。Remotion は ANGLE（GPU）で描く。`render.py` が自動で選ぶ
+- クラウドでは SwANGLE（CPU、毎秒約1フレーム）。確認用の静止画や短い区間だけにする
+- 作業解像度は 1280x720、書き出しは1.5倍の 1920x1080。文字の位置は 1280x720 の座標で決める
+- フォントは `remotion/public/fonts/NotoSansJP.ttf` に固定（PCによって見た目が変わらないように）

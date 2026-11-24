@@ -1,0 +1,19 @@
+# 概要欄に入れる出典表示。episodes/<id>/metadata.yaml の attributions にキーを並べると、
+# アップロード時に概要欄の末尾へこの文面が自動で入る。
+# 動画の最後に出典カードは入れない（フィードバック F-002）。
+
+copernicus_dem: |
+  地形：Copernicus DEM GLO-30 / GLO-90（加工して使用）
+  produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved
+
+nasa_black_marble: |
+  夜の光：NASA Black Marble 2016（NASA Earth Observatory / NASA GIBS）
+
+natural_earth: |
+  国境データ：Natural Earth（パブリックドメイン）
+
+elevenlabs: |
+  ナレーション：ElevenLabs による合成音声
+
+# BGMは assets/bgm/LICENSES.md の記録に従う。
+# YouTubeオーディオライブラリの「帰属表示不要」の曲だけを使う方針なので、通常は表示不要。

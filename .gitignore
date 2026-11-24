@@ -1,0 +1,31 @@
+# 秘密情報（APIキー、OAuthトークン）は絶対にコミットしない
+.env
+.env.*
+!.env.example
+secrets/
+client_secret*.json
+token*.json
+
+# 取得・生成データ（pipeline/fetch_data.py と process_geo.py で再生成できる）
+data/raw
+data/processed
+
+# 回ごとの生成物（音声・動画・キャッシュ）
+episodes/*/build/
+/build/
+
+# Remotion
+remotion/node_modules/
+remotion/out/
+remotion/public/*
+!remotion/public/.gitkeep
+remotion/src/data/*.json
+
+# Python / OS
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+desktop.ini

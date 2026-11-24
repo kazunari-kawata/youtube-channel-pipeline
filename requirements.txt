@@ -1,0 +1,11 @@
+numpy
+scipy
+pillow
+rasterio
+pyshp
+soundfile
+pyloudnorm
+pyyaml
+python-dotenv
+faster-whisper
+fugashi[unidic-lite]
