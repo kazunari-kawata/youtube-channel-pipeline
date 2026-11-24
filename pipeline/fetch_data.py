@@ -8,6 +8,7 @@
   data/sources/blackmarble.txt  NASA Black Marble 2016（NASA GIBS WMTS 500m）
   Natural Earth 10m 国境（パブリックドメイン）
   Noto Sans JP（SIL Open Font License）。動画の文字はこのフォントで固定する
+  Quaternius Universal Animation Library（CC0）。イメージ映像の人物（顔のないシルエット）
 """
 import sys
 import urllib.error
@@ -21,6 +22,7 @@ from common import DATA_RAW, PUBLIC, ROOT  # noqa: E402
 
 NE_URL = "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_countries.zip"
 FONT_URL = "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf"
+FIGURE_URL = "https://opengameart.org/sites/default/files/universal_animation_librarystandard.zip"
 
 
 def get(url: str, dest: Path) -> str:
@@ -56,6 +58,7 @@ def jobs():
         yield url, DATA_RAW / "bm" / f"bm_{row}_{col}.png"
     yield NE_URL, DATA_RAW / "ne" / "ne_10m_admin_0_countries.zip"
     yield FONT_URL, PUBLIC / "fonts" / "NotoSansJP.ttf"
+    yield FIGURE_URL, DATA_RAW / "figures" / "universal_animation_library_standard.zip"
 
 
 def main():
@@ -70,6 +73,13 @@ def main():
     z = DATA_RAW / "ne" / "ne_10m_admin_0_countries.zip"
     if z.exists() and not (DATA_RAW / "ne" / "ne_10m_admin_0_countries.shp").exists():
         zipfile.ZipFile(z).extractall(z.parent)
+    fz = DATA_RAW / "figures" / "universal_animation_library_standard.zip"
+    glb = PUBLIC / "figures" / "mannequin.glb"
+    if fz.exists() and not glb.exists():
+        with zipfile.ZipFile(fz) as z:
+            name = next(n for n in z.namelist() if n.endswith("AnimationLibrary_Godot_Standard.glb"))
+            glb.parent.mkdir(parents=True, exist_ok=True)
+            glb.write_bytes(z.read(name))
     print("結果:", stats)
     if stats.get("error"):
         sys.exit("一部のダウンロードに失敗しました。もう一度実行すると続きから取得します。")

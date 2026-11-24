@@ -52,6 +52,7 @@ python pipeline/run.py 001-plains
 | 一部だけ書き出し | `python pipeline/render.py <id> --frames 0-299` → `python qa/check_video.py <id> --partial` |
 | 書き出し | `python pipeline/render.py <id>` |
 | 品質チェック | `python qa/check_video.py <id>` |
+| イメージ映像の確認 | `cd remotion; npx remotion render src/index.ts Insert-NightWalk out.mp4`（Insert-Window / Insert-BusStop も同様） |
 | 画面で調整 | `cd remotion; npm run studio` |
 
 ## 費用の目安（ElevenLabs）
@@ -67,4 +68,5 @@ python pipeline/run.py 001-plains
 | NASA Black Marble 2016（GIBS） | 夜の光 | NASAのデータ。出典を表示 |
 | Natural Earth 10m | 国境（日本の陸地の切り出し） | パブリックドメイン |
 | Noto Sans JP | 画面の文字 | SIL Open Font License |
+| Quaternius Universal Animation Library | イメージ映像の人物と動き | CC0（表示不要） |
 | YouTubeオーディオライブラリ | BGM | 帰属表示不要の曲のみ（`assets/bgm/LICENSES.md`） |
