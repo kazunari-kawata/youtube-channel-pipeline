@@ -12,15 +12,16 @@ import { H, W } from "./geo";
 export const C = { bg: "#0d0e12", amber: "#e6a35a", cream: "#efe4d0", muted: "#9a917f", line: "rgba(230,163,90,0.55)" };
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
-/** 2Dの画面にもフィルムの質感（色・粒子・周辺減光・ゆっくりした揺れ）を掛ける */
+/**
+ * 2Dの画面にもフィルムの質感（色・粒子・周辺減光）を掛ける。
+ * 画面の揺れは入れない：1ピクセル未満の揺れがピクセル単位に丸められ、文字の輪郭が前後に跳ねてチラつきになる（v4の書き出しでQAが検出）
+ */
 export const FilmFrame: React.FC<{ children: React.ReactNode; bg?: string }> = ({ children, bg = C.bg }) => {
   const frame = useCurrentFrame();
   const seed = Math.floor(frame / 2);
-  const dx = 0.5 * Math.sin(frame * 0.21) + 0.3 * Math.sin(frame * 0.53 + 1.0);
-  const dy = 0.4 * Math.sin(frame * 0.17 + 2.0) + 0.25 * Math.sin(frame * 0.47);
   return (
     <AbsoluteFill style={{ background: "#000" }}>
-      <AbsoluteFill style={{ background: bg, filter: FILM_GRADE, transform: `translate(${dx}px, ${dy}px) scale(1.012)` }}>{children}</AbsoluteFill>
+      <AbsoluteFill style={{ background: bg, filter: FILM_GRADE }}>{children}</AbsoluteFill>
       <AbsoluteFill style={{ background: "rgba(255,190,140,0.035)", mixBlendMode: "screen" }} />
       <AbsoluteFill style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%)" }} />
       <svg width={W} height={H} style={{ position: "absolute", opacity: 0.12, mixBlendMode: "overlay" }}>
@@ -76,7 +77,10 @@ export const CardShot: React.FC<{ v: CardV }> = ({ v }) => {
     const n = Math.floor(interpolate(frame, [6, 6 + text.length * 2.2], [0, text.length], clamp)); // タイプライターのように1字ずつ
     body = (
       <div style={{ ...base }}>
-        <div style={{ fontSize: 64, fontWeight: 700, letterSpacing: 3, color: C.cream, ...glow, minHeight: 90 }}>{text.slice(0, n)}</div>
+        {/* 1字ずつ出す。文字の並びは最初から全部置いておき、見えるかどうかだけ変える（中央ぞろえの文字列が伸びて左右に動くとチラつく） */}
+        <div style={{ fontSize: 64, fontWeight: 700, letterSpacing: 3, color: C.cream, ...glow, minHeight: 90 }}>
+          {Array.from(text).map((ch, i) => <span key={i} style={{ opacity: i < n ? 1 : 0 }}>{ch}</span>)}
+        </div>
         <div style={{ height: 2, width: 420, background: C.line, margin: "18px auto", opacity: a }} />
         <div style={{ fontSize: 30, color: C.amber, letterSpacing: 4, opacity: interpolate(frame, [20, 34], [0, 1], clamp) }}>{v.sub}</div>
       </div>
@@ -247,7 +251,6 @@ export const MapShot: React.FC<{ file: string; points: string[]; route?: string[
       })
       .catch((e) => cancelRender(e));
   }, [file, handle]);
-  const t = interpolate(frame, [0, dur], [0, 1], clamp);
   const routeD = useMemo(() => {
     if (!data || !route || route.length < 2) return null;
     const [p, q] = [data.points[route[0]], data.points[route[1]]];
@@ -258,7 +261,8 @@ export const MapShot: React.FC<{ file: string; points: string[]; route?: string[
   const draw = interpolate(frame, [14, 60], [0, 1], clamp);
   return (
     <FilmFrame bg="#0f1726">
-      <AbsoluteFill style={{ transform: `scale(${1.0 + t * 0.05})` }}>
+      {/* 地図は拡大・縮小しない（細い境界線と地名がゆっくり拡大されると、ピクセルの境目でちらつく） */}
+      <AbsoluteFill>
         <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
           <rect width={W} height={H} fill="#13203a" />
           {data.land.map((d, i) => <path key={`l${i}`} d={d} fill="#2a2a2c" />)}

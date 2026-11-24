@@ -212,12 +212,10 @@ export const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure
   const frame = useCurrentFrame();
   const durationInFrames = useInsertDur();
   const fade = interpolate(frame, [0, 10, durationInFrames - 10, durationInFrames - 1], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  // 映写機のようなごくわずかな揺れ。ゆっくり動かす（毎フレーム跳ねると明滅に見える）
-  const dx = 0.5 * Math.sin(frame * 0.21) + 0.3 * Math.sin(frame * 0.53 + 1.0);
-  const dy = 0.4 * Math.sin(frame * 0.17 + 2.0) + 0.25 * Math.sin(frame * 0.47);
+  // 画面の揺れは入れない：1ピクセル未満の揺れがピクセル単位に丸められ、輪郭が前後に跳ねてチラつきになる（v4でQAが検出）
   return (
     <AbsoluteFill style={{ background: "#000" }}>
-      <AbsoluteFill style={{ opacity: fade, filter: grade, transform: `translate(${dx}px, ${dy}px) scale(1.012)` }}>
+      <AbsoluteFill style={{ opacity: fade, filter: grade }}>
         <ThreeCanvas width={W} height={H} shadows gl={{ antialias: true, preserveDrawingBuffer: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: exposure }}>
           <color attach="background" args={[bg]} />
           <fogExp2 attach="fog" args={[bg, fog]} />
@@ -278,7 +276,8 @@ export const InsertNightWalk: React.FC<SceneProps> = ({ variant = "a" }) => {
       <Car80s position={[-1.15, 0, -10.8]} rotationY={Math.PI / 2} color="#6e4b34" wagon />
       <Car80s position={[-1.15, 0, -18.6]} rotationY={Math.PI / 2} color="#b4a382" />
       <Car80s position={[-1.15, 0, -26.4]} rotationY={Math.PI / 2} color="#22304a" vinylTop="#1a1a1a" />
-      <NewsBox position={[0.55, 0.15, -7.6]} rotationY={Math.PI / 2} />
+      {/* 街灯の真下に置くと上の縁が強く光ってチラつくので、街灯と街灯の間に置く */}
+      <NewsBox position={[0.55, 0.15, -4.2]} rotationY={Math.PI / 2} />
       <Payphone position={[2.7, 0.15, -14.5]} rotationY={-Math.PI / 2} />
       {person ? <Figure clip="Walk_Loop" path={walk} rotationY={Math.PI} /> : null}
     </Stage>

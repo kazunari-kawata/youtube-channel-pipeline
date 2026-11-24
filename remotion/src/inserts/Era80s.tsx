@@ -399,7 +399,7 @@ const LabelPlate: React.FC<{ text: string; w: number; h: number; bg: string; fg:
   return (
     <mesh position={position}>
       <planeGeometry args={[w, h]} />
-      <meshStandardMaterial map={tex} emissive="#ffffff" emissiveMap={tex} emissiveIntensity={glow} roughness={0.5} />
+      <meshStandardMaterial map={tex} emissive="#ffffff" emissiveMap={tex} emissiveIntensity={glow} roughness={0.5} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
     </mesh>
   );
 };
@@ -415,14 +415,14 @@ export const Payphone: React.FC<{ position: V3; rotationY?: number }> = ({ posit
       <boxGeometry args={[0.34, 0.6, 0.2]} />
       <meshStandardMaterial color="#9ba1a8" roughness={0.38} metalness={0.7} />
     </mesh>
-    <mesh position={[0.02, 1.36, 0.105]}>
+    <mesh position={[0.02, 1.36, 0.12]}>
       <planeGeometry args={[0.2, 0.3]} />
-      <meshStandardMaterial color="#26292d" roughness={0.6} />
+      <meshStandardMaterial color="#26292d" roughness={0.6} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
     </mesh>
     {/* ボタン */}
     {[0, 1, 2, 3].flatMap((r) =>
       [0, 1, 2].map((k) => (
-        <mesh key={`${r}${k}`} position={[-0.035 + k * 0.05, 1.3 + r * 0.045, 0.112]}>
+        <mesh key={`${r}${k}`} position={[-0.035 + k * 0.05, 1.3 + r * 0.045, 0.135]}>
           <boxGeometry args={[0.03, 0.025, 0.01]} />
           <meshStandardMaterial color="#c9ccd0" roughness={0.4} metalness={0.5} />
         </mesh>
@@ -438,23 +438,25 @@ export const Payphone: React.FC<{ position: V3; rotationY?: number }> = ({ posit
       <boxGeometry args={[0.42, 0.18, 0.26]} />
       <meshStandardMaterial color="#1d4c95" roughness={0.5} />
     </mesh>
-    <LabelPlate text="PHONE" w={0.36} h={0.12} bg="#1d4c95" fg="#f4f4f4" position={[0, 1.82, 0.152]} />
+    <LabelPlate text="PHONE" w={0.36} h={0.12} bg="#1d4c95" fg="#f4f4f4" position={[0, 1.82, 0.17]} />
     {/* ひさしの下の小さな明かり（当時の公衆電話は夜も手元が見えるように照らしていた） */}
     <pointLight position={[0, 1.7, 0.45]} color="#dfe8ff" intensity={0.12} distance={2.2} decay={2} />
   </group>
 );
 
 /** 新聞の自販機（正面が +Z） */
-export const NewsBox: React.FC<{ position: V3; rotationY?: number; color?: string }> = ({ position, rotationY = 0, color = "#c79a1e" }) => (
+export const NewsBox: React.FC<{ position: V3; rotationY?: number; color?: string }> = ({ position, rotationY = 0, color = "#8a6a1c" }) => (
   <group position={position} rotation={[0, rotationY, 0]}>
     <mesh position={[0, 0.55, 0]} castShadow>
       <boxGeometry args={[0.48, 0.9, 0.42]} />
-      <meshStandardMaterial color={color} roughness={0.55} metalness={0.2} />
+      {/* つやを消す：街灯の真下で上の縁が強く光り、にじみ（ブルーム）がフレームごとに揺れてチラついた */}
+      <meshStandardMaterial color={color} roughness={0.75} metalness={0.1} />
     </mesh>
-    <mesh position={[0, 0.72, 0.215]}>
+    {/* 箱の面から2cm離し、深さもずらす（5mmだと同じ深さで重なってチラついた：F-001） */}
+    <mesh position={[0, 0.72, 0.23]}>
       <planeGeometry args={[0.38, 0.36]} />
       {/* つやを抑える（街灯の映り込みが強く光り、人物の腕の動きで見え隠れしてチラつくため） */}
-      <meshStandardMaterial color="#9a9d95" roughness={0.65} emissive="#3a3a36" emissiveIntensity={0.15} />
+      <meshStandardMaterial color="#9a9d95" roughness={0.65} emissive="#3a3a36" emissiveIntensity={0.15} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
     </mesh>
     {[-0.2, 0.2].map((x) => (
       <mesh key={x} position={[x, 0.05, 0]}>
@@ -522,21 +524,21 @@ export const Storefront: React.FC<{ position: V3; rotationY?: number; w: number;
         <meshStandardMaterial color="#000" emissive={light} emissiveIntensity={glow} />
       </mesh>
       {/* 店内の天井の明かりの帯（上ほど明るい） */}
-      <mesh position={[0, h * 0.42, 0.01]}>
+      <mesh position={[0, h * 0.42, 0.025]}>
         <planeGeometry args={[w * 0.96, h * 0.08]} />
         <meshStandardMaterial color="#000" emissive={light} emissiveIntensity={glow * 2.4} />
       </mesh>
-      <mesh position={[0, -h * 0.3, 0.02]}>
+      <mesh position={[0, -h * 0.3, 0.05]}>
         <planeGeometry args={[w, h * 0.4]} />
         <meshStandardMaterial color={curtain} roughness={0.9} emissive={curtain} emissiveIntensity={0.25} />
       </mesh>
       {Array.from({ length: panes + 1 }, (_, i) => -w / 2 + (i * w) / panes).map((x) => (
-        <mesh key={x} position={[x, 0, 0.04]}>
+        <mesh key={x} position={[x, 0, 0.08]}>
           <boxGeometry args={[0.07, h, 0.04]} />
           <meshStandardMaterial color="#141414" roughness={0.6} />
         </mesh>
       ))}
-      <mesh position={[0, h / 2 + 0.05, 0.04]}>
+      <mesh position={[0, h / 2 + 0.05, 0.08]}>
         <boxGeometry args={[w + 0.1, 0.1, 0.05]} />
         <meshStandardMaterial color="#141414" roughness={0.6} />
       </mesh>
