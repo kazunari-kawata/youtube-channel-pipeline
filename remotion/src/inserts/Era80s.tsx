@@ -256,10 +256,8 @@ export const Car80s: React.FC<CarProps> = ({ position, rotationY = 0, color, wag
   // 窓ガラス。真っ黒にすると夜の背景に溶けて、車体の下半分と屋根だけが浮いて見える
   const dark = useMemo(() => new THREE.MeshStandardMaterial({ color: "#3a4450", roughness: 0.16, metalness: 0.55, emissive: "#0c1016", emissiveIntensity: 1 }), []);
   const tire = useMemo(() => new THREE.MeshStandardMaterial({ color: "#0b0b0b", roughness: 0.9 }), []);
-  const head = useMemo(() => {
-    const m = new THREE.MeshStandardMaterial({ color: "#d8d4c8", roughness: 0.3, emissive: "#fff4dc", emissiveIntensity: 0 });
-    return m;
-  }, []);
+  // 消えているヘッドライトはつやを抑える（通り過ぎる車の光が当たると強く光ってチラついた）
+  const head = useMemo(() => new THREE.MeshStandardMaterial({ color: headlights > 0 ? "#d8d4c8" : "#8e8b82", roughness: headlights > 0 ? 0.3 : 0.85, emissive: "#fff4dc", emissiveIntensity: 0 }), [headlights > 0]);
   const tail = useMemo(() => new THREE.MeshStandardMaterial({ color: "#3a0606", roughness: 0.4, emissive: "#ff1a10", emissiveIntensity: 0 }), []);
   head.emissiveIntensity = headlights * 6;
   // 止めてある車はテールランプを消す（暗い画面に赤い四角だけが浮くため）

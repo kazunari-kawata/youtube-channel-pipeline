@@ -211,7 +211,10 @@ export const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure
 }) => {
   const frame = useCurrentFrame();
   const durationInFrames = useInsertDur();
-  const fade = interpolate(frame, [0, 10, durationInFrames - 10, durationInFrames - 1], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // 本編の中では、カットの切り替え（クロスフェード）は本編側が行う。ここでも黒へフェードすると、
+  // 切り替えの途中で下の画面が急に暗くなり、チラつきと判定される
+  const inEpisode = useContext(InsertDuration) !== null;
+  const fade = inEpisode ? 1 : interpolate(frame, [0, 10, durationInFrames - 10, durationInFrames - 1], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   // 画面の揺れは入れない：1ピクセル未満の揺れがピクセル単位に丸められ、輪郭が前後に跳ねてチラつきになる（v4でQAが検出）
   return (
     <AbsoluteFill style={{ background: "#000" }}>
@@ -239,7 +242,7 @@ export const InsertNightWalk: React.FC<SceneProps> = ({ variant = "a" }) => {
   const cams: Record<string, [CamKey, CamKey]> = {
     a: [{ pos: [2.3, 1.25, 6.2], target: [1.3, 1.3, -6] }, { pos: [2.1, 1.3, 1.6], target: [1.2, 1.35, -10] }],
     // 正面から。人物が近づきすぎると、脚の速い動きが明滅と判定されるので、カメラは離しておく
-    c: [{ pos: [2.0, 1.5, -17.0], target: [1.2, 1.2, 0], fov: 30 }, { pos: [1.9, 1.5, -16.4], target: [1.2, 1.25, -2], fov: 29 }],
+    c: [{ pos: [2.0, 1.5, -19.5], target: [1.2, 1.2, 0], fov: 30 }, { pos: [1.9, 1.5, -19.0], target: [1.2, 1.25, -2], fov: 29 }],
     empty: [{ pos: [2.0, 1.4, 5.0], target: [1.0, 1.6, -12] }, { pos: [1.9, 1.45, 2.4], target: [1.0, 1.7, -16] }],
     empty2: [{ pos: [3.4, 3.2, 7.0], target: [0.0, 1.0, -16] }, { pos: [3.0, 3.0, 5.0], target: [0.0, 1.0, -18] }],
   };
@@ -388,7 +391,8 @@ export const InsertBusStop: React.FC<SceneProps> = ({ variant = "a" }) => {
   const t = frame / 30; // 光の速さはカットの長さによらず一定（短いカットでは途中まで）
   const carX = interpolate(t, [1.5, 6.0], [-22, 14], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const car = useMemo(() => new THREE.SpotLight("#e8f0ff", 0, 0, 0.55, 1.0, 2), []);
-  car.intensity = 1300 * interpolate(t, [1.5, 2.2, 5.3, 6.0], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  car.intensity = 900 * interpolate(t, [1.5, 2.2, 5.3, 6.0], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  car.castShadow = false; // 通り過ぎる光は影を落とさない：止めた車の影が光と一緒に速く動き、チラつきになった
   car.position.set(carX, 0.8, 3.2);
   car.target.position.set(carX + 12, 0.2, 2.0);
 
@@ -433,9 +437,8 @@ export const InsertBusStop: React.FC<SceneProps> = ({ variant = "a" }) => {
       <Payphone position={[-3.0, 0.15, -2.5]} />
       <NewsBox position={[2.7, 0.15, -2.0]} color="#2d5aa0" />
       {variant === "empty" ? null : <Figure clip="Idle_Loop" position={[0.6, 0.15, -0.6]} rotationY={-Math.PI / 2 + 0.25} timeOffset={0.7} />}
-      {/* クリーニング店の前に止めた当時のセダン。走る車を画面に入れると、ライトが速く横切って明滅に見える（QAで検出）ので、
+      {/* 止めた車は置かない：通り過ぎる車の光が手前の車体とバンパーに強く当たり、チラつきになった（002の仮編集のQA）。
           走る車は画面の外に置き、ヘッドライトの光だけが通り過ぎる */}
-      <Car80s position={[4.7, 0, 1.45]} rotationY={Math.PI} color="#5a1f24" vinylTop="#d6ccb4" />
       <primitive object={car} />
       <primitive object={car.target} />
     </Stage>
