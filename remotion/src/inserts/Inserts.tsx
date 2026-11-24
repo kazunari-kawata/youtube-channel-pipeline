@@ -1,7 +1,8 @@
 /**
  * イメージ映像（挿入シーン）。事件の日常の場面だけを、顔のないシルエットで描く。
  * 犯行・被害者・暴力をほのめかす場面は作らない（CLAUDE.md）。画面に必ず「イメージ」と表示する。
- * 街灯は90年代の米国に多いナトリウム灯（オレンジ）。
+ * 事件の時代（ダーマーは80年代）のアメリカらしさを、れんが・ナトリウム灯・当時の車・ネオン・公衆電話・
+ * 木目の壁板・非常階段と、フィルムの色とにじみで出す（F-011。部品は ./Era80s.tsx）。
  */
 import { useThree } from "@react-three/fiber";
 import { ThreeCanvas } from "@remotion/three";
@@ -9,6 +10,7 @@ import React, { useLayoutEffect, useMemo } from "react";
 import { AbsoluteFill, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
 import { Figure } from "../lib/Figure";
+import { Bloom, Car80s, FireEscape, NeonSign, NewsBox, Payphone, slowWave, Storefront, WoodMaterial } from "./Era80s";
 import { FONT } from "../lib/font";
 import { H, W } from "../lib/geo";
 
@@ -178,7 +180,7 @@ const Overlay: React.FC = () => {
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
       <AbsoluteFill style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(0,0,0,0.65) 100%)" }} />
-      <svg width={W} height={H} style={{ position: "absolute", opacity: 0.09, mixBlendMode: "overlay" }}>
+      <svg width={W} height={H} style={{ position: "absolute", opacity: 0.12, mixBlendMode: "overlay" }}>
         <filter id={`g${seed}`}>
           <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves={2} seed={seed} />
         </filter>
@@ -190,20 +192,28 @@ const Overlay: React.FC = () => {
   );
 };
 
-const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure?: number }> = ({ children, fog = 0.035, exposure = 1.0 }) => {
+/** 80年代のフィルムの色：少し色あせて暖かい。黒は真っ黒にせず、わずかに持ち上げる */
+const FILM_GRADE = "sepia(0.16) saturate(0.86) contrast(1.06)";
+
+const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure?: number; bloom?: number; grade?: string }> = ({ children, fog = 0.035, exposure = 1.0, bloom = 0.55, grade = FILM_GRADE }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const fade = interpolate(frame, [0, 10, durationInFrames - 10, durationInFrames - 1], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // 映写機のようなごくわずかな揺れ。ゆっくり動かす（毎フレーム跳ねると明滅に見える）
+  const dx = 0.5 * Math.sin(frame * 0.21) + 0.3 * Math.sin(frame * 0.53 + 1.0);
+  const dy = 0.4 * Math.sin(frame * 0.17 + 2.0) + 0.25 * Math.sin(frame * 0.47);
   return (
     <AbsoluteFill style={{ background: NIGHT }}>
-      <AbsoluteFill style={{ opacity: fade }}>
+      <AbsoluteFill style={{ opacity: fade, filter: grade, transform: `translate(${dx}px, ${dy}px) scale(1.012)` }}>
         <ThreeCanvas width={W} height={H} shadows gl={{ antialias: true, preserveDrawingBuffer: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: exposure }}>
           <color attach="background" args={[NIGHT]} />
           <fogExp2 attach="fog" args={[NIGHT, fog]} />
           <hemisphereLight args={["#2b3a5a", "#0a0806", 0.35]} />
           {children}
+          {bloom > 0 ? <Bloom strength={bloom} radius={0.6} threshold={1.2} /> : null}
         </ThreeCanvas>
       </AbsoluteFill>
+      <AbsoluteFill style={{ background: "rgba(255,190,140,0.035)", mixBlendMode: "screen" }} />
       <Overlay />
     </AbsoluteFill>
   );
@@ -232,6 +242,22 @@ export const InsertNightWalk: React.FC = () => {
       <StreetLamp x={0.2} z={-27} armDir={1} intensity={900} />
       <StreetLamp x={0.2} z={-45} armDir={1} intensity={900} />
       <StreetLamp x={0.2} z={4} armDir={1} intensity={450} cone={false} />
+      {/* 1階の店：明かりのついたショーウィンドウ、OPEN のネオン、袖看板 */}
+      <Storefront position={[4.47, 1.45, -6.5]} rotationY={-Math.PI / 2} w={5.0} h={2.0} />
+      {/* 赤い光が地面に落ちると血だまりに見えかねないので、OPEN は周りを照らさない */}
+      <NeonSign text="OPEN" color="#ff3346" position={[4.38, 1.85, -5.2]} rotationY={-Math.PI / 2} height={0.32} board={false} light={0} />
+      <NeonSign text="DINER" color="#ff5a7e" position={[3.86, 4.3, -10.5]} rotationY={0} height={2.3} vertical light={12} />
+      <mesh position={[4.3, 5.5, -10.5]}>
+        <boxGeometry args={[0.45, 0.05, 0.05]} />
+        <meshStandardMaterial color="#111" />
+      </mesh>
+      {/* 路上に止めた当時の車（前が奥） */}
+      <Car80s position={[-1.15, 0, -3.2]} rotationY={Math.PI / 2} color="#5a1f24" vinylTop="#d6ccb4" />
+      <Car80s position={[-1.15, 0, -10.8]} rotationY={Math.PI / 2} color="#6e4b34" wagon />
+      <Car80s position={[-1.15, 0, -18.6]} rotationY={Math.PI / 2} color="#b4a382" />
+      <Car80s position={[-1.15, 0, -26.4]} rotationY={Math.PI / 2} color="#22304a" vinylTop="#1a1a1a" />
+      <NewsBox position={[0.55, 0.15, -7.6]} rotationY={Math.PI / 2} />
+      <Payphone position={[2.7, 0.15, -14.5]} rotationY={-Math.PI / 2} />
       <Figure clip="Walk_Loop" path={walk} rotationY={Math.PI} />
     </Stage>
   );
@@ -241,11 +267,18 @@ export const InsertNightWalk: React.FC = () => {
 
 export const InsertWindow: React.FC = () => {
   const winY = 4.6; // 2階の窓の中心
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
   const room = useMemo(() => {
     const l = new THREE.PointLight("#ffc98a", 60, 0, 2);
     l.position.set(0.3, winY + 0.6, -2.6);
     return l;
   }, []);
+  // 部屋の左手にあるテレビの青い光。ゆっくり明るさが変わる
+  const tv = useMemo(() => new THREE.PointLight("#7fa6ff", 0, 7, 2), []);
+  tv.position.set(-0.95, winY - 0.7, -1.9);
+  tv.intensity = 10 + 8 * slowWave(t, 1.0);
   return (
     <Stage fog={0.02} exposure={1.0}>
       <Camera from={{ pos: [2.8, 1.6, 12], target: [0, winY - 0.2, 0], fov: 30 }} to={{ pos: [1.6, 1.8, 8.5], target: [0, winY, 0], fov: 27 }} />
@@ -266,14 +299,25 @@ export const InsertWindow: React.FC = () => {
       {[-6, -3.4, 3.4, 6].flatMap((x) => [1.6, winY, 7.6].map((y) => ({ x, y }))).map((w, i) => (
         <mesh key={`w${i}`} position={[w.x, w.y, 0.23]}>
           <planeGeometry args={[1.2, 1.7]} />
-          <meshStandardMaterial color="#0b0d11" roughness={0.12} metalness={0.5} />
+          {w.x === -3.4 && w.y === 7.6 ? (
+            // 上の階の部屋でもテレビがついている
+            <meshStandardMaterial color="#000" emissive="#6f95ff" emissiveIntensity={0.015 + 0.015 * slowWave(t, 4.0)} />
+          ) : (
+            <meshStandardMaterial color="#0b0d11" roughness={0.12} metalness={0.5} />
+          )}
         </mesh>
       ))}
-      {/* 部屋：奥の壁と床 */}
+      <FireEscape x0={2.25} x1={4.6} wallZ={0.2} floors={[3.66, 6.66]} />
+      {/* 部屋：奥の壁（80年代の木目の壁板）と床、スタンドの笠 */}
       <mesh position={[0, winY, -3.4]}>
         <planeGeometry args={[6, 4]} />
-        <meshStandardMaterial color="#d8b48a" roughness={0.9} emissive="#ffb870" emissiveIntensity={0.55} />
+        <WoodMaterial w={6} h={4} tint="#f0c896" glow={0.42} />
       </mesh>
+      <mesh position={[0.95, winY - 0.25, -2.9]}>
+        <cylinderGeometry args={[0.13, 0.2, 0.26, 20, 1, true]} />
+        <meshStandardMaterial color="#f3dcb2" emissive="#ffd9a0" emissiveIntensity={1.6} side={THREE.DoubleSide} />
+      </mesh>
+      <primitive object={tv} />
       <mesh position={[0, winY - 1.25, -1.7]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[6, 3.4]} />
         <meshStandardMaterial color="#3a2a1e" roughness={0.8} />
@@ -296,7 +340,10 @@ export const InsertWindow: React.FC = () => {
       </mesh>
       <primitive object={room} />
       <Figure clip="Idle_Loop" position={[0.15, winY - 1.25, -1.0]} rotationY={0} />
-      <StreetLamp x={4.5} z={6} armDir={-1} intensity={700} cone={false} />
+      {/* 街灯を壁に寄せて、れんがと非常階段が見えるようにする */}
+      <StreetLamp x={4.8} z={1.9} armDir={-1} intensity={850} cone={false} />
+      {/* ごく弱い月明かり。真っ暗な壁にれんがの目がうっすら見える程度 */}
+      <directionalLight position={[-6, 10, 12]} color="#6f86b8" intensity={0.35} />
     </Stage>
   );
 };
@@ -313,6 +360,7 @@ export const InsertBusStop: React.FC = () => {
   car.intensity = 1300 * interpolate(t, [1.5, 2.2, 5.3, 6.0], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   car.position.set(carX, 0.8, 3.2);
   car.target.position.set(carX + 12, 0.2, 2.0);
+
   return (
     <Stage fog={0.05} exposure={1.0}>
       <Camera from={{ pos: [-3.4, 1.1, 9.5], target: [0.2, 1.2, 0], fov: 32 }} to={{ pos: [-2.4, 1.15, 8.6], target: [0.3, 1.25, 0], fov: 31 }} />
@@ -347,7 +395,16 @@ export const InsertBusStop: React.FC = () => {
       <StreetLamp x={0.6} z={-2.9} armDir={1} shadow intensity={1100} />
       <StreetLamp x={-18} z={-2.9} armDir={1} intensity={700} />
       <StreetLamp x={19} z={-2.9} armDir={1} intensity={700} />
+      {/* 背後の建物の1階：クリーニング店の明かりとネオン */}
+      <Storefront position={[5.5, 1.45, -4.96]} w={4.0} h={2.0} glow={0.2} light="#fff0d0" curtain="#1c2a3a" />
+      <NeonSign text="CLEANERS" color="#3fd6ff" position={[5.5, 3.0, -4.85]} height={0.5} light={8} />
+      <NeonSign text="OPEN" color="#ff3346" position={[4.3, 1.8, -4.88]} height={0.3} board={false} light={0} />
+      <Payphone position={[-3.0, 0.15, -2.5]} />
+      <NewsBox position={[2.7, 0.15, -2.0]} color="#2d5aa0" />
       <Figure clip="Idle_Loop" position={[0.6, 0.15, -0.6]} rotationY={-Math.PI / 2 + 0.25} timeOffset={0.7} />
+      {/* クリーニング店の前に止めた当時のセダン。走る車を画面に入れると、ライトが速く横切って明滅に見える（QAで検出）ので、
+          走る車は画面の外に置き、ヘッドライトの光だけが通り過ぎる */}
+      <Car80s position={[4.7, 0, 1.45]} rotationY={Math.PI} color="#5a1f24" vinylTop="#d6ccb4" />
       <primitive object={car} />
       <primitive object={car.target} />
     </Stage>
@@ -367,6 +424,27 @@ export const FigureCheck: React.FC = () => {
         <directionalLight position={[3, 5, 4]} intensity={2.5} />
         <Camera from={{ pos: [Math.sin(angle) * 3.2, 1.2, Math.cos(angle) * 3.2], target: [0, 1.0, 0], fov: 35 }} to={{ pos: [Math.sin(angle) * 3.2, 1.2, Math.cos(angle) * 3.2], target: [0, 1.0, 0], fov: 35 }} />
         <Figure clip="Idle_Loop" position={[0, 0, 0]} />
+      </ThreeCanvas>
+    </AbsoluteFill>
+  );
+};
+
+/** 確認用：80年代の小道具を明るい場所で見る（本編には使わない） */
+export const PropsCheck: React.FC = () => {
+  const frame = useCurrentFrame();
+  const angle = 0.6 + (frame / 180) * Math.PI * 2;
+  return (
+    <AbsoluteFill style={{ background: "#808080" }}>
+      <ThreeCanvas width={W} height={H} gl={{ antialias: true, preserveDrawingBuffer: true }}>
+        <color attach="background" args={["#7a7a7a"]} />
+        <hemisphereLight args={["#ffffff", "#444444", 2.0]} />
+        <directionalLight position={[3, 5, 4]} intensity={2.5} />
+        <Camera from={{ pos: [Math.sin(angle) * 9, 3.2, Math.cos(angle) * 9], target: [0, 0.7, 0], fov: 40 }} to={{ pos: [Math.sin(angle) * 9, 3.2, Math.cos(angle) * 9], target: [0, 0.7, 0], fov: 40 }} />
+        <Car80s position={[0, 0, -1.4]} color="#5a1f24" vinylTop="#d6ccb4" headlights={1} />
+        <Car80s position={[0, 0, 1.4]} color="#6e4b34" wagon />
+        <Payphone position={[3.6, 0, 0]} rotationY={Math.PI / 2} />
+        <NewsBox position={[3.6, 0, 1.0]} rotationY={Math.PI / 2} />
+        <NeonSign text="DINER" color="#ff5a7e" position={[-3.8, 1.4, 0]} rotationY={Math.PI / 2} height={0.5} />
       </ThreeCanvas>
     </AbsoluteFill>
   );

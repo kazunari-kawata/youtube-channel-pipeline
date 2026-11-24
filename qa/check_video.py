@@ -168,6 +168,8 @@ def lint(rep: Report):
     ins = text.get(src / "inserts" / "Inserts.tsx", "")
     ok = "イメージ" in ins
     rep.add("イメージ映像に「イメージ」表示", ok, "あり" if ok else "なし", "あり", "F-009")
+    ok = all(k in ins for k in ("FILM_GRADE", "<Bloom")) and (src / "inserts" / "Era80s.tsx").exists()
+    rep.add("イメージ映像に時代の質感（フィルムの色・にじみ・小道具）", ok, "あり" if ok else "外れている", "あり", "F-011")
 
 
 def main():
