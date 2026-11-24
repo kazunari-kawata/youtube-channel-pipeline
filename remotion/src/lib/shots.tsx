@@ -74,12 +74,13 @@ export const CardShot: React.FC<{ v: CardV }> = ({ v }) => {
     );
   } else if (v.style === "date") {
     const text = v.text ?? "";
-    const n = Math.floor(interpolate(frame, [6, 6 + text.length * 2.2], [0, text.length], clamp)); // タイプライターのように1字ずつ
+    // タイプライターのように1字ずつ。カットの切り替え（12コマ）が終わってから始め、1字ずつ4コマかけて出す
+    const p = interpolate(frame, [14, 14 + text.length * 2.2], [0, text.length], clamp);
     body = (
       <div style={{ ...base }}>
         {/* 1字ずつ出す。文字の並びは最初から全部置いておき、見えるかどうかだけ変える（中央ぞろえの文字列が伸びて左右に動くとチラつく） */}
         <div style={{ fontSize: 64, fontWeight: 700, letterSpacing: 3, color: C.cream, ...glow, minHeight: 90 }}>
-          {Array.from(text).map((ch, i) => <span key={i} style={{ opacity: i < n ? 1 : 0 }}>{ch}</span>)}
+          {Array.from(text).map((ch, i) => <span key={i} style={{ opacity: Math.max(0, Math.min(1, (p - i) / 1.8)) }}>{ch}</span>)}
         </div>
         <div style={{ height: 2, width: 420, background: C.line, margin: "18px auto", opacity: a }} />
         <div style={{ fontSize: 30, color: C.amber, letterSpacing: 4, opacity: interpolate(frame, [20, 34], [0, 1], clamp) }}>{v.sub}</div>
@@ -212,7 +213,7 @@ export const AerialShot: React.FC<{ src: string; label: string; zoom: string; da
   const t = interpolate(frame, [0, dur], [0, 1], clamp);
   const [s0, s1] = zoom === "in" ? [1.0, 1.32] : zoom === "out" ? [1.32, 1.0] : [1.08, 1.16];
   const s = s0 + (s1 - s0) * (t * t * (3 - 2 * t));
-  const pin = interpolate(frame, [12, 26], [0, 1], clamp);
+  const pin = interpolate(frame, [18, 32], [0, 1], clamp);
   return (
     <FilmFrame bg="#000">
       <AbsoluteFill style={{ transform: `scale(${s})` }}>

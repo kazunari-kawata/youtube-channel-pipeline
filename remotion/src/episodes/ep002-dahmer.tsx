@@ -6,7 +6,7 @@
  * 素材は remotion/public/002/（pipeline/cut_materials.py、make_maps.py で作る）。
  */
 import React, { useMemo } from "react";
-import { AbsoluteFill, Audio, getStaticFiles, interpolate, Sequence, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Easing, getStaticFiles, interpolate, Sequence, staticFile, useCurrentFrame } from "remotion";
 import current from "../data/current.json";
 import { InsertDuration } from "../inserts/Inserts";
 import { INSERT_SCENES } from "../inserts/registry";
@@ -83,7 +83,8 @@ const ShotView: React.FC<{ v: Visual }> = ({ v }) => {
 /** カットの頭でフェードイン（前のカットの上に重ねる） */
 const Fade: React.FC<{ children: React.ReactNode; first: boolean }> = ({ children, first }) => {
   const f = useCurrentFrame();
-  const o = first ? 1 : interpolate(f, [0, XF], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // 始めと終わりをなめらかに（直線だと、フェードの最後の1コマで明るさが急に止まり、次のコマの動きと逆向きになってチラつきと判定される）
+  const o = first ? 1 : interpolate(f, [0, XF], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
   return <AbsoluteFill style={{ opacity: o }}>{children}</AbsoluteFill>;
 };
 

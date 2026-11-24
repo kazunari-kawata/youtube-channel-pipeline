@@ -221,7 +221,8 @@ export const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure
           <fogExp2 attach="fog" args={[bg, fog]} />
           <hemisphereLight args={hemi} />
           {children}
-          {bloom > 0 ? <Bloom strength={bloom} radius={0.6} threshold={1.2} /> : null}
+          {/* しきい値は高め：街灯の真下を歩く人物の髪や肩までにじむと、歩く動きでにじみが揺れてチラつく */}
+          {bloom > 0 ? <Bloom strength={bloom} radius={0.6} threshold={1.8} /> : null}
         </ThreeCanvas>
       </AbsoluteFill>
       <AbsoluteFill style={{ background: "rgba(255,190,140,0.035)", mixBlendMode: "screen" }} />
@@ -237,7 +238,8 @@ export const InsertNightWalk: React.FC<SceneProps> = ({ variant = "a" }) => {
   const walk = useMemo(() => (t: number): [number, number, number] => [1.3, 0.15, 1.0 - t * 1.15], []);
   const cams: Record<string, [CamKey, CamKey]> = {
     a: [{ pos: [2.3, 1.25, 6.2], target: [1.3, 1.3, -6] }, { pos: [2.1, 1.3, 1.6], target: [1.2, 1.35, -10] }],
-    c: [{ pos: [2.1, 1.5, -13.0], target: [1.2, 1.25, 0] }, { pos: [2.0, 1.5, -12.2], target: [1.2, 1.25, -2] }],
+    // 正面から。人物が近づきすぎると、脚の速い動きが明滅と判定されるので、カメラは離しておく
+    c: [{ pos: [2.0, 1.5, -17.0], target: [1.2, 1.2, 0], fov: 30 }, { pos: [1.9, 1.5, -16.4], target: [1.2, 1.25, -2], fov: 29 }],
     empty: [{ pos: [2.0, 1.4, 5.0], target: [1.0, 1.6, -12] }, { pos: [1.9, 1.45, 2.4], target: [1.0, 1.7, -16] }],
     empty2: [{ pos: [3.4, 3.2, 7.0], target: [0.0, 1.0, -16] }, { pos: [3.0, 3.0, 5.0], target: [0.0, 1.0, -18] }],
   };
