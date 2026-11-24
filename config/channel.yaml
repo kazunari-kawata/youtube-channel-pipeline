@@ -27,6 +27,10 @@ tts:
   tail: 6.0
   trim_silence_db: -45             # 生成音声の頭と末尾の無音を、このレベルで切りそろえる
 
+# 声を作る前の仮の尺（pipeline/estimate_timeline.py）。読み（read）の文字数／秒。本番の声で作り直すと上書きされる
+estimate:
+  chars_per_sec: 6.0
+
 audio:
   narration_lufs: -16    # ナレーションの音量（ラウドネス）
   bgm_lufs: -16          # BGMを一旦この音量にそろえてから、下の倍率で下げる
