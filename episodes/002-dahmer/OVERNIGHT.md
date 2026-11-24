@@ -33,3 +33,4 @@
 - イメージ映像を4場面追加（`remotion/src/inserts/Scenes2.tsx`：70年代オハイオの道、冬の裁判所、当時のパトカー、刑務所のフェンス）。場面名は `inserts/registry.ts`。既存3場面にカメラ違いを追加
 - 動画の定義：`remotion/src/episodes/ep002-dahmer.tsx`。台本の visual 欄からカットを自動で組む。仮編集は `python pipeline/stage.py 002-dahmer --draft`
 - 全81カットの静止画を目で確認済み（地図の地名のはみ出し、暗すぎる場面、正面から歩く場面のカメラを直した）
+- 書き出し（手順8）の続け方：`python3 pipeline/render_chunks.py 002-dahmer --budget 8.5` を、終了コード0（「完成」と出る）まで繰り返す。1回で約6区間（20秒×6）。全35区間。止まった区間は自動で飛ばして続きから
