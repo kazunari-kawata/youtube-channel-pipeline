@@ -1,6 +1,6 @@
 # youtube-channel-pipeline
 
-ビジネス・経済・地理の教養動画を作るパイプライン。実データの3D地形と夜の衛星写真（Remotion + three.js）に、
+アメリカの犯罪・事件（1本1事件）とフロリダマンの動画を作るパイプライン。権利を確かめた公的資料と、実データの3D地図・航空写真（Remotion + three.js）に、
 ElevenLabs のナレーションとYouTubeオーディオライブラリのBGMを合わせて書き出し、自動の品質チェックを通す。
 
 作業ルールは [CLAUDE.md](CLAUDE.md)、これまでの指摘と対策は [docs/feedback.md](docs/feedback.md)。
@@ -43,6 +43,7 @@ python pipeline/run.py 001-plains
 
 | 工程 | コマンド |
 | --- | --- |
+| 素材を集める（素材台帳から） | `python pipeline/fetch_materials.py <id>`（`--list` で権利の状態の一覧） |
 | 声を探す・聞き比べる | `python pipeline/tts_voice_samples.py --library` / `--sample <voice_id>` |
 | ナレーション | `python pipeline/tts_elevenlabs.py <id>`（`--only n05` で1区間だけ、`--dry-run` で文字数と概算費用） |
 | 読み間違いチェック | `python pipeline/asr_check.py <id>` |

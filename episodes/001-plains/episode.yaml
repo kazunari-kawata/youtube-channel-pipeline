@@ -1,6 +1,6 @@
 # 第1回の設定（config/channel.yaml を上書きしたいキーだけ書く）
 id: 001-plains
-status: pilot-v2   # pilot-v1 はフィードバック済み（docs/feedback.md）
+status: on-hold    # 2026-11 ジャンル変更で保留。pilot-v1 はフィードバック済み（docs/feedback.md）
 
 bgm:
   # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。上から順につなぐ

@@ -1,0 +1,164 @@
+# 素材台帳：ジェフリー・ダーマー事件（第2回・犯罪シリーズ最初のテスト）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status（権利の状態）
+#   pd_federal    米連邦政府の著作物（FBIが書いた文書、米農務省の航空写真など）→ 使用可
+#   pd_no_notice  1978〜1989年2月に著作権表示なしで公表 → 使用可（Commonsの判定。元の出版物で表示の有無を確かめられるとなお良い）
+#   pd_other      その他の理由でパブリックドメイン（note に理由）
+#   cc_by         CC BY / BY-SA → 使用可、概要欄にクレジット
+#   own           自分で作ったもの（実データの3D地図・図解）
+#   check         要確認。権利者と使用条件が分かるまで画面に出さない
+#   reference     参照のみ。事実確認と台本に使い、画面には出さない
+#   unusable      使用不可（理由を note に）
+# 取得：python pipeline/fetch_materials.py 002-dahmer  → episodes/002-dahmer/build/materials/
+
+case: Jeffrey Dahmer（1978〜1991年、オハイオ州・ウィスコンシン州）
+checked_on: 2026-11-24
+
+items:
+  # ---------- FBIの公開ファイル（FBI Vault の内容。Internet Archive のミラーから取得） ----------
+  - id: fbi_01
+    title: FBIファイル 1/7（ミルウォーキー支局 7-MW-26057、288ページ）
+    file: fbi/Dahmer1.pdf
+    url: https://archive.org/download/JeffreyDahmer/Dahmer1.pdf
+    original: https://vault.fbi.gov/jeffrey-dahmer
+    status: pd_federal
+    note: FBI職員が書いたメモ・報告は著作権なし。ただし綴じ込まれた新聞記事の切り抜きや他機関の書類はその限りでない。画面に出すページは1枚ずつ作成者を確かめる
+  - id: fbi_02
+    title: FBIファイル 2/7（60ページ、画像が中心で文字認識できず。中身未確認）
+    file: fbi/Dahmer2.pdf
+    url: https://archive.org/download/JeffreyDahmer/Dahmer2.pdf
+    original: https://vault.fbi.gov/jeffrey-dahmer
+    status: check
+    note: 中身を見てから判断
+  - id: fbi_03
+    title: FBIファイル 3/7（259ページ、大半が新聞記事の切り抜き）
+    file: fbi/Dahmer3.pdf
+    url: https://archive.org/download/JeffreyDahmer/Dahmer3.pdf
+    original: https://vault.fbi.gov/jeffrey-dahmer
+    status: reference
+    note: 新聞記事は各新聞社の著作物。当時の報道の流れを知る参考にとどめ、画面には出さない
+  - id: fbi_04
+    title: FBIファイル 4/7（7-MW-26057 Sub A-2、220ページ、Milwaukee Journal などの切り抜き）
+    file: fbi/Dahmer4.pdf
+    url: https://archive.org/download/JeffreyDahmer/Dahmer4.pdf
+    original: https://vault.fbi.gov/jeffrey-dahmer
+    status: reference
+    note: 同上（新聞記事）
+  - id: fbi_05
+    title: FBIファイル 5/7（68ページ、テレタイプ通信。文字認識の精度が低い）
+    file: fbi/Dahmer5.pdf
+    url: https://archive.org/download/JeffreyDahmer/Dahmer5.pdf
+    original: https://vault.fbi.gov/jeffrey-dahmer
+    status: pd_federal
+    note: FBIの通信文。画面に出す前に中身を確認
+  - id: fbi_06
+    title: FBIファイル 6/7（FBI研究所 95-HQ-209705、77ページ。ミルウォーキー警察から研究所への鑑定依頼など）
+    file: fbi/Dahmer6.pdf
+    url: https://archive.org/download/JeffreyDahmer/Dahmer6.pdf
+    original: https://vault.fbi.gov/jeffrey-dahmer
+    status: pd_federal
+    note: 研究所の報告はFBIの著作物で使用可。ミルウォーキー警察が書いた依頼状は州・市の文書なので check 扱い。証拠品の一覧は生々しい記述を含むので、画面では文書の見た目だけを使い、中身を読ませない
+  - id: fbi_07
+    title: FBIファイル 7/7（95-HQ-2997xx ほか、252ページ。非公開ページの差し替え票を含む）
+    file: fbi/Dahmer7.pdf
+    url: https://archive.org/download/JeffreyDahmer/Dahmer7.pdf
+    original: https://vault.fbi.gov/jeffrey-dahmer
+    status: pd_federal
+    note: 綴じ込まれた他機関・新聞の資料は除く
+  - id: fbi_story
+    title: FBI公式記事「Serial Killers Part 7 The FBI and Jeffrey Dahmer」
+    file: ""
+    original: https://www.fbi.gov/news/stories/serial-killers-part-7-jeffrey-dahmer
+    status: reference
+    note: 本文はFBIの著作物。ただし記事内の顔写真は AP 通信のクレジットなので使用不可
+
+  # ---------- ミルウォーキー警察の公開資料（ウィスコンシン州の市の文書） ----------
+  # ウィスコンシン州では州・市の文書が自動的にパブリックドメインにはならない（州も著作権を持てるとの州司法長官見解あり）。
+  - id: mpd_docs
+    title: ミルウォーキー警察の事件報告・補充報告・起訴状など（243ページ）
+    file: mpd/Documents_text.pdf
+    url: https://archive.org/download/dahmer-milwaukee-police-department-documents/Documents_text.pdf
+    original: https://archive.org/details/dahmer-milwaukee-police-department-documents
+    status: reference
+    note: 事実確認の一次資料。逮捕の経緯（64ページ付近、Tracy Edwards の通報）、1989年の有罪判決（161ページ）、起訴状（221ページ以降）。画面に出すかは市の使用条件を確認してから
+  - id: mpd_booking
+    title: 1991年7月の逮捕時の顔写真（ミルウォーキー警察、4枚）
+    file: mpd/BOOKING_PHOTOS.pdf
+    url: https://archive.org/download/jeffrey-dahmer-milwaukee-police-department-photos/BOOKING%20PHOTOS.pdf
+    original: https://archive.org/details/jeffrey-dahmer-milwaukee-police-department-photos
+    status: check
+    note: 英語版Wikipediaはこの顔写真を「フェアユースの非フリー画像」として扱っている。使うなら市の条件確認か、フェアユースの判断が要る
+  - id: mpd_apartment
+    title: アパート213号室の室内写真（ミルウォーキー警察、30ページ。家具・青いドラム缶・手錠・薬品瓶など）
+    file: mpd/APARTMENT_PHOTOS.pdf
+    url: https://archive.org/download/jeffrey-dahmer-milwaukee-police-department-photos/APARTMENT%20PHOTOS.pdf
+    original: https://archive.org/details/jeffrey-dahmer-milwaukee-police-department-photos
+    status: check
+    note: 縮小画像で見た範囲では遺体は写っていないが、1枚ずつ確認する。権利も要確認
+  - id: mpd_arrest_attachments
+    title: 逮捕報告の添付写真（被害者のポラロイド写真、現場写真を含む）
+    file: ""
+    original: https://archive.org/details/jeffrey-dahmer-arrest-report-attachments
+    status: unusable
+    note: 被害者の遺体の写真を含むため、取得もしない。被害者の尊厳と広告ポリシーの両方から使用不可
+
+  # ---------- Wikimedia Commons ----------
+  - id: commons_yearbook_1978
+    title: 1978年 Revere高校の卒業アルバムの写真（本人）
+    file: commons/Jeffrey_Dahmer_HS_Yearbook.jpg
+    url: https://upload.wikimedia.org/wikipedia/commons/d/d5/Jeffrey_Dahmer_HS_Yearbook.jpg
+    original: https://commons.wikimedia.org/wiki/File:Jeffrey_Dahmer_HS_Yearbook.jpg
+    status: pd_no_notice
+    note: Commonsの判定は「1978〜1989年2月に著作権表示なしで公表」
+  - id: commons_army_1979
+    title: 1979年 西ドイツ・バウムホルダー駐留時の写真（本人）
+    file: commons/army_baumholder_1979.jpg
+    url: https://upload.wikimedia.org/wikipedia/commons/9/98/Jeffrey_L._Dahmer_during_his_army_deployment_to_Baumholder%2C_West_Germany_in_1979.jpg
+    original: https://commons.wikimedia.org/wiki/File:Jeffrey_L._Dahmer_during_his_army_deployment_to_Baumholder,_West_Germany_in_1979.jpg
+    status: pd_no_notice
+    note: 英語版Wikipediaには別の駐留時の写真（Baumholder Army Alcohol）が非フリーとして載っている。取り違えないこと
+  - id: commons_yearbook_cartoon
+    title: 1978年 卒業アルバムの漫画（同級生が描いたもの）
+    file: commons/yearbook_cartoon_1978.jpg
+    url: https://upload.wikimedia.org/wikipedia/commons/b/b0/Photo_of_Cartoon_From_1978_Revere_High_School_Yearbook.jpg
+    original: https://commons.wikimedia.org/wiki/File:Photo_of_Cartoon_From_1978_Revere_High_School_Yearbook.jpg
+    status: pd_no_notice
+  - id: commons_victims
+    title: 被害者の写真（Commonsに Anthony Hughes、Steven Tuomi などがある）
+    file: ""
+    status: unusable
+    note: 方針として被害者の写真は使わない（遺族が Netflix ドラマに抗議した経緯もある）。名前は事実として必要な範囲でのみ
+
+  # ---------- 航空写真（米農務省 NAIP、パブリックドメイン） ----------
+  - id: naip_oxford_site
+    title: 924 N. 25th St.（オックスフォード・アパート跡地、現在は空き地）周辺の航空写真
+    file: naip/milwaukee_oxford_site.png
+    naip: {lat: 43.04197, lon: -87.94482, half_m: 200}
+    status: pd_federal
+    note: 位置は OpenStreetMap の住所検索（ODbL）。建物は1992年に取り壊され、跡地は空き地。写っているのは現在の様子
+  - id: naip_columbia_ci
+    title: コロンビア矯正施設（ウィスコンシン州ポーテージ）の航空写真
+    file: naip/columbia_ci_portage.png
+    naip: {lat: 43.5664, lon: -89.4903, half_m: 500}
+    status: pd_federal
+    note: 1994年に収監中に死亡した施設
+  - id: private_homes
+    title: オハイオ州バス・タウンシップの実家、ウェストアリスの祖母の家
+    file: ""
+    status: unusable
+    note: 現在は別の人が住む個人宅。家を特定できる航空写真や住所は出さない。地域が分かる縮尺の3D地図までにする
+
+  # ---------- 自作（実データの3D地図） ----------
+  - id: own_maps
+    title: オハイオ州アクロン周辺〜ミルウォーキー〜ポーテージの3D地図（Copernicus DEM、NASA Black Marble）
+    file: ""
+    status: own
+    note: パイロットの地図の仕組みで作る。出典は config/attributions.yaml
+
+  # ---------- 使わないもの ----------
+  - id: no_media
+    title: 報道写真（AP・Getty）、裁判の中継映像（Court TV）、インタビュー番組（Inside Edition、NBC Dateline）、Netflix作品
+    file: ""
+    status: unusable
+    note: いずれも権利者がいる。まとめサイトに載っていても使わない
