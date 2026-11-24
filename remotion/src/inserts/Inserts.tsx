@@ -15,6 +15,59 @@ import { H, W } from "../lib/geo";
 const SODIUM = "#ffa24a";
 const NIGHT = "#070a12";
 
+/* ---------- れんが（手続きで作るテクスチャ。外部の画像素材は使わない） ---------- */
+
+const BRICK_TILE_M = 1.2; // テクスチャ1枚が表す壁の大きさ（m）。米国の標準れんが 約20cm×6cm＋目地
+let brickCache: { map: THREE.CanvasTexture; bump: THREE.CanvasTexture } | null = null;
+const brickTextures = () => {
+  if (brickCache) return brickCache;
+  const S = 512, rows = 16, cols = 6;
+  const rowH = S / rows, colW = S / cols, mortar = 3;
+  const color = document.createElement("canvas");
+  const bump = document.createElement("canvas");
+  color.width = color.height = bump.width = bump.height = S;
+  const c = color.getContext("2d")!, b = bump.getContext("2d")!;
+  c.fillStyle = "#3b3530"; c.fillRect(0, 0, S, S); // 目地
+  b.fillStyle = "#000"; b.fillRect(0, 0, S, S);
+  for (let r = 0; r < rows; r++) {
+    const off = (r % 2) * colW * 0.5;
+    for (let k = -1; k <= cols; k++) {
+      const x = k * colW + off, y = r * rowH;
+      const v = random(`brick-${r}-${k}`);
+      const red = 92 + Math.floor(v * 40), g = 44 + Math.floor(v * 18), bl = 32 + Math.floor(v * 12);
+      c.fillStyle = `rgb(${red},${g},${bl})`;
+      c.fillRect(x + mortar / 2, y + mortar / 2, colW - mortar, rowH - mortar);
+      b.fillStyle = `rgb(${200 + Math.floor(v * 40)},${200 + Math.floor(v * 40)},${200 + Math.floor(v * 40)})`;
+      b.fillRect(x + mortar / 2, y + mortar / 2, colW - mortar, rowH - mortar);
+    }
+  }
+  // 汚れと欠け（小さな点を散らす）
+  for (let i = 0; i < 6000; i++) {
+    const x = random(`sx${i}`) * S, y = random(`sy${i}`) * S, a = random(`sa${i}`) * 0.18;
+    c.fillStyle = `rgba(0,0,0,${a})`; c.fillRect(x, y, 2, 2);
+  }
+  const mk = (cv: HTMLCanvasElement, srgb: boolean) => {
+    const t = new THREE.CanvasTexture(cv);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+    t.anisotropy = 8;
+    return t;
+  };
+  brickCache = { map: mk(color, true), bump: mk(bump, false) };
+  return brickCache;
+};
+
+/** 壁の大きさ（m）に合わせてれんがの目の大きさをそろえた材質 */
+const BrickMaterial: React.FC<{ w: number; h: number; tint?: string }> = ({ w, h, tint = "#8a7468" }) => {
+  const mat = useMemo(() => {
+    const { map, bump } = brickTextures();
+    const m2 = map.clone(), b2 = bump.clone();
+    for (const t of [m2, b2]) { t.repeat.set(w / BRICK_TILE_M, h / BRICK_TILE_M); t.needsUpdate = true; }
+    return new THREE.MeshStandardMaterial({ map: m2, bumpMap: b2, bumpScale: 1.2, color: tint, roughness: 0.92 });
+  }, [w, h, tint]);
+  return <primitive object={mat} attach="material" />;
+};
+
 /* ---------- 共通 ---------- */
 
 type CamKey = { pos: [number, number, number]; target: [number, number, number]; fov?: number };
@@ -102,7 +155,7 @@ const Building: React.FC<{ x: number; z: number; w: number; d: number; h: number
     <group>
       <mesh position={[x, h / 2, z]} receiveShadow>
         <boxGeometry args={[w, h, d]} />
-        <meshStandardMaterial color="#231a17" roughness={0.92} />
+        <BrickMaterial w={d} h={h} tint="#5c4a42" />
       </mesh>
       {windows.map((wd, i) => (
         <mesh key={i} position={[faceX, wd.y, wd.zz]} rotation={[0, (facing * Math.PI) / 2, 0]}>
@@ -206,7 +259,7 @@ export const InsertWindow: React.FC = () => {
       ].map((b, i) => (
         <mesh key={i} position={b.p as [number, number, number]} receiveShadow>
           <boxGeometry args={b.s as [number, number, number]} />
-          <meshStandardMaterial color="#2a1f1b" roughness={0.93} />
+          <BrickMaterial w={b.s[0]} h={b.s[1]} tint="#6a564c" />
         </mesh>
       ))}
       {/* ほかの暗い窓 */}
@@ -298,5 +351,23 @@ export const InsertBusStop: React.FC = () => {
       <primitive object={car} />
       <primitive object={car.target} />
     </Stage>
+  );
+};
+
+/* ---------- 確認用：人物を明るい場所で見る（本編には使わない） ---------- */
+
+export const FigureCheck: React.FC = () => {
+  const frame = useCurrentFrame();
+  const angle = (frame / 180) * Math.PI * 2;
+  return (
+    <AbsoluteFill style={{ background: "#808080" }}>
+      <ThreeCanvas width={W} height={H} gl={{ antialias: true, preserveDrawingBuffer: true }}>
+        <color attach="background" args={["#7a7a7a"]} />
+        <hemisphereLight args={["#ffffff", "#444444", 2.0]} />
+        <directionalLight position={[3, 5, 4]} intensity={2.5} />
+        <Camera from={{ pos: [Math.sin(angle) * 3.2, 1.2, Math.cos(angle) * 3.2], target: [0, 1.0, 0], fov: 35 }} to={{ pos: [Math.sin(angle) * 3.2, 1.2, Math.cos(angle) * 3.2], target: [0, 1.0, 0], fov: 35 }} />
+        <Figure clip="Idle_Loop" position={[0, 0, 0]} />
+      </ThreeCanvas>
+    </AbsoluteFill>
   );
 };

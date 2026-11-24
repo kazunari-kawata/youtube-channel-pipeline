@@ -162,6 +162,12 @@ def lint(rep: Report):
     terrain = text.get(src / "lib" / "Terrain.tsx", "")
     ok = re.search(r"depthWrite:\s*false,\s*depthTest:\s*false", terrain) is not None and "dist * 0.05" in terrain
     rep.add("チラつき対策（海の板・近クリップ面）", ok, "あり" if ok else "外れている", "あり", "F-001")
+    fig = text.get(src / "lib" / "Figure.tsx", "")
+    ok = all(k in fig for k in ("hideCovered(m)", "makeClothes(", "makeHair(")) and "SLIM_90S" in fig
+    rep.add("人物は服・髪つきの痩せ型（筋肉質なマネキンを見せない）", ok, "あり" if ok else "外れている", "あり", "F-008")
+    ins = text.get(src / "inserts" / "Inserts.tsx", "")
+    ok = "イメージ" in ins
+    rep.add("イメージ映像に「イメージ」表示", ok, "あり" if ok else "なし", "あり", "F-009")
 
 
 def main():
