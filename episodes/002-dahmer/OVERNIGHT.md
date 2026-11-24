@@ -17,9 +17,9 @@
 - [x] 2. 香盤表：`pipeline/shotlist.py` で `shotlist.md`（区間ごとの画面・素材・秒数・状態）と不足リストを作る
 - [x] 3. 仮の尺：`pipeline/estimate_timeline.py` で文字数から `build/timeline.json` を作る
 - [x] 4. 素材の切り出し：使用可の資料・写真を `remotion/public/ep002/` に画像で置く（PDFのページ、顔写真、航空写真）
-- [ ] 5. 部品：章の扉・日付カード（80年代風）、資料カード、写真カード、地図カード（州の地図、航空写真＋地名）
-- [ ] 6. イメージ映像：香盤表で足りない場面を足す（日常の場面だけ）
-- [ ] 7. 動画の定義：`remotion/src/episodes/ep002-dahmer.tsx` を作って登録、各区間の静止画で確認
+- [x] 5. 部品：章の扉・日付カード（80年代風）、資料カード、写真カード、地図カード（州の地図、航空写真＋地名）
+- [x] 6. イメージ映像：香盤表で足りない場面を足す（日常の場面だけ）
+- [x] 7. 動画の定義：`remotion/src/episodes/ep002-dahmer.tsx` を作って登録、各区間の静止画で確認
 - [ ] 8. 書き出し：`pipeline/render_chunks.py 002-dahmer`（区間ごと・再開可能）→ つなぐ
 - [ ] 9. QA（音なしなので `--partial` 相当）、字幕トラックを入れた確認用 mp4 を作る
 - [ ] 10. 朝：動画・香盤表・台本をユーザーに送り、残っていること（声・BGM・要確認2件）を伝える
@@ -29,3 +29,7 @@
 - 台本から削った未確認の細部：ダーマーの職業、1989年の被害者の住まい、5月27日に通報した人、警官が前歴を照会しなかったこと
 - 素材の切り出しは `episodes/002-dahmer/cuts.yaml` ＋ `pipeline/cut_materials.py`（remotion/public は Git に入らないので、これで作り直せる）。置き場所は remotion/public/002/
 - 資料は目で見て確認済み：逮捕の補充報告書の冒頭4行、1989年の有罪判決の3行、修正起訴状の見出し（祖母の家の住所がある訴因は入れない）、第11訴因だけ。室内写真は居間（水槽とカーテン）で、左端の額は切り落とした
+- 部品：`remotion/src/lib/shots.tsx`（文字カード・資料・写真・航空写真・地図、2Dにもフィルムの質感）。地図は `pipeline/make_maps.py` ＋ `maps.yaml`（Natural Earth）
+- イメージ映像を4場面追加（`remotion/src/inserts/Scenes2.tsx`：70年代オハイオの道、冬の裁判所、当時のパトカー、刑務所のフェンス）。場面名は `inserts/registry.ts`。既存3場面にカメラ違いを追加
+- 動画の定義：`remotion/src/episodes/ep002-dahmer.tsx`。台本の visual 欄からカットを自動で組む。仮編集は `python pipeline/stage.py 002-dahmer --draft`
+- 全81カットの静止画を目で確認済み（地図の地名のはみ出し、暗すぎる場面、正面から歩く場面のカメラを直した）

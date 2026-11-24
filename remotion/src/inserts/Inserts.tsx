@@ -6,7 +6,7 @@
  */
 import { useThree } from "@react-three/fiber";
 import { ThreeCanvas } from "@remotion/three";
-import React, { useLayoutEffect, useMemo } from "react";
+import React, { createContext, useContext, useLayoutEffect, useMemo } from "react";
 import { AbsoluteFill, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
 import { Figure } from "../lib/Figure";
@@ -60,7 +60,7 @@ const brickTextures = () => {
 };
 
 /** 壁の大きさ（m）に合わせてれんがの目の大きさをそろえた材質 */
-const BrickMaterial: React.FC<{ w: number; h: number; tint?: string }> = ({ w, h, tint = "#8a7468" }) => {
+export const BrickMaterial: React.FC<{ w: number; h: number; tint?: string }> = ({ w, h, tint = "#8a7468" }) => {
   const mat = useMemo(() => {
     const { map, bump } = brickTextures();
     const m2 = map.clone(), b2 = bump.clone();
@@ -72,12 +72,23 @@ const BrickMaterial: React.FC<{ w: number; h: number; tint?: string }> = ({ w, h
 
 /* ---------- 共通 ---------- */
 
+/**
+ * イメージ映像の長さ（フレーム）。単体の確認用コンポジションでは動画の長さ、
+ * 本編では各カットの長さを InsertDuration で渡す（カメラの動きとフェードをカットの長さに合わせる）
+ */
+export const InsertDuration = createContext<number | null>(null);
+export const useInsertDur = () => {
+  const { durationInFrames } = useVideoConfig();
+  return useContext(InsertDuration) ?? durationInFrames;
+};
+export type SceneProps = { variant?: string };
+
 type CamKey = { pos: [number, number, number]; target: [number, number, number]; fov?: number };
 
-const Camera: React.FC<{ from: CamKey; to: CamKey }> = ({ from, to }) => {
+export const Camera: React.FC<{ from: CamKey; to: CamKey }> = ({ from, to }) => {
   const { camera, advance } = useThree();
   const frame = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
+  const durationInFrames = useInsertDur();
   useLayoutEffect(() => {
     const t = THREE.MathUtils.smootherstep(frame / (durationInFrames - 1), 0, 1);
     const c = camera as THREE.PerspectiveCamera;
@@ -93,7 +104,7 @@ const Camera: React.FC<{ from: CamKey; to: CamKey }> = ({ from, to }) => {
 };
 
 /** ナトリウム灯の街灯：柱・灯具・下向きのスポットライト・うっすら見える光の円錐 */
-const StreetLamp: React.FC<{ x: number; z: number; armDir?: number; intensity?: number; shadow?: boolean; cone?: boolean }> = ({ x, z, armDir = -1, intensity = 900, shadow = false, cone = true }) => {
+export const StreetLamp: React.FC<{ x: number; z: number; armDir?: number; intensity?: number; shadow?: boolean; cone?: boolean }> = ({ x, z, armDir = -1, intensity = 900, shadow = false, cone = true }) => {
   const h = 6.2;
   const headX = x + armDir * 1.4;
   const light = useMemo(() => {
@@ -133,7 +144,7 @@ const StreetLamp: React.FC<{ x: number; z: number; armDir?: number; intensity?: 
 };
 
 /** 濡れたアスファルト（暗く、街灯がにじんで映る） */
-const Ground: React.FC<{ size?: number }> = ({ size = 200 }) => (
+export const Ground: React.FC<{ size?: number }> = ({ size = 200 }) => (
   <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
     <planeGeometry args={[size, size]} />
     <meshStandardMaterial color="#141518" roughness={0.38} metalness={0.15} />
@@ -141,7 +152,7 @@ const Ground: React.FC<{ size?: number }> = ({ size = 200 }) => (
 );
 
 /** れんがの建物（箱）と窓。lit の窓だけ暖色に光る */
-const Building: React.FC<{ x: number; z: number; w: number; d: number; h: number; seed: number; litRatio?: number; facing?: 1 | -1 }> = ({ x, z, w, d, h, seed, litRatio = 0.12, facing = -1 }) => {
+export const Building: React.FC<{ x: number; z: number; w: number; d: number; h: number; seed: number; litRatio?: number; facing?: 1 | -1 }> = ({ x, z, w, d, h, seed, litRatio = 0.12, facing = -1 }) => {
   const windows = useMemo(() => {
     const out: { y: number; zz: number; lit: boolean; warm: number }[] = [];
     for (let fy = 1; fy * 3.0 + 1.2 < h; fy++) {
@@ -193,22 +204,24 @@ const Overlay: React.FC = () => {
 };
 
 /** 80年代のフィルムの色：少し色あせて暖かい。黒は真っ黒にせず、わずかに持ち上げる */
-const FILM_GRADE = "sepia(0.16) saturate(0.86) contrast(1.06)";
+export const FILM_GRADE = "sepia(0.16) saturate(0.86) contrast(1.06)";
 
-const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure?: number; bloom?: number; grade?: string }> = ({ children, fog = 0.035, exposure = 1.0, bloom = 0.55, grade = FILM_GRADE }) => {
+export const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure?: number; bloom?: number; grade?: string; bg?: string; hemi?: [string, string, number] }> = ({
+  children, fog = 0.035, exposure = 1.0, bloom = 0.55, grade = FILM_GRADE, bg = NIGHT, hemi = ["#2b3a5a", "#0a0806", 0.35],
+}) => {
   const frame = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
+  const durationInFrames = useInsertDur();
   const fade = interpolate(frame, [0, 10, durationInFrames - 10, durationInFrames - 1], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   // 映写機のようなごくわずかな揺れ。ゆっくり動かす（毎フレーム跳ねると明滅に見える）
   const dx = 0.5 * Math.sin(frame * 0.21) + 0.3 * Math.sin(frame * 0.53 + 1.0);
   const dy = 0.4 * Math.sin(frame * 0.17 + 2.0) + 0.25 * Math.sin(frame * 0.47);
   return (
-    <AbsoluteFill style={{ background: NIGHT }}>
+    <AbsoluteFill style={{ background: "#000" }}>
       <AbsoluteFill style={{ opacity: fade, filter: grade, transform: `translate(${dx}px, ${dy}px) scale(1.012)` }}>
         <ThreeCanvas width={W} height={H} shadows gl={{ antialias: true, preserveDrawingBuffer: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: exposure }}>
-          <color attach="background" args={[NIGHT]} />
-          <fogExp2 attach="fog" args={[NIGHT, fog]} />
-          <hemisphereLight args={["#2b3a5a", "#0a0806", 0.35]} />
+          <color attach="background" args={[bg]} />
+          <fogExp2 attach="fog" args={[bg, fog]} />
+          <hemisphereLight args={hemi} />
           {children}
           {bloom > 0 ? <Bloom strength={bloom} radius={0.6} threshold={1.2} /> : null}
         </ThreeCanvas>
@@ -221,11 +234,20 @@ const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure?: numb
 
 /* ---------- 1. 夜道を歩く ---------- */
 
-export const InsertNightWalk: React.FC = () => {
+export const InsertNightWalk: React.FC<SceneProps> = ({ variant = "a" }) => {
+  // 歩く速さは一定（毎秒1.15m）。足の動きと進む距離をずらさない
   const walk = useMemo(() => (t: number): [number, number, number] => [1.3, 0.15, 1.0 - t * 1.15], []);
+  const cams: Record<string, [CamKey, CamKey]> = {
+    a: [{ pos: [2.3, 1.25, 6.2], target: [1.3, 1.3, -6] }, { pos: [2.1, 1.3, 1.6], target: [1.2, 1.35, -10] }],
+    c: [{ pos: [2.1, 1.5, -13.0], target: [1.2, 1.25, 0] }, { pos: [2.0, 1.5, -12.2], target: [1.2, 1.25, -2] }],
+    empty: [{ pos: [2.0, 1.4, 5.0], target: [1.0, 1.6, -12] }, { pos: [1.9, 1.45, 2.4], target: [1.0, 1.7, -16] }],
+    empty2: [{ pos: [3.4, 3.2, 7.0], target: [0.0, 1.0, -16] }, { pos: [3.0, 3.0, 5.0], target: [0.0, 1.0, -18] }],
+  };
+  const [from, to] = cams[variant] ?? cams.a;
+  const person = !variant.startsWith("empty");
   return (
     <Stage fog={0.045} exposure={1.05}>
-      <Camera from={{ pos: [2.3, 1.25, 6.2], target: [1.3, 1.3, -6] }} to={{ pos: [2.1, 1.3, 1.6], target: [1.2, 1.35, -10] }} />
+      <Camera from={from} to={to} />
       <Ground />
       {/* 歩道（車道より15cm高い） */}
       <mesh position={[1.5, 0.075, -40]} receiveShadow>
@@ -258,30 +280,39 @@ export const InsertNightWalk: React.FC = () => {
       <Car80s position={[-1.15, 0, -26.4]} rotationY={Math.PI / 2} color="#22304a" vinylTop="#1a1a1a" />
       <NewsBox position={[0.55, 0.15, -7.6]} rotationY={Math.PI / 2} />
       <Payphone position={[2.7, 0.15, -14.5]} rotationY={-Math.PI / 2} />
-      <Figure clip="Walk_Loop" path={walk} rotationY={Math.PI} />
+      {person ? <Figure clip="Walk_Loop" path={walk} rotationY={Math.PI} /> : null}
     </Stage>
   );
 };
 
 /* ---------- 2. アパートの窓辺に立つ ---------- */
 
-export const InsertWindow: React.FC = () => {
+export const InsertWindow: React.FC<SceneProps> = ({ variant = "a" }) => {
   const winY = 4.6; // 2階の窓の中心
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
+  const dark = variant === "e"; // 部屋の明かりを消し、テレビの光だけ。人物なし
   const room = useMemo(() => {
-    const l = new THREE.PointLight("#ffc98a", 60, 0, 2);
+    const l = new THREE.PointLight("#ffc98a", dark ? 4 : 60, 0, 2);
     l.position.set(0.3, winY + 0.6, -2.6);
     return l;
-  }, []);
+  }, [dark]);
+  const cams: Record<string, [CamKey, CamKey]> = {
+    a: [{ pos: [2.8, 1.6, 12], target: [0, winY - 0.2, 0], fov: 30 }, { pos: [1.6, 1.8, 8.5], target: [0, winY, 0], fov: 27 }],
+    b: [{ pos: [-3.2, 1.7, 10.5], target: [0.3, winY - 0.1, 0], fov: 29 }, { pos: [-2.4, 1.9, 8.6], target: [0.2, winY, 0], fov: 27 }],
+    c: [{ pos: [5.2, 1.5, 16.5], target: [0.8, winY - 0.6, 0], fov: 34 }, { pos: [4.6, 1.6, 15.0], target: [0.8, winY - 0.4, 0], fov: 33 }],
+    d: [{ pos: [0.9, 2.7, 6.6], target: [0.1, winY, 0], fov: 23 }, { pos: [0.6, 2.9, 5.9], target: [0.1, winY + 0.05, 0], fov: 21 }],
+    e: [{ pos: [2.2, 1.7, 10.5], target: [0, winY - 0.1, 0], fov: 28 }, { pos: [1.5, 1.8, 9.0], target: [0, winY, 0], fov: 26 }],
+  };
+  const [from, to] = cams[variant] ?? cams.a;
   // 部屋の左手にあるテレビの青い光。ゆっくり明るさが変わる
   const tv = useMemo(() => new THREE.PointLight("#7fa6ff", 0, 7, 2), []);
   tv.position.set(-0.95, winY - 0.7, -1.9);
   tv.intensity = 10 + 8 * slowWave(t, 1.0);
   return (
     <Stage fog={0.02} exposure={1.0}>
-      <Camera from={{ pos: [2.8, 1.6, 12], target: [0, winY - 0.2, 0], fov: 30 }} to={{ pos: [1.6, 1.8, 8.5], target: [0, winY, 0], fov: 27 }} />
+      <Camera from={from} to={to} />
       <Ground />
       {/* 外壁：窓の穴を残して4枚の箱で組む */}
       {[
@@ -311,11 +342,11 @@ export const InsertWindow: React.FC = () => {
       {/* 部屋：奥の壁（80年代の木目の壁板）と床、スタンドの笠 */}
       <mesh position={[0, winY, -3.4]}>
         <planeGeometry args={[6, 4]} />
-        <WoodMaterial w={6} h={4} tint="#f0c896" glow={0.42} />
+        <WoodMaterial w={6} h={4} tint="#f0c896" glow={dark ? 0.03 : 0.42} />
       </mesh>
       <mesh position={[0.95, winY - 0.25, -2.9]}>
         <cylinderGeometry args={[0.13, 0.2, 0.26, 20, 1, true]} />
-        <meshStandardMaterial color="#f3dcb2" emissive="#ffd9a0" emissiveIntensity={1.6} side={THREE.DoubleSide} />
+        <meshStandardMaterial color="#f3dcb2" emissive="#ffd9a0" emissiveIntensity={dark ? 0 : 1.6} side={THREE.DoubleSide} />
       </mesh>
       <primitive object={tv} />
       <mesh position={[0, winY - 1.25, -1.7]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -339,7 +370,7 @@ export const InsertWindow: React.FC = () => {
         <meshStandardMaterial color="#111" />
       </mesh>
       <primitive object={room} />
-      <Figure clip="Idle_Loop" position={[0.15, winY - 1.25, -1.0]} rotationY={0} />
+      {dark ? null : <Figure clip="Idle_Loop" position={[0.15, winY - 1.25, -1.0]} rotationY={0} />}
       {/* 街灯を壁に寄せて、れんがと非常階段が見えるようにする */}
       <StreetLamp x={4.8} z={1.9} armDir={-1} intensity={850} cone={false} />
       {/* ごく弱い月明かり。真っ暗な壁にれんがの目がうっすら見える程度 */}
@@ -350,11 +381,10 @@ export const InsertWindow: React.FC = () => {
 
 /* ---------- 3. バス停で待つ ---------- */
 
-export const InsertBusStop: React.FC = () => {
+export const InsertBusStop: React.FC<SceneProps> = ({ variant = "a" }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
   // ゆっくり通り過ぎる車のヘッドライト（1.5〜6秒）。速く動かすと明滅に見える（QAのチラつき検査で確認）
-  const t = frame / fps;
+  const t = frame / 30; // 光の速さはカットの長さによらず一定（短いカットでは途中まで）
   const carX = interpolate(t, [1.5, 6.0], [-22, 14], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const car = useMemo(() => new THREE.SpotLight("#e8f0ff", 0, 0, 0.55, 1.0, 2), []);
   car.intensity = 1300 * interpolate(t, [1.5, 2.2, 5.3, 6.0], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
@@ -401,7 +431,7 @@ export const InsertBusStop: React.FC = () => {
       <NeonSign text="OPEN" color="#ff3346" position={[4.3, 1.8, -4.88]} height={0.3} board={false} light={0} />
       <Payphone position={[-3.0, 0.15, -2.5]} />
       <NewsBox position={[2.7, 0.15, -2.0]} color="#2d5aa0" />
-      <Figure clip="Idle_Loop" position={[0.6, 0.15, -0.6]} rotationY={-Math.PI / 2 + 0.25} timeOffset={0.7} />
+      {variant === "empty" ? null : <Figure clip="Idle_Loop" position={[0.6, 0.15, -0.6]} rotationY={-Math.PI / 2 + 0.25} timeOffset={0.7} />}
       {/* クリーニング店の前に止めた当時のセダン。走る車を画面に入れると、ライトが速く横切って明滅に見える（QAで検出）ので、
           走る車は画面の外に置き、ヘッドライトの光だけが通り過ぎる */}
       <Car80s position={[4.7, 0, 1.45]} rotationY={Math.PI} color="#5a1f24" vinylTop="#d6ccb4" />

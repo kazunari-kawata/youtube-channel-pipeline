@@ -53,9 +53,23 @@ def bgm_bed(tracks: list[Path], seconds: float, lufs: float, xfade: float = 3.0,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
+    ap.add_argument("--draft", action="store_true", help="声とBGMなしの仮編集（estimate_timeline.py の仮の尺）。確認用で、公開には使わない")
     args = ap.parse_args()
     cfg = load_config(args.episode)
     out = build_dir(args.episode)
+
+    if args.draft:
+        tl = json.loads((out / "timeline.json").read_text(encoding="utf-8"))
+        SRC_DATA.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(out / "timeline.json", SRC_DATA / "timeline.json")
+        a = cfg["audio"]
+        write_json(SRC_DATA / "current.json", {
+            "episode": args.episode,
+            "mix": {"bgmSpeech": a["bgm_gain_speech"], "bgmGap": a["bgm_gain_gap"], "duckFrames": a["bgm_duck_frames"]},
+        })
+        kind = "仮の尺（声なし）" if tl.get("estimated") else "声の尺（BGMなし）"
+        print(f"仮編集の準備完了: {args.episode}（{tl['totalSeconds']:.1f}秒、{kind}）")
+        return
 
     if not (DATA_PROCESSED / "meta.json").exists():
         sys.exit("data/processed/ が空です。先に fetch_data.py と process_geo.py を実行してください。")

@@ -203,6 +203,7 @@ export type CarProps = {
   vinylTop?: string; // ビニールトップの色（セダン）
   headlights?: number; // 0〜1
   brake?: number; // テールランプ 0〜1
+  police?: boolean; // 当時のパトカー（黒い車体に白いドア、屋根の警光灯は消灯）。文字・紋章は入れない
 };
 
 const W_CAR = 1.95;
@@ -236,7 +237,7 @@ const extrude = (shape: THREE.Shape, depth: number, bevel: number) => {
   return g;
 };
 
-export const Car80s: React.FC<CarProps> = ({ position, rotationY = 0, color, wagon = false, vinylTop, headlights = 0, brake = 0 }) => {
+export const Car80s: React.FC<CarProps> = ({ position, rotationY = 0, color, wagon = false, vinylTop, headlights = 0, brake = 0, police = false }) => {
   const geo = useMemo(() => {
     const body = extrude(bodyShape(), W_CAR, 0.03);
     const gs = new THREE.Shape();
@@ -335,6 +336,28 @@ export const Car80s: React.FC<CarProps> = ({ position, rotationY = 0, color, wag
           </mesh>
         )),
       )}
+      {police ? (
+        <group>
+          {/* 白いドア（前後のドアにまたがる板） */}
+          {[-1, 1].map((s) => (
+            <mesh key={`door${s}`} position={[0.08, 0.64, s * (half + 0.016)]} rotation={[0, s > 0 ? 0 : Math.PI, 0]}>
+              <planeGeometry args={[2.0, 0.42]} />
+              <meshStandardMaterial color="#e8e6e0" roughness={0.4} />
+            </mesh>
+          ))}
+          {/* 屋根の警光灯（消灯。点滅させると明滅に見えるので光らせない） */}
+          <mesh position={[-0.44, roofTop + 0.1, 0]}>
+            <boxGeometry args={[0.3, 0.12, 1.25]} />
+            <meshStandardMaterial color="#1a1a1a" roughness={0.5} />
+          </mesh>
+          {[-0.36, 0.36].map((z, i) => (
+            <mesh key={`lb${z}`} position={[-0.44, roofTop + 0.12, z]}>
+              <boxGeometry args={[0.32, 0.1, 0.42]} />
+              <meshStandardMaterial color={i === 0 ? "#5a0c0c" : "#0c1a5a"} roughness={0.3} emissive={i === 0 ? "#ff2020" : "#2040ff"} emissiveIntensity={0.08} />
+            </mesh>
+          ))}
+        </group>
+      ) : null}
       {/* タイヤとホイールキャップ */}
       {[1.6, -1.45].flatMap((x) =>
         [-1, 1].map((s) => (
