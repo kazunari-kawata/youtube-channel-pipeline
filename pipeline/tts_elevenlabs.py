@@ -28,7 +28,10 @@ import pyloudnorm as pyln
 import soundfile as sf
 
 sys.path.insert(0, str(Path(__file__).parent))
-from common import build_dir, decode_audio, load_config, load_narration, require_env, write_json  # noqa: E402
+import subprocess  # noqa: E402
+import tempfile  # noqa: E402
+
+from common import build_dir, decode_audio, ffmpeg_bin, load_config, load_narration, require_env, write_json  # noqa: E402
 
 API = "https://api.elevenlabs.io/v1"
 SR = 48000
@@ -67,6 +70,32 @@ def request_audio(text: str, t: dict, key: str, prev: str, nxt: str) -> bytes:
                 continue
             sys.exit(f"ElevenLabs API エラー {e.code}: {msg}")
     sys.exit("ElevenLabs API に接続できませんでした")
+
+
+def level_segments(segs_audio: list[np.ndarray], max_gain_db: float = 6.0) -> list[np.ndarray]:
+    """区間ごとの音量のばらつきをそろえる（ElevenLabs は区間によって数dB違う）。中央値に合わせ、±max_gain_db まで"""
+    meter = pyln.Meter(SR)
+    louds = [meter.integrated_loudness(a) if len(a) > SR // 2 else float("nan") for a in segs_audio]
+    ok = [x for x in louds if np.isfinite(x)]
+    if not ok:
+        return segs_audio
+    ref = float(np.median(ok))
+    out = []
+    for a, l in zip(segs_audio, louds):
+        g = 0.0 if not np.isfinite(l) else float(np.clip(ref - l, -max_gain_db, max_gain_db))
+        out.append((a * 10 ** (g / 20)).astype(np.float32))
+    return out
+
+
+def limit_peaks(wav: np.ndarray, ceiling: float = 0.89) -> np.ndarray:
+    """口の音や破裂音の一瞬のピークだけを抑える（ffmpeg の alimiter）。これが無いと、ピークに合わせて全体が小さくなる"""
+    with tempfile.TemporaryDirectory() as d:
+        src, dst = Path(d) / "in.wav", Path(d) / "out.wav"
+        sf.write(src, wav.astype(np.float32), SR, subtype="FLOAT")
+        subprocess.run([ffmpeg_bin(), "-v", "error", "-y", "-i", str(src), "-af",
+                        f"alimiter=limit={ceiling}:attack=2:release=50:level=disabled", "-ar", str(SR), str(dst)], check=True)
+        out, _ = sf.read(dst, dtype="float32")
+    return out[: len(wav)] if len(out) >= len(wav) else np.pad(out, (0, len(wav) - len(out)))
 
 
 def trim(a: np.ndarray, db: float, pad: float = 0.05) -> np.ndarray:
@@ -141,15 +170,18 @@ def main():
     pieces.append(np.zeros(int(t["tail"] * SR), np.float32))
     pos += t["tail"]
 
+    # 区間の音量をそろえる（無音の間は pieces の偶数番目、声は奇数番目）
+    voiced = [i for i in range(1, len(pieces) - 1) if i % 2 == 1]
+    leveled = level_segments([pieces[i] for i in voiced])
+    for i, a in zip(voiced, leveled):
+        pieces[i] = a
     wav = np.concatenate(pieces)
     meter = pyln.Meter(SR)
     speech = np.concatenate(pieces[1:-1])
     gain = 10 ** ((cfg["audio"]["narration_lufs"] - meter.integrated_loudness(speech)) / 20)
-    wav = wav * gain
-    peak = np.abs(wav).max()
-    if peak > 0.89:  # ピークを約 -1dBFS 以下に
-        wav *= 0.89 / peak
-        print(f"注意：ピーク制限のため目標より {20 * np.log10(0.89 / peak):.1f}dB 小さくなりました")
+    wav = limit_peaks(wav * gain)
+    after = meter.integrated_loudness(wav[int(t["lead"] * SR): len(wav) - int(t["tail"] * SR)])
+    print(f"ナレーションの音量 {after:.1f} LUFS（目標 {cfg['audio']['narration_lufs']}）、ピーク {20 * np.log10(np.abs(wav).max() + 1e-9):.1f} dBFS")
     sf.write(out / "narration.wav", wav.astype(np.float32), SR, subtype="PCM_16")
     write_json(out / "timeline.json", {"fps": fps, "totalSeconds": round(pos, 3),
                                        "totalFrames": int(np.ceil(pos * fps)), "segments": timeline})
