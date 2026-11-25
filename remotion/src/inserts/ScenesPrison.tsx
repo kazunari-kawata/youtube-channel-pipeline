@@ -2,12 +2,25 @@
  * 002 ダーマー：刑務所の床に倒れた人物（1994年11月28日、コロンビア矯正施設での死亡を伝える場面）。
  * ユーザーの判断で入れる例外の場面（CLAUDE.md「イメージ映像」、F-027）。倒れた姿を離れたところから静かに見せるだけ。
  * 血・凶器・襲う人物・赤い色は出さない。カメラはほとんど動かさない。照明は消えたり揺れたりしない蛍光灯。
- *   prison_floor  a：斜め上から引き、b：横から低く
+ *   prison_floor  a：斜め上から引き、b：横から低く。人物は横向き（右を下、背中をカメラに向け、膝と腕を少し曲げる。仰向けにしない：ユーザー指定）
  */
 import React, { useMemo } from "react";
 import * as THREE from "three";
 import { Figure, SLIM_PRISON } from "../lib/Figure";
 import { BrickMaterial, Camera, CamKey, SceneProps, Stage } from "./Inserts";
+
+/** 横向きに倒れた姿勢：立った姿勢から、太ももを前へ、膝を曲げ、腕を体の前へ（骨の向きは Figure のコメント） */
+const SIDE_POSE: Record<string, [number, number, number]> = {
+  // 太もも：x が負で前へ、すね：x が正で膝を曲げる、上腕：x が正で前へ、前腕：x が正で肘を曲げる（立った人物に1本ずつ回転を足して確かめた向き）
+  "DEF-thighL": [-0.95, 0, 0],
+  "DEF-shinL": [1.25, 0, 0],
+  "DEF-thighR": [-0.45, 0, 0],
+  "DEF-shinR": [0.7, 0, 0],
+  "DEF-upper_armR": [1.25, 0, 0],
+  "DEF-forearmR": [0.35, 0, 0],
+  "DEF-upper_armL": [0.85, 0, -0.35],
+  "DEF-forearmL": [0.55, 0, 0],
+}
 
 const WALL = "#8e968f"; // 塗装したブロック壁（うすい灰緑）
 
@@ -78,8 +91,8 @@ export const InsertPrisonFloor: React.FC<SceneProps> = ({ variant = "a" }) => {
       </mesh>
       <Fluorescent x={-0.6} z={-0.6} />
       <Fluorescent x={1.6} z={1.4} />
-      {/* 倒れた人物：倒れる動き（Death01）の最後の姿勢で止める。動かない */}
-      <Figure clip="Death01" freeze="end" position={[0, 0, 0]} rotationY={-0.9} build={SLIM_PRISON} glasses />
+      {/* 倒れた人物：横向き（右を下）に寝かせ、膝と腕を少し曲げる。動かない */}
+      <Figure clip="Idle_Loop" freeze={0} position={[0, 0.17, 0]} rotationY={3.8} tilt={[0, Math.PI / 2]} pose={SIDE_POSE} build={SLIM_PRISON} glasses />
     </Stage>
   );
 };

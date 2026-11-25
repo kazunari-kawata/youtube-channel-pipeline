@@ -476,9 +476,13 @@ export type FigureProps = {
   build?: Build;
   /** 動きを止める位置（秒）。"end" は動きの最後の姿勢（倒れた姿勢など）で止める */
   freeze?: number | "end";
+  /** 体全体を倒す角度（x, z。ラジアン）。先に倒してから rotationY で向きを変える。横向きに寝かせるときなど */
+  tilt?: [number, number];
+  /** 骨ごとに足す回転（骨の名前 → [x, y, z] ラジアン）。止めた姿勢の膝や腕を曲げるとき。名前は "DEF-thighL" のように "." を除く */
+  pose?: Record<string, [number, number, number]>;
 };
 
-export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rotationY = 0, path, timeOffset = 0, glasses = true, build = SLIM_90S, freeze }) => {
+export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rotationY = 0, path, timeOffset = 0, glasses = true, build = SLIM_90S, freeze, tilt, pose }) => {
   const { advance } = useThree();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -530,7 +534,9 @@ export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rota
     const anim = gltf.animations.find((a) => a.name === clip);
     if (!anim) cancelRender(new Error(`動き ${clip} がありません`));
     mixer.clipAction(anim!).play();
-    return { obj, mixer, arms, duration: anim!.duration };
+    const bones: Record<string, THREE.Object3D> = {};
+    obj.traverse((o) => { if (o.name.startsWith("DEF-")) bones[o.name] = o; });
+    return { obj, mixer, arms, bones, duration: anim!.duration };
   }, [gltf, clip, build, glasses]);
 
   useLayoutEffect(() => {
@@ -539,11 +545,19 @@ export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rota
     rig.mixer.setTime(freeze === "end" ? rig.duration - 0.001 : freeze !== undefined ? freeze : t + timeOffset);
     // 肩幅を狭める：動きが毎フレーム骨の位置を書き戻すので、その後で掛ける
     for (const a of rig.arms) a.position.multiplyScalar(build.shoulder);
+    if (pose) {
+      const q = new THREE.Quaternion();
+      for (const [name, e] of Object.entries(pose)) {
+        const b = rig.bones[name];
+        if (b) b.quaternion.multiply(q.setFromEuler(new THREE.Euler(e[0], e[1], e[2])));
+      }
+    }
     const p = path ? path(t) : position;
     rig.obj.position.set(p[0], p[1], p[2]);
-    rig.obj.rotation.y = rotationY;
+    rig.obj.rotation.order = "YXZ"; // 先に x・z で倒し、そのあと y で向きを変える
+    rig.obj.rotation.set(tilt?.[0] ?? 0, rotationY, tilt?.[1] ?? 0);
     rig.obj.updateMatrixWorld(true);
-  }, [rig, frame, fps, path, position, rotationY, timeOffset, build, freeze]);
+  }, [rig, frame, fps, path, position, rotationY, timeOffset, build, freeze, tilt, pose]);
 
   useEffect(() => {
     if (!rig) return;
