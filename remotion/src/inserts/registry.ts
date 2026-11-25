@@ -8,6 +8,8 @@ import { InsertCourthouse, InsertOhioRoad, InsertPoliceCar, InsertPrisonFence } 
 import { InsertPrisonFloor } from "./ScenesPrison";
 import { InsertApartments, InsertArrest } from "./ScenesArrest";
 import { InsertCourtHall, InsertPhone, InsertTvRoom, InsertWindows2022 } from "./ScenesDahmer2";
+import { InsertAirportWait003, InsertAirportWalk003, InsertCabinSeat003, InsertFieldOffice003 } from "./Scenes003a";
+import { InsertPlaneClouds003, InsertRainForest003, InsertRainWindow003, InsertRiverBank003 } from "./Scenes003b";
 
 export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   night_walk: InsertNightWalk,
@@ -24,4 +26,13 @@ export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   windows_2022: InsertWindows2022,
   phone: InsertPhone,
   court_hall: InsertCourtHall,
+  // 003 D.B.クーパー（1971年）
+  airport_walk: InsertAirportWalk003,
+  airport_wait: InsertAirportWait003,
+  cabin_seat: InsertCabinSeat003,
+  field_office: InsertFieldOffice003,
+  plane_clouds: InsertPlaneClouds003,
+  rain_window: InsertRainWindow003,
+  rain_forest: InsertRainForest003,
+  river_bank: InsertRiverBank003,
 };

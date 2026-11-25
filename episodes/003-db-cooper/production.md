@@ -23,17 +23,17 @@
 - [x] 3. 資料の切り出し：FBI Vault の PDF（13分冊）からページを選び、`prepare_materials.py` → `cuts.yaml` → `cut_materials.py`。ページを画像で確かめた（25点）
 - [ ] 4. 写真：DOCUMERICA 3点、国立公文書館の表紙、FAA の規則。FBI公式ページの写真（似顔絵以外）は取得方法を確かめる
 - [x] 5. 動画の定義：`remotion/src/episodes/ep003-db-cooper.tsx`（素材がまだ無い所は「素材待ち」の仮の画面）
-- [ ] 6. イメージ映像の場面（`remotion/src/inserts/Scenes003*.tsx`）
-  - [ ] airport_walk（a、b、gate）
-  - [ ] airport_wait（a、b、c、ticket、check、empty）
-  - [ ] rain_window（airport、b、c、d、e、g）
-  - [ ] cabin_seat（a、b、c、d、ash、ash2、tray、empty）
-  - [ ] plane_clouds（a、b、c、d、e）
-  - [ ] rain_forest（a、b、c、d、e）
-  - [ ] river_bank（a、b、c、d）
-  - [ ] field_office（a、b、c、d、e、f、g、h、i、j）
+- [x] 6. イメージ映像の場面（`remotion/src/inserts/Scenes003a.tsx`、`Scenes003b.tsx`、小道具は `Props003.tsx`）。44の角度すべてを静止画で確かめた（仮の出来。動画での確認はまだ）
+  - [x] airport_walk（a、b、gate）
+  - [x] airport_wait（a、b、c、ticket、check、empty）
+  - [x] rain_window（airport、b、c、d、e、g）
+  - [x] cabin_seat（a、b、c、d、ash、ash2、tray、empty）
+  - [x] plane_clouds（a、b、c、d、e）
+  - [x] rain_forest（a、b、c、d、e）
+  - [x] river_bank（a、b、c、d）
+  - [x] field_office（a、b、c、d、e、f、g、h、i、j）
 - [ ] 7. 人物 COOPER_71 と Figure-Check の静止画
-- [ ] 8. 登録（registry.ts、episodes/index.ts）と `tsc --noEmit`（index.ts は済み。registry.ts は場面ができてから）
+- [x] 8. 登録（registry.ts、episodes/index.ts）と `tsc --noEmit`
 - [x] 9. 効果音：003 の環境音8本を選んで取得（耳で確認待ち）。声なしの仮編集でも効果音とBGMが鳴る準備（`episodes/003-db-cooper/stage_draft.py`。BGM は 002 の曲を仮で）
 - [ ] 10. 確認：場面ごとの静止画、冒頭と各章の頭の短い書き出し
 - [ ] 11. push。Windows へ `remotion/public/003/` などを写す（フォルダの許可が要る）
@@ -48,3 +48,5 @@
 - 2026-11-26 01:30〜：共有の `lib/shots.tsx`（MapShot）に川の線を足そうとしたら、自動の安全確認で止められた。共有の部品は変えず、003 用の `ep003-map.tsx` に写して足した
 - 取れていない素材（「素材待ち」の画面になる）：fbi.gov の写真7点（ネクタイ、紙幣、パラシュート2点、2007年の地図、2007年の記事、2016年の発表）、
   FAA の規則（403）、DOCUMERICA 3点（Wikimedia の 429。時間をおいて取り直す）、USGS の1970年代の航空写真、連邦検事局のファイル（cuts.yaml に未登録）
+- 2026-11-26 03:00ごろ：イメージ映像の8場面を作って registry.ts に登録。人物 COOPER_71（中肉、濃い色のスーツとレインコート、濃い茶色の髪、眼鏡なし）は仮。
+  Figure-Check でユーザーのOKをもらうまでは仮の体つき（F-008、F-010）。チラつきの検査（QA）は Windows で書き出してから
