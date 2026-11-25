@@ -137,7 +137,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
     ap.add_argument("--draft", action="store_true",
-                    help="BGMなしの確認用（Remotion Studio で見る）。声を作ってあれば声あり、まだなら仮の尺で声なし。書き出し・公開には使わない")
+                    help="確認用（Remotion Studio で見る）。声を作ってあれば声・効果音・BGMあり、まだなら仮の尺で声なし。書き出し・公開には使わない")
     args = ap.parse_args()
     cfg = load_config(args.episode)
     out = build_dir(args.episode)
@@ -150,14 +150,24 @@ def main():
         if voice:
             PUBLIC.mkdir(parents=True, exist_ok=True)
             shutil.copy2(out / "narration.wav", PUBLIC / "narration.wav")
+        # 声があるときは BGM も入れる（声と効果音だけで Studio に出し、ユーザーに「音楽が消えた」と言われた：F-031）。
+        # 声がまだない仮の尺では、曲の長さを合わせられないので BGM なし
+        bgm = False
+        if voice:
+            tracks = [ROOT / p for p in (cfg.get("bgm") or {}).get("tracks", [])]
+            if tracks and all(t.exists() for t in tracks):
+                sf.write(PUBLIC / "bgm.wav", bgm_bed(tracks, tl["totalSeconds"], cfg["audio"]["bgm_lufs"]), SR, subtype="PCM_16")
+                bgm = True
+            else:
+                print("注意: BGM の曲が見つからないので、BGM なしで準備しました（episode.yaml の bgm.tracks を確かめる。BGMなしで見せない：F-005）")
         a = cfg["audio"]
         write_json(SRC_DATA / "current.json", {
             "episode": args.episode,
-            "bgm": False,  # 確認用は BGM を鳴らさない（public/ に前の bgm.wav が残っていても）
+            "bgm": bgm,
             "sfx": stage_sfx(args.episode, out, cfg) if voice else [],
             "mix": {"bgmSpeech": a["bgm_gain_speech"], "bgmGap": a["bgm_gain_gap"], "duckFrames": a["bgm_duck_frames"]},
         })
-        kind = "仮の尺（声なし）" if tl.get("estimated") else ("声と効果音あり・BGMなし" if voice else "声の尺（声のファイルなし）")
+        kind = "仮の尺（声なし）" if tl.get("estimated") else (("声・効果音・BGMあり" if bgm else "声と効果音あり・BGMなし") if voice else "声の尺（声のファイルなし）")
         print(f"仮編集の準備完了: {args.episode}（{tl['totalSeconds']:.1f}秒、{kind}）")
         return
 
