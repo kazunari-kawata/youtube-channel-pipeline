@@ -127,7 +127,7 @@ def plan_sfx(shots: list[dict], lib: dict, scfg: dict, speech_end: float):
         own = own_sfx(sh)
         base = own if own is not None else lib["rules"].get(rule_key(sh["v"]), [])
         for c in base:
-            raw.append({"t": sh["start"] + c["at"], "key": c["key"], "shot": sh["id"]})
+            raw.append({"t": sh["start"] + c["at"], "key": c["key"], "shot": sh["id"], "shot_end": sh["end"]})
         for s in sh["segs"][1:]:
             for c in parse_sfx(s.get("sfx")) or []:
                 raw.append({"t": s["start"] + c["at"], "key": c["key"], "shot": sh["id"]})
@@ -158,6 +158,9 @@ def plan_sfx(shots: list[dict], lib: dict, scfg: dict, speech_end: float):
         c["file"] = f"{c['key']}_{n % s.get('variants', 1) + 1}.wav"
         c["t"] = round(c["t"], 2)
         c["db_below_voice"] = scfg["db_below_voice"][c["level"]]
+        if c["level"] == "bed":  # 環境音はカットの終わりまで流す（Remotion でフェードイン・アウト）
+            c["dur"] = round(max(0.5, c.get("shot_end", c["t"] + 4) - c["t"]), 2)
+        c.pop("shot_end", None)
     # 空白は最後のナレーションの終わりまでで測る（そのあとの余韻はBGMだけで終える）
     times = [0.0] + [c["t"] for c in kept] + [max(speech_end, kept[-1]["t"] if kept else 0.0)]
     gaps = [(times[i], times[i + 1] - times[i]) for i in range(len(times) - 1)]

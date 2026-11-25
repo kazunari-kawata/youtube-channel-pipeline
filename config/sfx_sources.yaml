@@ -1,0 +1,32 @@
+# 効果音の取得元（pipeline/fetch_sfx.py が読む）。ファイル名 → 取得元と切り出し方
+# すべて Mixkit（Sound Effects Free License：商用・YouTube 可、クレジット不要。音だけの再配布は不可）。
+# 2026-11-25 に題名と長さから選んだ（耳での確認は Remotion Studio で）。合わなければ id を差し替えて fetch_sfx.py を回し直す
+#   id: Mixkit の番号（https://assets.mixkit.co/active_storage/sfx/<id>/<id>-preview.mp3）
+#   start: 切り出しの始まり（秒）、max: 長さの上限（秒。超えたらフェードアウトで切る）
+source: mixkit
+files:
+  paper_1:      {id: 1530, title: "Paper slide", max: 1.2}
+  paper_2:      {id: 2380, title: "Paper quick movement", max: 1.2}
+  paper_3:      {id: 1104, title: "Page turn single", max: 1.2}
+  paper_4:      {id: 1105, title: "Big paper page turn", max: 1.2}
+  photo_1:      {id: 1101, title: "Single book paging", max: 1.2}
+  photo_2:      {id: 2379, title: "Papers being moved or wrinkling", max: 1.0}
+  photo_3:      {id: 1103, title: "Stiff paper book paging", max: 1.0}
+  projector_1:  {id: 1438, title: "Vintage camera shutter", max: 1.2}
+  projector_2:  {id: 1137, title: "Old camera shutter click", max: 1.2}
+  pin_1:        {id: 2376, title: "Short pencil writing", max: 0.8}
+  pin_2:        {id: 3194, title: "Writing pencil", max: 0.8}
+  pin_3:        {id: 3011, title: "Explainer video writing pencil letters a", max: 0.8}
+  typewriter_1: {id: 1379, title: "Data short input on typewriter", max: 1.6}
+  typewriter_2: {id: 1372, title: "Old typewriter typing", max: 1.6}
+  stamp_1:      {id: 2182, title: "Wood hard hit", max: 1.0}
+  stamp_2:      {id: 1989, title: "Money bag drop", max: 1.0}
+  tv_click_1:   {id: 2579, title: "Light switch sound", max: 0.8}
+  low_hit_1:    {id: 2299, title: "Short bass hit", max: 2.0}
+  low_hit_2:    {id: 563,  title: "Drum deep impact", max: 2.5}
+  amb_street_1: {id: 2678, title: "Urban city ambience at night", max: 30, bed: true}
+  amb_room_1:   {id: 3080, title: "Cinematic room tone", max: 30, bed: true}
+  amb_road_1:   {id: 2475, title: "Crickets at night in nature", max: 30, bed: true}
+  amb_court_1:  {id: 2658, title: "Wind blowing ambience", max: 30, bed: true}
+  amb_idle_1:   {id: 1535, title: "Car ignition", start: 4.0, max: 6, bed: true}
+  amb_fence_1:  {id: 1267, title: "Wind in the top of the mountain", max: 30, bed: true}
