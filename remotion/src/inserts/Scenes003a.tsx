@@ -593,6 +593,11 @@ const ArchiveShelf: React.FC<{ position: V3; rotY?: number; seed: number }> = ({
         <meshStandardMaterial color="#6d6f6a" roughness={0.5} metalness={0.4} />
       </mesh>
     ))}
+    {/* 背板：棚の隙間から奥の棚の箱の細い切れ端が見えると、カメラが動くたびにちらつく（QAで検出） */}
+    <mesh position={[0, 1.1, -0.235]}>
+      <boxGeometry args={[2.36, 2.2, 0.02]} />
+      <meshStandardMaterial color="#4a4c48" roughness={0.7} metalness={0.2} />
+    </mesh>
     {[0, 1, 2].flatMap((k) =>
       Array.from({ length: 5 }, (_, i) =>
         random(`as${seed}-${k}-${i}`) < 0.12 ? null : <FileBox key={`${k}-${i}`} position={[-0.92 + i * 0.46, 0.065 + k * 0.6, 0]} seed={seed + k * 5 + i} />,
@@ -612,7 +617,7 @@ export const InsertFieldOffice003: React.FC<SceneProps> = ({ variant = "a" }) =>
     f: [{ pos: [2.6, 1.35, -0.6], target: [2.3, 0.65, -2.2], fov: 32 }, { pos: [2.55, 1.3, -0.75], target: [2.3, 0.65, -2.2], fov: 30 }], // 索引カードの引き出し
     g: [{ pos: [-0.6, 1.6, 0.4], target: [-1.2, 1.55, -2.45], fov: 34 }, { pos: [-0.65, 1.58, 0.2], target: [-1.2, 1.55, -2.45], fov: 32 }], // 壁のカレンダー
     i: [{ pos: [3.6, 1.45, 1.5], target: [3.0, 0.8, 0], fov: 36 }, { pos: [3.45, 1.4, 1.35], target: [3.0, 0.8, 0], fov: 34 }], // 新聞の束と電話の机
-    j: [{ pos: [-4.6, 1.5, 2.2], target: [-5.8, 1.0, -1.6], fov: 40 }, { pos: [-4.4, 1.45, 2.0], target: [-5.8, 1.0, -1.6], fov: 39 }], // 保管棚
+    j: [{ pos: [-4.0, 1.5, 2.2], target: [-5.2, 1.0, -1.6], fov: 40 }, { pos: [-3.8, 1.45, 2.0], target: [-5.2, 1.0, -1.6], fov: 39 }], // 保管棚
   };
   const [from, to] = cams[variant] ?? cams.a;
   const lamp = useMemo(() => {
@@ -710,9 +715,9 @@ export const InsertFieldOffice003: React.FC<SceneProps> = ({ variant = "a" }) =>
         <planeGeometry args={[0.216, 0.279]} />
         <meshStandardMaterial color="#ece4d2" roughness={0.9} />
       </mesh>
-      {/* 保管室の棚（左の奥） */}
-      <ArchiveShelf position={[-5.8, 0, -1.9]} seed={11} />
-      <ArchiveShelf position={[-5.8, 0, -0.8]} rotY={0} seed={23} />
+      {/* 保管室の棚（左の奥）。左の壁（x=-6.5）に食い込ませない：壁を突き抜けた箱の切れ端がちらつく */}
+      <ArchiveShelf position={[-5.2, 0, -1.9]} seed={11} />
+      <ArchiveShelf position={[-5.2, 0, -0.8]} rotY={0} seed={23} />
     </Stage>
   );
 };
