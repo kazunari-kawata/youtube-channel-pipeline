@@ -28,7 +28,7 @@ import os  # noqa: E402
 
 def place(src: Path, dst: Path) -> None:
     """public/ に大きな音のファイルを置く。中身が同じなら触らない。違うときは隣で書き終えてから一度に差し替える。
-    Remotion Studio は public/ の変化を見て読み直すので、書いている途中のファイルを読むと声が鳴らなくなる（F-032：
+    Remotion Studio は public/ の変化を見て読み直すので、書いている途中のファイルを読むと声が鳴らなくなる（F-033：
     確認用の準備をし直したら「ナレーションが消えた」。中身は同じでも、上書きの途中で読まれていた）"""
     if dst.exists() and dst.stat().st_size == src.stat().st_size and filecmp.cmp(src, dst, shallow=False):
         return
