@@ -19,13 +19,15 @@ def main():
     a = ap.parse_args()
     cfg = load_config(a.episode)
     t, fps = cfg["tts"], cfg["video"]["fps"]
-    cps = (cfg.get("estimate") or {}).get("chars_per_sec", 6.0)
+    est = cfg.get("estimate") or {}
+    cps = est.get("chars_per_sec", 6.0)
+    pause = est.get("pause_sec", t["gap"])  # 文と文の間（章ごとにまとめて生成する v3 は、モデルの自然な間になる）
     segs = load_narration(a.episode)
     pos = t["lead"]
     out = []
     for i, s in enumerate(segs):
         if i > 0:
-            pos += t["chapter_gap"] if s.get("chapter") else t["gap"]
+            pos += t["chapter_gap"] if s.get("chapter") else pause
         text = s.get("tts") or s.get("read") or s["caption"]
         dur = max(1.2, len(text) / cps)
         out.append({**s, "start": round(pos, 3), "end": round(pos + dur, 3),
