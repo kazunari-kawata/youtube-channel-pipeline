@@ -282,7 +282,7 @@ type MapData = {
 };
 const mapCache: Record<string, Promise<MapData>> = {};
 
-/** 地図の点。hl の点は赤く大きくして、ナレーションが指している場所だと分かるようにする（F-025）。labels でその場面だけの地名に替える */
+/** 地図の点。hl の点は赤く大きくして、ナレーションが指している場所だと分かるようにする（F-026）。labels でその場面だけの地名に替える */
 const HL = "#e0504a";
 export const MapShot: React.FC<{ file: string; points: string[]; route?: string[]; reveal?: Reveal; hl?: string[]; labels?: Record<string, string> }> = ({ file, points, route, reveal, hl = [], labels = {} }) => {
   const frame = useCurrentFrame();
