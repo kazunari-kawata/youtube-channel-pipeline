@@ -54,7 +54,7 @@ items:
     status: pd_federal
     note: FBIの通信文。画面に出す前に中身を確認
   - id: fbi_06
-    title: FBIファイル 6/7（FBI研究所 95-HQ-209705、77ページ。ミルウォーキー警察から研究所への鑑定依頼など）
+    title: FBIファイル 6/7（FBI研究所 95-HQ-299705、77ページ。ミルウォーキー警察から研究所への鑑定依頼など）
     file: fbi/Dahmer6.pdf
     url: https://archive.org/download/JeffreyDahmer/Dahmer6.pdf
     original: https://vault.fbi.gov/jeffrey-dahmer

@@ -28,12 +28,40 @@ const ASSETS: Record<string, DocMeta & { aspect: number }> = {
   mpd_p221: { title: "修正起訴状（1991年、事件番号 F-912542）", source: MPD, aspect: 1700 / 517 },
   mpd_p222: { title: "修正起訴状 第11訴因", source: MPD, aspect: 1700 / 227 },
   fbi1_cover: { title: "FBIファイル ミルウォーキー支局（7-MW-26057）", source: FBI, aspect: 1104 / 1430 },
-  fbi6_lab: { title: "FBIファイル 研究所（95-HQ-209705）", source: FBI, aspect: 1086 / 1430 },
+  fbi6_lab: { title: "FBIファイル 研究所（95-HQ-299705）", source: FBI, aspect: 1086 / 1430 },
   booking_1991: { title: "1991年7月 逮捕時の写真", source: "出典：ミルウォーキー警察", aspect: 2420 / 1870 },
   apartment_a: { title: "213号室（警察の記録写真）", source: "出典：ミルウォーキー警察", aspect: 1903 / 1700 },
   yearbook_1978: { title: "1978年 リビア高校の卒業アルバム", source: COMMONS, aspect: 450 / 600 },
   yearbook_cartoon: { title: "1978年 卒業アルバムの漫画（同級生が描いたもの）", source: COMMONS, aspect: 1022 / 636 },
   army_1979: { title: "1979年 西ドイツ・バウムホルダー", source: COMMONS, aspect: 1000 / 686 },
+};
+/**
+ * 資料に書かれていることの日本語の説明（F-020）。1行目が見出し、2行目から本文。資料の文字を元に短く訳す。
+ * 被害者の名前・住所は書かない（資料に写っていても、説明では繰り返さない）。台本の visual に ja があればそちらを使う
+ */
+const JA: Record<string, string[]> = {
+  mpd_p064: [
+    "1991年7月23日（火）の補充報告書",
+    "ケネディ刑事とデュビス刑事が、アパートの213号室へ捜査に向かった。",
+    "現場のパトロール警官2人によると、午後11時25分ごろ、手錠をかけた男性に呼び止められ、「男に脅された」と訴えられた。",
+  ],
+  mpd_p161: [
+    "常習犯（前科による刑の加重）",
+    "1989年1月30日、ダーマーはミルウォーキー郡巡回裁判所で、第2級性的暴行と、",
+    "不道徳な目的で子どもを誘い込んだ罪（いずれも重罪）について有罪判決を受けた（事件番号 F-882515）。",
+  ],
+  mpd_p221: [
+    "修正起訴状（Amended Criminal Complaint）",
+    "ミルウォーキー郡巡回裁判所 刑事部。ウィスコンシン州（原告）対 ジェフリー・L・ダーマー（被告、1960年5月21日生まれ）。",
+    "罪名と適用条文は「下の告発部分を参照」。事件番号 F-912542。",
+  ],
+  mpd_p222: [
+    "第11訴因：第1級故意殺人",
+    "1991年5月27日ごろ、ミルウォーキー市内で、殺意をもって人を死亡させた。",
+    "ウィスコンシン州法 940.01条1項に違反。",
+  ],
+  fbi1_cover: ["情報公開法・プライバシー法による公開", "対象：ジェフリー・ダーマー", "ファイル番号：7-MW-26057（ミルウォーキー支局）第1部", "連邦捜査局（FBI）"],
+  fbi6_lab: ["情報公開法・プライバシー法による公開", "対象：ジェフリー・ダーマー", "ファイル番号：95-HQ-299705（FBI本部。研究所の記録）", "連邦捜査局（FBI）"],
 };
 const NAIP_DATE: Record<string, string> = { naip_oxford: "2022年6月", naip_columbia: "2022年8月" };
 
@@ -79,7 +107,7 @@ const ShotView: React.FC<{ v: Visual; reveal?: Reveal }> = ({ v, reveal }) => {
     case "photo": {
       const m = ASSETS[v.src];
       if (!m) throw new Error(`素材 ${v.src} の見出しがありません（ep002-dahmer.tsx の ASSETS）`);
-      return <PaperShot src={`${DIR}/${v.src}.jpg`} meta={m} photo={v.kind === "photo"} aspect={m.aspect} />;
+      return <PaperShot src={`${DIR}/${v.src}.jpg`} meta={m} photo={v.kind === "photo"} aspect={m.aspect} ja={v.ja ?? JA[v.src]} />;
     }
     case "aerial":
       return <AerialShot src={`${DIR}/${v.src}.jpg`} label={v.label} zoom={v.zoom ?? "in"} date={NAIP_DATE[v.src] ?? ""} />;

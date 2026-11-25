@@ -233,8 +233,32 @@ def onscreen_text_checks(episode: str, rep: Report):
     # ナレーションにも制作上の配慮を言わない（「この動画では町の位置までにとどめます」など）
     for s in json.loads((episode_dir(episode) / "narration.json").read_text(encoding="utf-8")):
         texts.append((s["id"] + " ナレーション", s["caption"]))
+    # 資料の日本語の説明（F-020）：台本の visual.ja か、回の定義（ep<id>.tsx）の JA
+    ja = doc_notes(episode)
+    texts += [(f"資料 {k}", t) for k, lines in ja.items() for t in lines]
     bad = [f"{w}：{t}" for w, t in texts if any(k in t for k in INTERNAL_WORDS + NARRATION_WORDS)]
     rep.add("画面とナレーションに制作上の配慮を入れていない", not bad, bad or "なし", "なし", "F-016")
+    used = []
+    for s in json.loads((episode_dir(episode) / "narration.json").read_text(encoding="utf-8")):
+        for v in (s.get("visual"), (s.get("cut") or {}).get("visual")):
+            if isinstance(v, dict) and v.get("kind") == "doc" and not v.get("ja") and v.get("src") not in ja:
+                used.append(f"{s['id']} {v.get('src')}")
+    rep.add("資料の画面に日本語の説明がある", not used, used or "すべてあり", "すべてあり", "F-020")
+
+
+def doc_notes(episode: str) -> dict[str, list[str]]:
+    """回の定義（remotion/src/episodes/ep<id>.tsx）の const JA = {...} から、資料ごとの説明の行を読む"""
+    f = REMOTION / "src" / "episodes" / f"ep{episode}.tsx"
+    if not f.exists():
+        return {}
+    t = f.read_text(encoding="utf-8")
+    m = re.search(r"const JA[^=]*=\s*\{(.*?)\n\};", t, re.S)
+    if not m:
+        return {}
+    out = {}
+    for k, body in re.findall(r"^\s*(\w+):\s*\[(.*?)\],?\s*$", m.group(1), re.S | re.M):
+        out[k] = re.findall(r'"([^"]*)"', body)
+    return out
 
 
 def main():

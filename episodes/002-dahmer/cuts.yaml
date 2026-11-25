@@ -6,7 +6,7 @@
 - {name: mpd_p221, file: mpd/Documents_text.pdf, page: 221, dpi: 200, crop: [0.0, 0.083, 1.0, 0.318]}    # 修正起訴状の見出し（F-912542）。下の訴因には祖母の家の住所があるので入れない
 - {name: mpd_p222, file: mpd/Documents_text.pdf, page: 222, dpi: 200, crop: [0.0, 0.612, 1.0, 0.715]}    # 第11訴因（1991年5月27日）だけ
 - {name: fbi1_cover, file: fbi/Dahmer1.pdf, page: 1, dpi: 130}                                           # FBIファイルの表紙（7-MW-26057）
-- {name: fbi6_lab, file: fbi/Dahmer6.pdf, page: 1, dpi: 130}                                             # FBI研究所ファイルの表紙（95-HQ-209705）
+- {name: fbi6_lab, file: fbi/Dahmer6.pdf, page: 1, dpi: 130}                                             # FBI研究所ファイルの表紙（95-HQ-299705）
 - {name: booking_1991, file: mpd/BOOKING_PHOTOS.pdf, page: 2, dpi: 220, rotate: -90}                    # 逮捕時の顔写真（1991年7月24日）
 - {name: apartment_a, file: mpd/APARTMENT_PHOTOS.pdf, page: 3, dpi: 200, rotate: -90, crop: [0.135, 0.0, 1.0, 1.0]}  # 213号室の居間（左端の額は切り落とす）
 - {name: yearbook_1978, file: commons/Jeffrey_Dahmer_HS_Yearbook.jpg}

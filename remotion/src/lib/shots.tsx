@@ -177,34 +177,71 @@ export const CardShot: React.FC<{ v: CardV; reveal?: Reveal }> = ({ v, reveal })
 
 export type DocMeta = { title: string; source: string; kind?: string };
 
-/** 机の上に置いた紙（資料）や焼き付けた写真。ゆっくり寄る */
-export const PaperShot: React.FC<{ src: string; meta: DocMeta; photo?: boolean; aspect: number }> = ({ src, meta, photo = false, aspect }) => {
+/**
+ * 資料に書かれていることの日本語の説明（訳）。資料と重ならない空いた所に置く（F-020）。
+ * 横長の切り出し（数行）は資料の下、縦長（表紙）は資料の右。動かさない（文字を拡大するとチラつく）
+ */
+const DocNote: React.FC<{ lines: string[]; side: "below" | "right"; top: number; left: number; width: number }> = ({ lines, side, top, left, width }) => {
+  const o = useIn(14, 16);
+  const [head, ...body] = lines;
+  return (
+    <div
+      style={{
+        position: "absolute", left, top, width, opacity: o, fontFamily: FONT, color: C.cream,
+        background: "rgba(13,14,18,0.72)", borderLeft: `3px solid ${C.amber}`, padding: side === "below" ? "12px 20px" : "16px 20px",
+        boxShadow: "0 6px 22px rgba(0,0,0,0.45)",
+      }}
+    >
+      <div style={{ fontSize: 14, color: C.amber, letterSpacing: 3, marginBottom: 6 }}>書かれていること</div>
+      <div style={{ fontSize: side === "below" ? 21 : 22, lineHeight: 1.55, fontWeight: 700 }}>{head}</div>
+      {body.map((l, i) => (
+        <div key={i} style={{ fontSize: side === "below" ? 19 : 20, lineHeight: 1.55, marginTop: 4, color: "rgba(239,228,208,0.92)" }}>{l}</div>
+      ))}
+    </div>
+  );
+};
+
+/** 机の上に置いた紙（資料）や焼き付けた写真。ゆっくり寄る。ja があれば空いた所に日本語の説明を出す */
+export const PaperShot: React.FC<{ src: string; meta: DocMeta; photo?: boolean; aspect: number; ja?: string[] }> = ({ src, meta, photo = false, aspect, ja }) => {
   const frame = useCurrentFrame();
   const dur = useInsertDur();
   const t = frame / Math.max(1, dur);
   const a = useIn(0, 12);
-  // 横長の切り出し（資料の数行）は幅で、縦長（表紙・写真）は高さで合わせる
-  const maxW = photo ? 1000 : 1120;
-  const maxH = photo ? 540 : 560;
+  const note = !photo && ja && ja.length > 0;
+  const tall = aspect < 1.2;
+  // 横長の切り出し（資料の数行）は幅で、縦長（表紙・写真）は高さで合わせる。説明を出すときは資料を小さめにして場所を空ける
+  const maxW = photo ? 1000 : note ? (tall ? 1120 : 1080) : 1120;
+  const maxH = photo ? 540 : note ? (tall ? 540 : 300) : 560;
   let w = maxW;
   let h = w / aspect;
   if (h > maxH) {
     h = maxH;
     w = h * aspect;
   }
+  // 説明の置き場所：縦長は資料を左へ寄せて右に、横長は資料を上へ寄せて下に
+  const dx = note && tall ? -190 : 0;
+  const dy = note && !tall ? -Math.min(110, Math.max(40, (560 - h) / 2 - 20)) : 0;
+  const cy = H / 2 + dy;
   const s = 1 + t * 0.06;
   return (
     <FilmFrame bg="radial-gradient(ellipse at 50% 40%, #2a2420 0%, #110e0c 75%)">
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
         <div
           style={{
-            width: w, height: h, transform: `scale(${s}) rotate(${photo ? 0.9 : -0.5}deg) translateY(${(1 - a) * 10}px)`, opacity: a,
+            width: w, height: h, transform: `translate(${dx}px, ${dy}px) scale(${s}) rotate(${photo ? 0.9 : -0.5}deg) translateY(${(1 - a) * 10}px)`, opacity: a,
             boxShadow: "0 18px 50px rgba(0,0,0,0.7)", background: photo ? "#f4efe4" : "#ece6d8", padding: photo ? 14 : 0,
           }}
         >
           <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: photo ? "none" : "contrast(1.08)" }} />
         </div>
       </AbsoluteFill>
+      {note ? (
+        tall ? (
+          <DocNote lines={ja!} side="right" left={W / 2 + dx + w / 2 + 44} top={H / 2 - 120} width={Math.min(420, W - (W / 2 + dx + w / 2 + 44) - 40)} />
+        ) : (
+          <DocNote lines={ja!} side="below" left={(W - Math.min(w, 1000)) / 2} top={cy + (h * 1.06) / 2 + 26} width={Math.min(w, 1000)} />
+        )
+      ) : null}
       <Label kind={meta.kind ?? (photo ? "写真" : "資料")} title={meta.title} />
       <Source text={meta.source} />
     </FilmFrame>
