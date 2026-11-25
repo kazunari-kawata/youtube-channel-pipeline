@@ -17,7 +17,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from common import REMOTION, SRC_DATA, build_dir, load_config  # noqa: E402
+from common import REMOTION, SRC_DATA, build_dir, ffmpeg_bin, load_config  # noqa: E402
 
 
 def npx() -> str:
@@ -68,7 +68,18 @@ def main():
         cmd.append(f"--concurrency={args.concurrency}")
     t0 = time.time()
     subprocess.run(cmd, cwd=REMOTION, env=env, check=True)
+    limit_audio(target)
     print(f"書き出し完了: {target}（{(time.time() - t0) / 60:.1f}分）")
+
+
+def limit_audio(video: Path) -> None:
+    """声・BGM・効果音を重ねると、低い効果音と声の山が重なって 0dBFS を超えることがある（音割れ）。
+    映像はそのまま、音だけ -1dBFS のリミッターを通す（QAの「音のピーク」検査で確かめる）"""
+    tmp = video.with_suffix(".limited.mp4")
+    subprocess.run([ffmpeg_bin(), "-v", "error", "-y", "-i", str(video), "-c:v", "copy",
+                    "-af", "alimiter=limit=0.89:attack=2:release=50:level=disabled", "-c:a", "aac", "-b:a", "320k",
+                    str(tmp)], check=True)
+    tmp.replace(video)
 
 
 if __name__ == "__main__":

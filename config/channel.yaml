@@ -42,7 +42,7 @@ sfx:
   max_gap_sec: 12               # これより長く効果音がない所を香盤表の注意に出す
   hit_per_min_max: 1.2          # 強い音（hit）は1分に約1回まで
   same_in_row_max: 1            # 同じファイルを続けて鳴らさない（同じ音は慣れて効かなくなる）
-  db_below_voice: {bed: 24, light: 16, mid: 12, hit: 8}   # 声より何dB小さく置くか（短時間ラウドネス）。耳で確かめて直す
+  db_below_voice: {bed: 24, light: 16, mid: 12, hit: 11}  # 声より何dB小さく置くか（短時間ラウドネス）。耳で確かめて直す。hit は 8 だと声の山と重なって音割れした（2026-11-25）
 
 render:
   gl_linux: swangle    # クラウド（GPUなし）

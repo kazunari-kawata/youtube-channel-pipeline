@@ -122,6 +122,8 @@ def audio_checks(video: Path, narr_path: Path, tl: dict, q: dict, rep: Report):
     total = lufs(meter, mix)
     lo, hi = q["loudness_lufs"]
     rep.add("全体の音量", lo <= total <= hi, f"{total:.1f} LUFS", f"{lo}〜{hi} LUFS", "YouTubeは約-14に揃える")
+    peak = 20 * np.log10(float(np.abs(mix).max()) + 1e-9)
+    rep.add("音のピーク（音割れ）", peak <= -0.5, f"{peak:.1f} dBFS", "-0.5 dBFS 以下", "効果音と声の山が重なると超える。render.py がリミッターを掛ける")
 
     segs = tl["segments"]
     speech = np.zeros(m, bool)
