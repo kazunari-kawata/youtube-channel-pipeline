@@ -67,6 +67,7 @@ const META: Record<string, DocMeta> = {
   doc_columbia_cascade_locks: { title: "1970年代のコロンビア川（カスケード・ロックス）", source: `${NARA}（DOCUMERICA）` },
   doc_columbia_hayden: { title: "1970年代のコロンビア川（ポートランドとバンクーバーの間）", source: `${NARA}（DOCUMERICA）` },
   usgs_swwa_1970s: { title: "ワシントン州南西部の航空写真（1970年代）", source: "出典：米地質調査所（USGS）" },
+  usgs_topo_ariel_1971: { title: "ルイス川とマーウィン湖のあたりの地形図（1971年版）", source: "出典：米地質調査所（USGS）" },
 };
 
 const ASSET_SIZES = SIZES as unknown as Record<string, [number, number]>;

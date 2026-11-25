@@ -191,7 +191,14 @@ items:
     file: usgs/swwa_1970s.jpg
     original: https://earthexplorer.usgs.gov/
     status: pd_federal
-    note: "usgs_aerial_1970s から使う1枚。EarthExplorer で手作業で取得し、撮影年を表示する"
+    note: "usgs_aerial_1970s から使う1枚。EarthExplorer で手作業で取得し、撮影年を表示する。2026-11-26：取れるまでの代わりに、s037 は同じ土地の1971年版の地形図（usgs_topo_ariel_1971）にした"
+  - id: usgs_topo_ariel_1971
+    title: USGS の地形図「Ariel Quadrangle, Washington」7.5分図（1:24,000、1971年版。ルイス川・マーウィン湖・アリエル）
+    file: usgs/ariel_1971-1.png
+    url: https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/WA/24000/WA_Ariel_239848_1971_24000_geo.pdf
+    original: https://ngmdb.usgs.gov/topoview/
+    status: pd_federal
+    note: 米地質調査所の歴史的地形図（The National Map の Historical Topographic Maps）。1961・1970年の航空写真から作り、1971年に現地確認した版（図の左下の注記）。pdftoppm -r 150 で画像にして、ルイス川とマーウィン湖のあたりを 16:9 で切り出す。建物は小さな四角の記号だけで、個人宅は特定できない縮尺
   - id: fbi_sketch_glasses
     title: FBIの似顔絵のうち、サングラスをかけた版
     file: fbi/sketch_glasses.jpg
