@@ -2,8 +2,9 @@
 id: 003-db-cooper
 
 bgm:
-  # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。70年代初めに合う曲をこれから選ぶ
-  tracks: []
+  # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。
+  # 2026-11-25 夜：声なしの仮編集のために、002 用に記録済みの曲を仮で入れた。70年代初めに合う曲をユーザーに選んでもらってから差し替える
+  tracks: [assets/bgm/aether.mp3, assets/bgm/red_shift.mp3]
 
 # 本人の姿（F-022）。写真はないので、FBIの Exhibit Section が作った似顔絵（V77 p.249）を本人の姿として扱う
-person_photos: [fbi_sketch, fbi_sketch_glasses]
+person_photos: [fbi_sketch]

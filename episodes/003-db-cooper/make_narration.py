@@ -485,7 +485,7 @@ _t("s038", "それから何年も、男も、パラシュートも、金も、�
 # キャッスルロック：地名を言う文で地図、表示の中身を言う文で資料
 _tele = _f("s039")["visual"]
 _f("s039")["visual"] = dict(mp("dropzone", ["lacenter", "vancouver", "castlerock", "decal_area"], "キャッスルロックと、表示が見つかった山中（目安）。山中を赤く"),
-                            hl=["decal_area"], labels={"castlerock": "キャッスルロック", "decal_area": "表示が見つかった山中（目安）"})
+                            hl=["decal_area"], labels={"castlerock": "←キャッスルロック", "decal_area": "表示が見つかった山中（目安）"})
 _f("s039")["reveal"] = 2
 _f("s039")["reveal_at"] = 0.45
 _f("s040")["visual"] = _tele

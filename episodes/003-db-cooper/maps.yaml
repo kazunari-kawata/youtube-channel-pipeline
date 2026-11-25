@@ -23,13 +23,14 @@ places:
 
 views:
   pnw:
+    fit: contain   # 縦長の範囲なので、全体を画面に入れる（既定の「画面いっぱい」だと点が画面の外に出た）
     lon: [-125.6, -117.4]
     lat: [38.6, 48.8]
     states: true
     highlight: [Washington, Oregon, Nevada]
     points: [portland_airport, seattle_airport, reno]
     labels:
-      - {lat: 47.6, lon: -120.4, text: "ワシントン州"}
+      - {lat: 47.0, lon: -119.6, text: "ワシントン州"}
       - {lat: 44.0, lon: -120.6, text: "オレゴン州"}
       - {lat: 40.4, lon: -117.9, text: "ネバダ州"}
       - {lat: 44.5, lon: -124.9, text: "太平洋", kind: water}
@@ -41,6 +42,7 @@ views:
     labels:
       - {lat: 47.55, lon: -122.75, text: "ピュージェット湾", kind: water}
   flight:
+    fit: contain   # 縦長の範囲なので、全体を画面に入れる（既定の「画面いっぱい」だと点が画面の外に出た）
     lon: [-123.7, -121.5]
     lat: [45.35, 47.65]
     states: true
@@ -48,9 +50,10 @@ views:
     route: [seattle_airport, lacenter]
     labels:
       - {lat: 46.55, lon: -121.9, text: "ワシントン州"}
-      - {lat: 45.45, lon: -121.8, text: "オレゴン州"}
+      - {lat: 45.62, lon: -121.75, text: "オレゴン州"}
     note: "経路は模式図"
   dropzone:
+    fit: contain   # 縦長の範囲なので、全体を画面に入れる（既定の「画面いっぱい」だと点が画面の外に出た）
     lon: [-123.15, -122.05]
     lat: [45.5, 46.4]
     states: true
@@ -58,7 +61,6 @@ views:
     labels:
       - {lat: 45.96, lon: -122.55, text: "ルイス川", kind: water}
       - {lat: 45.80, lon: -122.80, text: "コロンビア川", kind: water}
-      - {lat: 45.85, lon: -122.26, text: "クラーク郡とスカマニア郡の境"}
     note: "範囲は1980年にFBIが考えていたもの。地点は目安"
   columbia:
     lon: [-122.95, -122.25]
@@ -67,5 +69,5 @@ views:
     points: [vancouver, i5bridge, tenabar, washougal]
     labels:
       - {lat: 45.70, lon: -122.82, text: "コロンビア川", kind: water}
-      - {lat: 45.53, lon: -122.62, text: "ポートランド"}
+      - {lat: 45.565, lon: -122.62, text: "ポートランド"}
     note: "地点は目安"
