@@ -19,6 +19,7 @@ import soundfile as sf
 
 sys.path.insert(0, str(Path(__file__).parent))
 from common import build_dir, load_config, write_json  # noqa: E402
+from numread import numbers_to_kana  # noqa: E402
 
 
 def make_kana():
@@ -57,8 +58,9 @@ def main():
         x = sg.resample_poly(a, 16000 // g, sr // g).astype(np.float32)
         parts, _ = model.transcribe(x, language="ja", beam_size=5, vad_filter=False)
         hyp = "".join(p.text for p in parts)
-        ref = s.get("read") or s.get("tts") or s["caption"]
-        r = difflib.SequenceMatcher(None, kana(ref), kana(hyp)).ratio()
+        # 原稿と聞き取り結果の両方で数字を同じ読みに直してから比べる（数字が落ちて一致率が下がるのを防ぐ）
+        ref = numbers_to_kana(s["caption"])
+        r = difflib.SequenceMatcher(None, kana(ref), kana(numbers_to_kana(hyp))).ratio()
         rows.append({"id": s["id"], "ratio": round(r, 3), "caption": s["caption"], "heard": hyp})
         flag = "" if r >= th else "  <-- 要確認"
         if r < th:

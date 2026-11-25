@@ -6,7 +6,7 @@
 
 narration.json の各区間：
   caption  台本の文（概要欄や確認用。画面には出さない）
-  tts      合成に渡す文（任意）。読み間違いの言い換えはここに書く。無ければ caption を使う
+  tts      合成に渡す文（任意）。読み間違いの言い換えはここに書く。無ければ caption を使う。どちらも数字はひらがなに直してから渡す
   read     正しい読み（かな）。ASRチェックで、聞き取り結果と比べる基準
 
 出力（episodes/<id>/build/）：
@@ -32,6 +32,7 @@ import subprocess  # noqa: E402
 import tempfile  # noqa: E402
 
 from common import build_dir, decode_audio, ffmpeg_bin, load_config, load_narration, require_env, write_json  # noqa: E402
+from numread import numbers_to_kana  # noqa: E402
 
 API = "https://api.elevenlabs.io/v1"
 SR = 48000
@@ -39,7 +40,8 @@ USD_PER_1K = 0.08  # 従量課金の目安（Starter超過分 / v3・multilingua
 
 
 def tts_text(s: dict) -> str:
-    return s.get("tts") or s["caption"]
+    """合成に渡す文。数字はひらがなの読みに直す（「1978年」などの読み違いを防ぐ。numread.py）"""
+    return numbers_to_kana(s.get("tts") or s["caption"])
 
 
 def request_audio(text: str, t: dict, key: str, prev: str, nxt: str) -> bytes:
