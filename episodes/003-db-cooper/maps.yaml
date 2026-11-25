@@ -1,0 +1,59 @@
+# 地図の範囲と地名（pipeline/make_maps.py）。003 D.B.クーパー事件
+# note は画面に出る。見方に関わる注記（「推定」など）だけを書き、制作上の配慮は書かない（F-016）
+# 位置の出典：空港・町は一般の地名。ラセンター上空は FBI の発表文（1980年、V43 p.136）、
+# 表示の切れ端はキャッスルロックの「真東約12マイル」（FBIのテレタイプ、V43 p.19）から計算した目安、
+# 紙幣が見つかった川岸は「州間高速道路5号線の橋から約5マイル下流の北岸」（V43 p.137）。
+places:
+  portland_airport: {lat: 45.5887, lon: -122.5975, label: "ポートランド国際空港"}
+  seattle_airport: {lat: 47.4502, lon: -122.3088, label: "シアトル・タコマ空港"}
+  reno: {lat: 39.5296, lon: -119.8138, label: "リノ"}
+  lacenter: {lat: 45.8623, lon: -122.6704, label: "ラセンター"}
+  vancouver: {lat: 45.6387, lon: -122.6615, label: "バンクーバー（ワシントン州）"}
+  i5bridge: {lat: 45.6194, lon: -122.6740, label: "州間高速道路5号線の橋"}
+  castlerock: {lat: 46.2751, lon: -122.9076, label: "キャッスルロック"}
+  decal_area: {lat: 46.2751, lon: -122.657, label: "後部階段の表示が見つかった山中（目安）"}
+  # 要確認：テナ・バーの位置。FBIの「橋から約5マイル下流の北岸」から置いた目安。公開前に地名辞典か当時の地形図で確かめる
+  tenabar: {lat: 45.655, lon: -122.758, label: "紙幣が見つかった川岸"}
+  washougal: {lat: 45.5787, lon: -122.3534, label: "ワシューガル川の河口"}
+
+views:
+  pnw:
+    lon: [-125.6, -117.4]
+    lat: [38.6, 48.8]
+    states: true
+    highlight: [Washington, Oregon, Nevada]
+    points: [portland_airport, seattle_airport, reno]
+    labels:
+      - {lat: 47.6, lon: -120.4, text: "ワシントン州"}
+      - {lat: 44.0, lon: -120.6, text: "オレゴン州"}
+      - {lat: 40.4, lon: -117.9, text: "ネバダ州"}
+      - {lat: 44.5, lon: -124.9, text: "太平洋", kind: water}
+  flight:
+    lon: [-123.7, -121.5]
+    lat: [45.35, 47.65]
+    states: true
+    points: [seattle_airport, lacenter, portland_airport]
+    route: [seattle_airport, lacenter]
+    labels:
+      - {lat: 46.55, lon: -121.9, text: "ワシントン州"}
+      - {lat: 45.45, lon: -121.8, text: "オレゴン州"}
+    note: "飛行経路は推定"
+  dropzone:
+    lon: [-123.15, -122.05]
+    lat: [45.5, 46.4]
+    states: true
+    points: [lacenter, vancouver, castlerock, decal_area]
+    labels:
+      - {lat: 45.96, lon: -122.55, text: "ルイス川", kind: water}
+      - {lat: 45.80, lon: -122.80, text: "コロンビア川", kind: water}
+      - {lat: 45.85, lon: -122.26, text: "クラーク郡とスカマニア郡の境"}
+    note: "範囲は1980年にFBIが考えていたもの。地点は目安"
+  columbia:
+    lon: [-122.95, -122.25]
+    lat: [45.5, 45.82]
+    states: true
+    points: [vancouver, i5bridge, tenabar, washougal]
+    labels:
+      - {lat: 45.70, lon: -122.82, text: "コロンビア川", kind: water}
+      - {lat: 45.53, lon: -122.62, text: "ポートランド"}
+    note: "地点は目安"

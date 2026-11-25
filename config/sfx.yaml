@@ -28,6 +28,14 @@ sounds:
   amb_court:  {ja: 建物の外の環境音（風、遠い人の気配）, level: bed, variants: 1, search: "city building exterior ambience"}
   amb_idle:   {ja: 止めた車のアイドリング（無線の声は入れない）, level: bed, variants: 1, search: "car engine idle exterior"}
   amb_fence:  {ja: 風とフェンスのきしみ, level: bed, variants: 1, search: "wind chain link fence"}
+  # 003-db-cooper（1971年の太平洋岸北西部）のイメージ映像の環境音
+  amb_airport:     {ja: 70年代の空港の待合の環境音（遠いざわめき、空調。アナウンスの声は入れない）, level: bed, variants: 1, search: "airport terminal ambience no announcements"}
+  amb_rain:        {ja: 窓に当たる雨の音, level: bed, variants: 1, search: "rain on window glass"}
+  amb_cabin:       {ja: 旅客機の機内の低い空調とエンジンの音, level: bed, variants: 1, search: "airplane cabin interior hum"}
+  amb_wind_high:   {ja: 高い所の風（遠いジェットの音を含んでよい。爆音にしない）, level: bed, variants: 1, search: "high altitude wind distant jet"}
+  amb_forest_rain: {ja: 夜の森の雨（葉に当たる雨、遠い風）, level: bed, variants: 1, search: "forest rain night ambience"}
+  amb_river:       {ja: 冬の川岸の環境音（水の流れ、風）, level: bed, variants: 1, search: "river bank winter wind ambience"}
+  amb_office:      {ja: 70年代の事務所の環境音（遠いタイプライター、時計）, level: bed, variants: 1, search: "1970s office ambience distant typewriter"}
 
 # 画面の種類（kind、文字カードは kind/style、イメージ映像は insert/場面名）→ 効果音。
 # at はカットの始まりからの秒（画面に物が現れる時刻に合わせる）。[] は音を付けない
@@ -54,6 +62,13 @@ rules:
   insert/courthouse:   [{key: amb_court, at: 0.0}]
   insert/police_car:   [{key: amb_idle, at: 0.0}]
   insert/prison_fence: [{key: amb_fence, at: 0.0}]
+  insert/airport_wait: [{key: amb_airport, at: 0.0}]
+  insert/rain_window:  [{key: amb_rain, at: 0.0}]
+  insert/cabin_seat:   [{key: amb_cabin, at: 0.0}]
+  insert/plane_clouds: [{key: amb_wind_high, at: 0.0}]
+  insert/rain_forest:  [{key: amb_forest_rain, at: 0.0}]
+  insert/river_bank:   [{key: amb_river, at: 0.0}]
+  insert/field_office: [{key: amb_office, at: 0.0}]
 
 # 使わない音（台帳に足すときも、ファイル名・検索語に入っていたら香盤表が止める）
 forbidden:

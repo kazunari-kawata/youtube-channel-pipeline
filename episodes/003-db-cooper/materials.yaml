@@ -23,6 +23,37 @@ items:
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: FBI職員が書いたメモ・報告・写真は著作権なし。綴じ込まれた新聞記事・他機関の書類・個人の手紙はその限りでないので、画面に出すページは1枚ずつ作成者を確かめる。容疑者の名前が載ったページは画面に出さない。最初の公開分（Part 01〜17）は政府刊行物の保存先 https://purl.fdlp.gov/GPO/LPS97624 にもある。取得は手作業（ページを決めてから）
+  # Vault のうち、台本の事実確認に使ったFBI作成の文書（p. は ref_ocr_text のページ番号。原本で同じページを確かめてから画面に出す）
+  - id: fbi_v43_press_1980
+    title: FBIシアトル支局の発表文（1980年2月12日。事件の経過、ラセンター上空、1980年2月10日の紙幣の発見と場所）Part 43 p.135〜137
+    file: fbi/vault_p43_press_1980.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: FBIの作成。発見した家族の名前が載っているので、画面に出すなら名前の行は映さない（切り出すか、ぼかす）
+  - id: fbi_v76_summary
+    title: FBIシアトル支局の事件のまとめ（SE 164-81。離陸7時36分、8時5分の最後のやりとり、8時11分・1万フィート、リノで見つかった物）Part 76 p.77〜78
+    file: fbi/vault_p76_summary.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: FBIの作成。乗務員の名前は黒塗り（b6 b7C）。爆発物の見た目の記述があるページ（Part 8 p.18 など）は画面に出さない
+  - id: fbi_v10_reno_teletype
+    title: FBIラスベガス支局のテレタイプ（1971年11月25日。「305便は午後11時1分にリノに着陸」）Part 10 p.335
+    file: fbi/vault_p10_reno.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: FBIの作成。当時のテレタイプの見た目は時代の空気を出すのにも使える
+  - id: fbi_v24_indictment
+    title: 起訴状（オレゴン地区連邦地裁 CR 76-229、1976年11月24日「ジョン・ドウ、別名ダン・クーパー」）Part 24 p.573〜576、FBIポートランド支局の報告 Part 10 p.87
+    file: fbi/vault_p24_indictment.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: 連邦の裁判所・検事局の文書（連邦政府の著作物）。画面に出すのは表題の部分。本文の脅しの記述は映さない
+  - id: fbi_v43_decal_teletype
+    title: FBIシアトル支局のテレタイプ（1978年11月9日。キャッスルロックの真東約12マイルで見つかった後部階段の表示）Part 43 p.19、聞き取り記録 Part 42 p.178〜179
+    file: fbi/vault_p43_decal.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: FBIの作成。「305便のもの」とは確認されていない（同じ型の機体のもの）
   - id: fbi_famous_case
     title: FBI公式ページ「D.B. Cooper Hijacking」（本文と写真7点：似顔絵、ネクタイ、1980年に見つかった紙幣2点、パラシュートの袋、残されたパラシュート、使われなかったパラシュート）
     file: fbi/famous_case/
@@ -35,6 +66,18 @@ items:
     original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
     status: pd_federal
     note: 捜査資料として見せる。拡大して不気味に見せる演出や、ほかの人物の写真と並べる見せ方はしない（特定の人をほのめかすことになる）。どの版かと作成年をキャプションで確かめる
+  - id: fbi_sketch_glasses
+    title: FBIの似顔絵のうち、サングラスをかけた版
+    file: fbi/sketch_glasses.jpg
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: FBIの人相書き（V77 p.250）に「飛行の後半は縁の黒い巻き付け型のサングラス」とある。Vault か FBI の公式ページで、FBIが作った版を探す。見つからなければ台本の s053 を fbi_sketch に替える
+  - id: fbi_2006_story
+    title: FBI記事「A Byte Out of History - The D.B. Cooper Mystery」（2006年11月24日。「目立たない男（non-descript man）」）
+    file: ""
+    original: https://www.fbi.gov/news/stories/2006/november/dbcooper_112406
+    status: reference
+    note: 台本 s054 の「目立たない男」の出典
   - id: fbi_2007_story
     title: FBI記事（2007年12月31日）。人物の特徴、パラシュートの技量の見方、着地点の見方、ネクタイのDNA、捜索範囲の地図
     file: fbi/2007_story/
@@ -51,8 +94,8 @@ items:
     title: FBIシアトル支局の発表（2016年7月12日）「捜査の人員を他に回す」
     file: ""
     original: https://www.fbi.gov/seattle/press-releases/2016/update-on-investigation-of-1971-hijacking-by-d.b.-cooper
-    status: reference
-    note: 文面はFBIの著作物で使えるが、画面に出すのは文書の見た目まで。要点はナレーションで言う（FBI-2016）
+    status: pd_federal
+    note: FBIの作成。画面には見出しの部分を出す（台本 s075）。要点はナレーションで言う（FBI-2016）
   - id: fbi_foia_index_2004
     title: FBIのFOIA索引ページ「D.B. Cooper」（2004年の保存版。事件の概要文）
     file: ""
@@ -89,6 +132,12 @@ items:
     original: https://rosap.ntl.bts.gov/view/dot/76278
     status: pd_federal
     note: 機体の下や尾部の出口を、飛行中に開けられない作りにすることを求めた規則。前文に「パラシュートで逃げるためのハイジャックを防ぐ」趣旨がある。PDFの文字認識では改正番号が 121-69 と読めてしまうが、目録の題は 121-99。画面に出すなら文書の見出しの部分
+  - id: doj_crm_1409
+    title: 米司法省 Criminal Resource Manual 1409「Indictment For Aircraft Piracy」（死者の出ていない乗っ取りの時効は通常5年）
+    file: ""
+    original: https://www.justice.gov/archives/jm/criminal-resource-manual-1409-indictment-aircraft-piracy
+    status: reference
+    note: 台本 s061 の「時効は通常5年」の出典
   - id: tsa_timeline
     title: TSAの年表「TSA Evolution」（2012年の保存版。1973年の初めから全乗客の検査が義務になったこと）
     file: ""
@@ -143,7 +192,7 @@ items:
     title: テナ・バー（コロンビア川のワシントン州側の砂州、クラーク郡）の現在の航空写真
     file: naip/tena_bar.png
     status: pd_federal
-    note: 位置をまだ確かめていない。地名辞典（USGS GNIS）などで緯度経度を確かめてから naip:{lat, lon, half_m} を書く。写っているのは現在の様子と表示する。近くの農場や家が写り込む場合は、地域が分かる縮尺にとどめる
+    note: 使う予定はない（台本では地図の点だけ）。テナ・バーは私有地で砂の採取場がある。出すなら地域が分かる縮尺まで。位置をまだ確かめていない。地名辞典（USGS GNIS）などで緯度経度を確かめてから naip:{lat, lon, half_m} を書く。写っているのは現在の様子と表示する。近くの農場や家が写り込む場合は、地域が分かる縮尺にとどめる
 
   # ---------- 自作（実データの3D地図） ----------
   - id: own_maps
