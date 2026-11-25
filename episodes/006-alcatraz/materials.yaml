@@ -28,6 +28,7 @@ items:
     original: http://vault.fbi.gov/Alcatraz%20Escape
     status: pd_federal
     note: 政府刊行物の保存先は https://purl.fdlp.gov/GPO/LPS97352。FBI職員が書いたメモ・テレタイプ・報告は著作権なし。綴じ込まれた新聞記事と、刑務所局・沿岸警備隊など他機関の書類は作成者を1枚ずつ確かめる（連邦機関の書類なら使用可、新聞は不可）。取得は手作業（ページを決めてから）。探すページ：6月12日の第一報、捜索の報告、West の供述の要約、回収物の鑑定、1979年の終結のメモ
+    access: "2026-11-25：クラウドからも Mac の作業環境からも Vault のファイル一覧と PDF を取得できなかった（Vault は 403、保存先のページは取得に承認が要る）。ユーザーのブラウザで PDF を保存してもらうか、承認をもらってから保存先を開く"
   - id: fbi_famous_case
     title: "FBI公式「Famous Cases: Alcatraz Escape」（事件の経過とFBIの結論。写真14点）"
     file: fbi/famous_cases_alcatraz.html
