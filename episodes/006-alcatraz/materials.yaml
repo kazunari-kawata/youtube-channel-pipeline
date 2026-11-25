@@ -118,12 +118,29 @@ items:
     file: ""
     status: own
     note: maps.yaml で作る。回収物が見つかった場所はFBIの記述にある地点だけを点で出す。3人が進んだ経路は分かっていないので線を引かない（引くなら「推定」と注記）
+  - id: own_footage_2026
+    title: ユーザーが2026年夏にアルカトラズ島で撮った映像（現在の島・房・湾の眺め）
+    file: own/footage_2026/
+    status: check
+    note: "ユーザー本人の撮影なので権利は本人にある。中身を見てから使用可（own）にする。確かめること：(1) ほかの観光客の顔が大きく映る所は使わない (2) 音は使わない（館内の音声ガイド、展示の音、周りの会話が入る） (3) 展示パネルに載った報道写真・映画のスチールが大きく映る所は使わない (4) 撮影は国立公園局の決まりの範囲か（8人以下・手持ちの機材・公開区域なら許可も料金も不要。nps.gov の EXPLORE Act の案内） (5) 画面には「2026年撮影」と出す。1962年の記録映像に見える加工（白黒、傷、古いフィルム風）はしない。パイプラインに実写の動画を出す仕組み（video）がまだないので、足す前にユーザーに伝える"
   # ---------- 参照のみ ----------
+  - id: usms_profiles
+    title: 連邦保安官局の公式サイトの手配ページ（Frank Lee Morris、John William Anglin、Clarence Anglin。カリフォルニア北部地区の「Profiled Fugitives」）
+    file: usms/profile_morris.html
+    url: https://www.usmarshals.gov/what-we-do/fugitive-apprehension/profiled-fugitives/frank-lee-morris
+    status: pd_federal
+    note: "2026-11-25 に確認。3人とも掲載が続いている（地区の一覧 https://www.usmarshals.gov/what-we-do/fugitive-apprehension/profiled-fugitives/1906 ）。Morris のページ：生年月日 1926年9月1日、手配は1962年から、令状の日付 1962年6月11日、1956年9月19日にルイジアナ州スライデルの銀行への侵入盗で14年の刑。画面に出すなら画面の写しを保存し、保存した日付を書く。身体の特徴の行は映さなくてよい"
+  - id: usms_poster_morris
+    title: 連邦保安官局の手配書「MORRIS, FRANK LEE」（2014年時点で88歳の版）
+    file: usms/poster_morris.pdf
+    url: https://www.usmarshals.gov/sites/default/files/media/document/Poster-California-Northern-Morris-Frank-Lee.pdf
+    status: pd_federal
+    note: 連邦保安官局の作成。3人分の手配書がそろった
   - id: ref_sept_2026
-    title: 「連邦保安官局の手配は2026年9月まで」という記述（Wikipedia と複数の解説サイト）
+    title: 「2026年9月で手配が終わった」という記述（英語版 Wikipedia と解説サイト）
     url: https://en.wikipedia.org/wiki/June_1962_Alcatraz_escape
     status: reference
-    note: 要確認。Wikipedia は「2026年9月まで手配リストに載っていた」と書くが、連邦保安官局の発表はまだ見つけていない。本当なら「つい2か月前に手配が終わった」という強い入り方になる。一次資料で確かめるまで台本に入れない
+    note: "誤り、または未確認（ユーザーの指摘を受けて 2026-11-25 に確認）。保安官局のサイトには3人とも載ったままで、終了の発表は見つからない。2026年9月1日は Morris が100歳になった日。台本で言えるのは「2026年9月に Morris は100歳になった。保安官局のサイトには今も3人の手配ページがある」まで。「99〜100歳まで手配を続ける」という担当官の方針は報道による話なので、一次の出どころを確かめるまで入れない。Anglin 兄弟の生年月日（1930年5月2日、1931年5月11日）は保安官局のページで確かめる"
   - id: ref_2013_letter
     title: 2013年に届いた「John Anglin」を名乗る手紙（2018年に報道）と、家族が示した写真
     status: reference
