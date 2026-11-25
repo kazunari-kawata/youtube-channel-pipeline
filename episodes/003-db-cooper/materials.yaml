@@ -48,6 +48,48 @@ items:
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: FBIの作成。似顔絵は「FBI の Exhibit Section が作った」と同じページにある（fbi_sketch の根拠）。肌の色・見た目の人種の記述の行は画面に出さない（台本で使わない）
+  - id: fbi_v64_p159
+    title: "FBIの聞き取りの記録（客室乗務員、FD-302）Part 64 p.159：離陸の直前に渡されたメモ、午後2時53分に出発・2時58分に離陸"
+    file: fbi/vault_p64_p159.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。乗務員の名前は黒塗り（b6 b7C）。メモの文面は乗務員の記憶によるもので、FBIのまとめ（Part 76 p.76）の文面と少し違う"
+  - id: fbi_v64_p161
+    title: "FBIの聞き取りの記録（客室乗務員、FD-302）Part 64 p.161：恨みについての発言、たばこをすすめた、飲食を断った、スカイマーシャルを気にした"
+    file: fbi/vault_p64_p161.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。画面に出すのは発言の行だけ。前のページ（p.160）は爆発物の見た目の記述なので映さない"
+  - id: fbi_v26_p471
+    title: "FBIシアトル支局のまとめ Part 26 p.471：20ドル札で航空券、座席18E、動き出す前にバーボンのセブンアップ割りを20ドル札で買った、午後2時53分に出発"
+    file: fbi/vault_p26_p471.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。同じ文面が Part 95 p.2 と Part 76 p.76 にもある。p.474 に恨みの発言と「No fuss」「No funny stuff」の言い回し"
+  - id: fbi_v76_p76
+    title: "FBIシアトル支局の事件のまとめ（SE 164-81）Part 76 p.76：座席の位置、飲み物、封筒のメモ、男が書き取らせた要求"
+    file: fbi/vault_p76_p76.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。画面に出すのは要求の行だけ"
+  - id: fbi_v41_p27
+    title: "FBIの報告 Part 41 p.27：灰皿の吸い殻8本（7本はローリーのフィルターつきとFBI研究所が確認）、残されたネクタイ、指紋を調べた場所"
+    file: fbi/vault_p41_p27.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。毛髪の記述の行は映さなくてよい"
+  - id: fbi_v10_p448
+    title: "FBIの聞き取りの記録（客室乗務員、FD-302）Part 10 p.448：金を受け取ったあと子どものようにふるまった、飲み物のおつりを渡そうとした、行き先の話"
+    file: fbi/vault_p10_p448.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。前のページ（p.447）は爆発物の見た目の記述なので映さない"
+  - id: fbi_v74_p257
+    title: "FBIがまとめた人物像 Part 74 p.257：時代遅れのネクタイ、言葉づかいと教育、バーボンのセブンアップ割りとローリー、手慣れた犯罪者に見えない、「いまタコマの上だ」「マコード空軍基地は空港から20分」"
+    file: fbi/vault_p74_p257.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。同じ趣旨が Part 41 p.13 にもあるが、そちらは恨みの理由や出自の推測が続くので使わない"
   - id: fbi_v10_reno_teletype
     title: FBIラスベガス支局のテレタイプ（1971年11月25日。「305便は午後11時1分にリノに着陸」）Part 10 p.335
     file: fbi/vault_p10_reno.png
@@ -90,6 +132,42 @@ items:
     original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
     status: pd_federal
     note: FBI の Exhibit Section が作った似顔絵（V77 p.249）。捜査資料として見せる。拡大して不気味に見せる演出や、ほかの人物の写真と並べる見せ方はしない（特定の人をほのめかすことになる）。どの版かと作成年をキャプションで確かめる
+  - id: fbi_tie
+    title: "残されたクリップ式のネクタイの写真（FBI公式ページ）"
+    file: fbi/tie.jpg
+    original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
+    status: pd_federal
+    note: "fbi_famous_case の写真7点のうちの1枚。台本で使う id として分けた"
+  - id: fbi_money_1980
+    title: "1980年に見つかった紙幣の写真（FBI公式ページ）"
+    file: fbi/money_1980.jpg
+    original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
+    status: pd_federal
+    note: "同上"
+  - id: fbi_parachute
+    title: "機内に残されたパラシュートの写真（FBI公式ページ）"
+    file: fbi/parachute.jpg
+    original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
+    status: pd_federal
+    note: "同上"
+  - id: fbi_parachute_bag
+    title: "パラシュートの袋の写真（FBI公式ページ）"
+    file: fbi/parachute_bag.jpg
+    original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
+    status: pd_federal
+    note: "同上"
+  - id: fbi_map_2007
+    title: "FBIの記事（2007年12月31日）に載った捜索範囲の地図"
+    file: fbi/map_2007.jpg
+    original: https://www.fbi.gov/news/stories/2007/december/dbcooper_123107
+    status: pd_federal
+    note: "fbi_2007_story の中の地図。台本で使う id として分けた"
+  - id: usgs_swwa_1970s
+    title: "USGSの航空写真（1970年代、ワシントン州南西部）"
+    file: usgs/swwa_1970s.jpg
+    original: https://earthexplorer.usgs.gov/
+    status: pd_federal
+    note: "usgs_aerial_1970s から使う1枚。EarthExplorer で手作業で取得し、撮影年を表示する"
   - id: fbi_sketch_glasses
     title: FBIの似顔絵のうち、サングラスをかけた版
     file: fbi/sketch_glasses.jpg
