@@ -536,22 +536,36 @@ export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rota
     mixer.clipAction(anim!).play();
     const bones: Record<string, THREE.Object3D> = {};
     obj.traverse((o) => { if (o.name.startsWith("DEF-")) bones[o.name] = o; });
-    return { obj, mixer, arms, bones, duration: anim!.duration };
+    // 前のフレームで足した変更（肩幅・pose）。次のフレームの頭で取り消す（下のコメント）
+    const applied = { done: false, pose: [] as [THREE.Object3D, THREE.Quaternion][] };
+    return { obj, mixer, arms, bones, duration: anim!.duration, applied };
   }, [gltf, clip, build, glasses]);
 
   useLayoutEffect(() => {
     if (!rig) return;
     const t = frame / fps;
+    // three.js の AnimationMixer は、骨の値が前のフレームと同じだと骨に書き戻さない。
+    // 動きを止めた人物（freeze）では骨が書き戻されず、肩幅や pose の変更がフレームごとに積み重なって手足が回り続ける（F-028）。
+    // そこで、前のフレームで足した変更を先に取り消してから時刻を合わせ、もう一度足す
+    const ap = rig.applied;
+    if (ap.done) {
+      for (const a of rig.arms) a.position.divideScalar(build.shoulder);
+      for (const [b, q] of ap.pose) b.quaternion.multiply(q.clone().invert());
+    }
     rig.mixer.setTime(freeze === "end" ? rig.duration - 0.001 : freeze !== undefined ? freeze : t + timeOffset);
-    // 肩幅を狭める：動きが毎フレーム骨の位置を書き戻すので、その後で掛ける
+    // 肩幅を狭める（動きが骨の位置を書き戻したあとで掛ける）
     for (const a of rig.arms) a.position.multiplyScalar(build.shoulder);
+    ap.pose = [];
     if (pose) {
-      const q = new THREE.Quaternion();
       for (const [name, e] of Object.entries(pose)) {
         const b = rig.bones[name];
-        if (b) b.quaternion.multiply(q.setFromEuler(new THREE.Euler(e[0], e[1], e[2])));
+        if (!b) continue;
+        const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(e[0], e[1], e[2]));
+        b.quaternion.multiply(q);
+        ap.pose.push([b, q]);
       }
     }
+    ap.done = true;
     const p = path ? path(t) : position;
     rig.obj.position.set(p[0], p[1], p[2]);
     rig.obj.rotation.order = "YXZ"; // 先に x・z で倒し、そのあと y で向きを変える
