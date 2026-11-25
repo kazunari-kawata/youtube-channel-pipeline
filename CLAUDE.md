@@ -11,7 +11,9 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
    取得は `python pipeline/fetch_materials.py <id>`。時系列は `timeline.md` に出典と確認状態つきで
 1. 構成案：問いと結論は人が決める。Claude Docs で構成案を作り、`episodes/<id>/plan.md` にリンクと要点を置く。
    イメージ映像の人物の設定（性別・体型・髪型・眼鏡・時代の服装）と、時代の設定（年代・土地・使う小道具・色味）もここで決めて plan.md に書く
-2. 台本：`episodes/<id>/narration.json`（区間ごとに caption / read / 必要なら tts・chapter・stat）
+2. 台本：`episodes/<id>/narration.json`（区間ごとに caption / read / visual / 必要なら sfx・tts・chapter・stat）。
+   香盤表 `python pipeline/shotlist.py <id>`（画面と効果音。注意0件にする）、読みやすい台本 `python pipeline/script_md.py <id>`。
+   1枚の絵が長く続くときは、文の切れ目で区間を分けて次の絵に替えるか、続きの区間に `"reveal": N`（年表の項目・地図の点を、名前が出たときに出す。印の音が付く）
 3. 動画の定義：`remotion/src/episodes/ep<id>.tsx` を作り、`remotion/src/episodes/index.ts` に登録
 4. 通しで作る：`python pipeline/run.py <id>`（ナレーション → 読み間違いチェック → 準備 → 書き出し → QA）
 5. QAに合格したものだけをユーザーに見せる。不合格のまま見せない
@@ -25,6 +27,11 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 - **声は ElevenLabs**（F-003）。Kokoro など無料の軽量モデルには戻さない。声は `config/channel.yaml` の `tts.voice_id`
 - **BGMは必ず入れ、聞こえる音量にする**（F-005）。YouTubeオーディオライブラリの「帰属表示不要」の曲だけ。
   使う曲は `assets/bgm/LICENSES.md` に記録してから `episode.yaml` の `bgm.tracks` に書く。数字だけでなく、実際に耳で聞いて確認する
+- **効果音を香盤表で決める**（F-012）。画面の動きに付ける（資料＝紙、写真＝厚紙、航空写真＝映写機、日付＝タイプライター、章の扉＝低い「ドン」）。
+  平均6〜10秒に1回、6秒より詰めない、強い音は1分に約1回まで、同じ音を続けない、音量は声より小さく（`config/channel.yaml` の `sfx`）。
+  画面と関係のない飾りの音は入れない（理解が下がる。根拠は `docs/sfx-research.md`）。12秒以上の空白は、絵を分けて動きを作り、そこに音を付ける。
+  銃声・悲鳴・刃物・血・心音・サイレン・警察無線の声・報道のジングル・笑いを誘う音は使わない。被害者・遺族の言葉の場面は音なし。
+  音は「商用可・クレジット不要」のものだけ。`assets/sfx/LICENSES.md` に記録してから `config/sfx.yaml` のファイル名で置く
 - **チラつきを出さない**（F-001）。海の板は `depthWrite: false, depthTest: false`、近クリップ面はカメラ距離の0.05倍。
   地形に重なる板や線を足すときは、同じ深さで重ならないようにする
 - **地図は実データだけ**（Copernicus DEM、NASA Black Marble、Natural Earth など）。AIで生成した地図や衛星写真は使わない。
@@ -50,6 +57,8 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 - 有罪が確定していない人を犯人のように扱わない。未解決事件では特定の人をほのめかさない
 - 未成年が関わる部分は事実だけを短く
 - 現在だれかが住んでいる個人宅は、特定できる写真・住所を出さない（地域が分かる縮尺の地図まで）
+- **締めの一言**（F-013）：「最後までご覧いただき、ありがとうございました。他にどのような事件を扱ってほしいか、コメント欄で教えてください。」。
+  出典の案内（「資料と出典は概要欄に」）は読まない。出典は概要欄に載せるだけ
 
 ## 時代とアメリカらしさ（どの回でも）
 
@@ -103,7 +112,7 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 ## 品質チェック（qa/check_video.py）
 
 合格基準は `config/channel.yaml` の `qa`。チラつき・真っ黒なフレーム・解像度・長さ・音ズレ・全体の音量・
-声のない区間のBGM・声の下のBGM・字幕/出典カードの混入・チラつき対策の有無を検査する。
+声のない区間のBGM・声の下のBGM・字幕/出典カードの混入・チラつき対策の有無・効果音の間隔と強い音の頻度を検査する。
 一部だけ書き出した確認用は `--partial`。
 
 ## 置き場所
@@ -119,6 +128,7 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 | 動画の部品（地形・カメラ・カード・音） | `remotion/src/lib/` |
 | 回ごとの動画の定義 | `remotion/src/episodes/` |
 | BGMとその記録 | `assets/bgm/` |
+| 効果音とその記録・台帳 | `assets/sfx/`、`config/sfx.yaml`（根拠は `docs/sfx-research.md`） |
 | 元データ・加工データ | `data/raw/`, `data/processed/`（Gitに入らない。`fetch_data.py` と `process_geo.py` で作り直せる） |
 
 ## 書き出し環境

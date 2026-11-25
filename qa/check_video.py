@@ -9,6 +9,7 @@
   音    ナレーションと動画のずれ／全体の音量（ラウドネス）
         BGMが聞こえるか：声のない区間の音量、声の下でのBGMの大きさ（F-005）
   コード 字幕・出典カードを入れていないか、チラつき対策が外れていないか（F-002, F-004, F-001）
+  効果音 香盤表で効果音を割り当てたか、間隔と強い音の頻度が基準内か（F-012）
 結果は build/qa_report.json にも保存。不合格が1つでもあれば終了コード1。
 """
 import argparse
@@ -172,6 +173,19 @@ def lint(rep: Report):
     rep.add("イメージ映像に時代の質感（フィルムの色・にじみ・小道具）", ok, "あり" if ok else "外れている", "あり", "F-011")
 
 
+def sfx_checks(episode: str, cfg: dict, rep: Report):
+    """効果音の計画（pipeline/shotlist.py が作る build/sfx_cues.json）が基準内か"""
+    s = cfg["sfx"]
+    f = build_dir(episode) / "sfx_cues.json"
+    if not f.exists():
+        rep.add("効果音の計画（香盤表）", False, "なし", "あり", "F-012：python pipeline/shotlist.py を実行")
+        return
+    d = json.loads(f.read_text(encoding="utf-8"))
+    lo, hi = s["target_interval_sec"]
+    rep.add("効果音の平均の間隔", bool(d["cues"]) and lo <= d["avg_interval"] <= hi, f"{d['avg_interval']}秒", f"{lo}〜{hi}秒", "F-012")
+    rep.add("強い効果音の頻度", d["hits_per_min"] <= s["hit_per_min_max"], f"{d['hits_per_min']}回/分", f"{s['hit_per_min_max']}回/分まで", "F-012")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
@@ -208,6 +222,7 @@ def main():
     if not args.partial and has_audio:
         audio_checks(video, out / "narration.wav", tl, q, rep)
     lint(rep)
+    sfx_checks(args.episode, cfg, rep)
 
     write_json(out / ("qa_report_partial.json" if args.partial else "qa_report.json"),
                {"video": str(video), "frames": n, "passed": rep.passed, "items": rep.items})

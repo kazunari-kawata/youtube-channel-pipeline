@@ -10,7 +10,7 @@ import { AbsoluteFill, Audio, Easing, getStaticFiles, interpolate, Sequence, sta
 import current from "../data/current.json";
 import { InsertDuration } from "../inserts/Inserts";
 import { INSERT_SCENES } from "../inserts/registry";
-import { AerialShot, CardShot, CardV, DocMeta, MapShot, PaperShot } from "../lib/shots";
+import { AerialShot, CardShot, CardV, DocMeta, MapShot, PaperShot, Reveal } from "../lib/shots";
 import { Seg, segs, TL } from "../lib/timeline";
 
 const DIR = "002";
@@ -38,7 +38,7 @@ const ASSETS: Record<string, DocMeta & { aspect: number }> = {
 const NAIP_DATE: Record<string, string> = { naip_oxford: "2022年6月", naip_columbia: "2022年8月" };
 
 type Visual = { kind: string; [k: string]: any };
-type Shot = { v: Visual; from: number; to: number; segs: Seg[] };
+type Shot = { v: Visual; from: number; to: number; segs: Seg[]; reveal?: Reveal };
 
 const buildShots = (): Shot[] => {
   const out: Shot[] = [];
@@ -47,7 +47,11 @@ const buildShots = (): Shot[] => {
     if (!v) throw new Error(`${s.id} に visual がありません（香盤表）`);
     if (v === "same") {
       if (!out.length) throw new Error("最初の区間は same にできません");
-      out[out.length - 1].segs.push(s);
+      const sh = out[out.length - 1];
+      sh.segs.push(s);
+      // 続きの区間の "reveal": N → 年表の項目・地図の点の N 番目以降を、この区間の頭で出す（香盤表では印の音が付く）
+      const r = (s as any).reveal;
+      if (typeof r === "number") sh.reveal = { from: r, frame: Math.max(0, s.startFrame - sh.from) };
     } else {
       out.push({ v, from: out.length ? Math.max(0, s.startFrame - LEAD) : 0, to: 0, segs: [s] });
     }
@@ -56,10 +60,10 @@ const buildShots = (): Shot[] => {
   return out;
 };
 
-const ShotView: React.FC<{ v: Visual }> = ({ v }) => {
+const ShotView: React.FC<{ v: Visual; reveal?: Reveal }> = ({ v, reveal }) => {
   switch (v.kind) {
     case "card":
-      return <CardShot v={v as unknown as CardV} />;
+      return <CardShot v={v as unknown as CardV} reveal={reveal} />;
     case "doc":
     case "photo": {
       const m = ASSETS[v.src];
@@ -69,7 +73,7 @@ const ShotView: React.FC<{ v: Visual }> = ({ v }) => {
     case "aerial":
       return <AerialShot src={`${DIR}/${v.src}.jpg`} label={v.label} zoom={v.zoom ?? "in"} date={NAIP_DATE[v.src] ?? ""} />;
     case "map":
-      return <MapShot file={`${DIR}/map_${v.view}.json`} points={v.points ?? []} route={v.route} />;
+      return <MapShot file={`${DIR}/map_${v.view}.json`} points={v.points ?? []} route={v.route} reveal={reveal} />;
     case "insert": {
       const Scene = INSERT_SCENES[v.scene];
       if (!Scene) throw new Error(`イメージ映像 ${v.scene} がありません（inserts/registry.ts）`);
@@ -120,7 +124,7 @@ export const Ep002: React.FC = () => {
           <Sequence key={i} from={sh.from} durationInFrames={dur} name={`${sh.v.kind} ${sh.segs[0].id}`}>
             <InsertDuration.Provider value={dur}>
               <Fade first={i === 0}>
-                <ShotView v={sh.v} />
+                <ShotView v={sh.v} reveal={sh.reveal} />
               </Fade>
             </InsertDuration.Provider>
           </Sequence>

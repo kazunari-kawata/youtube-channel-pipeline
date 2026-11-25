@@ -1,0 +1,72 @@
+# 効果音の台帳と、画面ごとの既定の効果音（F-012）
+#
+# 香盤表（pipeline/shotlist.py）がこの表を見て、カットごとに効果音を割り当てる。
+# 台本（narration.json）の区間に "sfx" を書くと上書き・追加できる（書き方は shotlist.py の先頭）。
+# 間隔・強さ・音量の基準は config/channel.yaml の sfx、根拠は docs/sfx-research.md。
+#
+# ファイルは assets/sfx/<名前>_<番号>.wav に置く（variants の数だけ。例 paper_1.wav〜paper_3.wav）。
+# 置く前に assets/sfx/LICENSES.md に1行ずつ記録する。記録のない音は使わない。
+#
+# level（強さ）
+#   bed    環境音。イメージ映像の間ずっと小さく流す（鳴り始めだけを効果音の1回と数える）
+#   light  画面の動きに付く小さな音（紙・写真・映写機・印）
+#   mid    少し目立つ音（タイプライター、判）
+#   hit    区切りの強い音（章の扉、「止められたかもしれない場面」）。1分に約1回まで
+
+sounds:
+  paper:      {ja: 紙を机に置く・めくる音, level: light, variants: 4, search: "paper slide / paper flip / 紙 めくる"}
+  photo:      {ja: 写真（厚紙）を机に置く音, level: light, variants: 3, search: "photo drop on table / cardboard tap"}
+  projector:  {ja: スライド映写機の「カシャッ」（80年代の道具）, level: light, variants: 2, search: "slide projector click"}
+  pin:        {ja: 地図や年表に印を付ける小さな音（鉛筆・ピン）, level: light, variants: 3, search: "pencil tick / pin tap"}
+  typewriter: {ja: タイプライターの短い打鍵, level: mid, variants: 2, search: "typewriter typing short"}
+  stamp:      {ja: 書類に判を押す鈍い音, level: mid, variants: 2, search: "rubber stamp / soft thud"}
+  tv_click:   {ja: ブラウン管テレビのスイッチ音, level: light, variants: 1, search: "CRT TV turn on"}
+  low_hit:    {ja: 低く短い衝撃音（にぶい「ドン」。派手な爆発音にしない）, level: hit, variants: 2, search: "cinematic low boom short / sub hit"}
+  amb_street: {ja: 夜の街の環境音（遠くの車、街灯のジー）, level: bed, variants: 1, search: "night city ambience distant traffic"}
+  amb_room:   {ja: 静かな室内の環境音（時計、冷蔵庫）, level: bed, variants: 1, search: "quiet apartment room tone clock"}
+  amb_road:   {ja: 郊外の道の環境音（虫、風）, level: bed, variants: 1, search: "rural road ambience crickets wind"}
+  amb_court:  {ja: 建物の外の環境音（風、遠い人の気配）, level: bed, variants: 1, search: "city building exterior ambience"}
+  amb_idle:   {ja: 止めた車のアイドリング（無線の声は入れない）, level: bed, variants: 1, search: "car engine idle exterior"}
+  amb_fence:  {ja: 風とフェンスのきしみ, level: bed, variants: 1, search: "wind chain link fence"}
+
+# 画面の種類（kind、文字カードは kind/style、イメージ映像は insert/場面名）→ 効果音。
+# at はカットの始まりからの秒（画面に物が現れる時刻に合わせる）。[] は音を付けない
+rules:
+  doc:              [{key: paper, at: 0.15}]
+  photo:            [{key: photo, at: 0.15}]
+  aerial:           [{key: projector, at: 0.1}]
+  map:              [{key: pin, at: 0.6}]
+  card/chapter:     [{key: low_hit, at: 0.0}]
+  card/question:    [{key: low_hit, at: 0.0}]
+  card/chance:      [{key: low_hit, at: 0.0}]
+  card/date:        [{key: typewriter, at: 0.47}]   # 1字ずつ出る演出が14フレーム目から始まる
+  card/fact:        [{key: stamp, at: 0.2}]
+  card/span:        [{key: stamp, at: 0.2}]
+  card/netflix:     [{key: tv_click, at: 0.1}]
+  card/timeline:    [{key: pin, at: 0.35}]
+  card/recount:     [{key: paper, at: 0.3}]
+  card/quote:       []                              # 遺族・関係者の言葉には音を付けない
+  card/title:       [{key: low_hit, at: 0.0}]
+  insert/night_walk:   [{key: amb_street, at: 0.0}]
+  insert/bus_stop:     [{key: amb_street, at: 0.0}]
+  insert/window:       [{key: amb_room, at: 0.0}]
+  insert/ohio_road:    [{key: amb_road, at: 0.0}]
+  insert/courthouse:   [{key: amb_court, at: 0.0}]
+  insert/police_car:   [{key: amb_idle, at: 0.0}]
+  insert/prison_fence: [{key: amb_fence, at: 0.0}]
+
+# 使わない音（台帳に足すときも、ファイル名・検索語に入っていたら香盤表が止める）
+forbidden:
+  - gun        # 銃声
+  - shot
+  - scream     # 悲鳴
+  - knife      # 刃物
+  - blood      # 血のしたたり
+  - heartbeat  # 心音（恐怖をあおる）
+  - siren      # サイレン
+  - radio      # 警察無線の声（本物の記録に見える）
+  - dispatch
+  - "911"
+  - news       # 報道のジングル
+  - boing      # 笑いを誘う音
+  - laugh

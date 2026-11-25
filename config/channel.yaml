@@ -38,6 +38,15 @@ audio:
   bgm_gain_gap: 0.32     # 話していない間（約 -10dB）
   bgm_duck_frames: 12    # 声の前後で音量を切り替える時間
 
+# 効果音（F-012）。音の台帳と画面ごとの既定は config/sfx.yaml、根拠は docs/sfx-research.md
+sfx:
+  target_interval_sec: [6, 10]  # 平均の間隔の目安。6秒より詰めない（前の音への反応が終わる前に次が来る）
+  min_gap_sec: 2.5              # これより近い2つの音は、後ろの小さい方を落とす（hit は落とさない）
+  max_gap_sec: 12               # これより長く効果音がない所を香盤表の注意に出す
+  hit_per_min_max: 1.2          # 強い音（hit）は1分に約1回まで
+  same_in_row_max: 1            # 同じファイルを続けて鳴らさない（同じ音は慣れて効かなくなる）
+  db_below_voice: {bed: 24, light: 16, mid: 12, hit: 8}   # 声より何dB小さく置くか（短時間ラウドネス）。耳で確かめて直す
+
 render:
   gl_linux: swangle    # クラウド（GPUなし）
   gl_windows: angle    # Windows（GPUあり）

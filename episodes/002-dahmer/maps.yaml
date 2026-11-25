@@ -5,6 +5,8 @@ places:
   bath: {lat: 41.1734, lon: -81.6446, label: "バス・タウンシップ"}
   portage: {lat: 43.5392, lon: -89.4626, label: "ポーテージ"}
   baumholder: {lat: 49.6167, lon: 7.3333, label: "バウムホルダー"}
+  akron: {lat: 41.0814, lon: -81.5190, label: "アクロン"}
+  oxford: {lat: 43.0418, lon: -87.9454, label: "オックスフォード・アパート跡"}   # 1992年に取り壊し、今は空き地（個人宅ではない）
 
 views:
   greatlakes:
@@ -24,7 +26,7 @@ views:
     lat: [42.82, 43.22]
     states: true
     lake_rank: 2
-    points: [milwaukee, westallis]
+    points: [milwaukee, westallis, oxford]
     labels:
       - {lat: 43.02, lon: -87.72, text: "ミシガン湖", kind: water}
       - {lat: 43.17, lon: -88.3, text: "ウィスコンシン州"}
@@ -35,9 +37,20 @@ views:
     fit: contain
     countries: true
     lake_rank: 1
-    points: [bath, baumholder]
+    points: [bath, baumholder, milwaukee]
     labels:
       - {lat: 39.0, lon: -98.0, text: "アメリカ"}
       - {lat: 44.0, lon: -40.0, text: "大西洋", kind: water}
-      - {lat: 51.3, lon: 10.5, text: "西ドイツ（当時）"}
+      - {lat: 53.2, lon: 8.0, text: "西ドイツ（当時）"}
     note: "国境は現在のもの"
+  ohio:
+    lon: [-83.3, -80.2]
+    lat: [40.5, 41.85]
+    states: true
+    highlight: [Ohio]
+    lake_rank: 2
+    points: [akron, bath]
+    labels:
+      - {lat: 41.72, lon: -81.3, text: "エリー湖", kind: water}
+      - {lat: 40.75, lon: -82.6, text: "オハイオ州"}
+    note: "オハイオ州北東部（町の位置まで。家は示さない）"

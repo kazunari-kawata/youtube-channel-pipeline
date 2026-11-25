@@ -55,7 +55,12 @@ const useIn = (delay = 0, len = 14) => {
 
 export type CardV = { style: string; text?: string; sub?: string; source?: string; items?: string[]; highlight?: number };
 
-export const CardShot: React.FC<{ v: CardV }> = ({ v }) => {
+/** 続きの区間で後から出す項目：items / points の from 番目以降を、カットの frame コマ目から順に出す（台本の "reveal"） */
+export type Reveal = { from: number; frame: number };
+const revealStart = (i: number, base: number, step: number, r?: Reveal) =>
+  r && i >= r.from ? r.frame + (i - r.from) * step : base + i * step;
+
+export const CardShot: React.FC<{ v: CardV; reveal?: Reveal }> = ({ v, reveal }) => {
   const frame = useCurrentFrame();
   const dur = useInsertDur();
   const a = useIn(4, 16);
@@ -131,7 +136,8 @@ export const CardShot: React.FC<{ v: CardV }> = ({ v }) => {
         {items.map((it, i) => {
           const x = 60 + (i * 980) / Math.max(1, items.length - 1);
           const hi = i === v.highlight;
-          const o = interpolate(frame, [10 + i * 8, 22 + i * 8], [0, 1], clamp);
+          const s0 = revealStart(i, 10, 8, reveal);
+          const o = interpolate(frame, [s0, s0 + 12], [0, 1], clamp);
           const [date, ...rest] = it.split(" ");
           return (
             <div key={i} style={{ position: "absolute", left: x - 110, width: 220, top: 0, textAlign: "center", opacity: o }}>
@@ -149,7 +155,7 @@ export const CardShot: React.FC<{ v: CardV }> = ({ v }) => {
       <div style={{ fontFamily: FONT, textAlign: "left" }}>
         <div style={{ fontSize: 24, color: C.amber, letterSpacing: 6, marginBottom: 30 }}>記録で確かめられる「止められたかもしれない場面」</div>
         {items.map((it, i) => (
-          <div key={i} style={{ fontSize: 40, color: C.cream, margin: "18px 0", opacity: interpolate(frame, [10 + i * 26, 24 + i * 26], [0, 1], clamp) }}>
+          <div key={i} style={{ fontSize: 40, color: C.cream, margin: "18px 0", opacity: interpolate(frame, [revealStart(i, 10, 26, reveal), revealStart(i, 10, 26, reveal) + 14], [0, 1], clamp) }}>
             <span style={{ color: C.amber, marginRight: 22 }}>{"①②③④⑤"[i]}</span>
             {it}
           </div>
@@ -239,7 +245,7 @@ type MapData = {
 };
 const mapCache: Record<string, Promise<MapData>> = {};
 
-export const MapShot: React.FC<{ file: string; points: string[]; route?: string[] }> = ({ file, points, route }) => {
+export const MapShot: React.FC<{ file: string; points: string[]; route?: string[]; reveal?: Reveal }> = ({ file, points, route, reveal }) => {
   const frame = useCurrentFrame();
   const dur = useInsertDur();
   const [data, setData] = useState<MapData | null>(null);
@@ -280,7 +286,8 @@ export const MapShot: React.FC<{ file: string; points: string[]; route?: string[
         {points.map((k, i) => {
           const p = data.points[k];
           if (!p) return null;
-          const o = interpolate(frame, [8 + i * 14, 20 + i * 14], [0, 1], clamp);
+          const s0 = revealStart(i, 8, 14, reveal);
+          const o = interpolate(frame, [s0, s0 + 12], [0, 1], clamp);
           return (
             <div key={k} style={{ opacity: o }}>
               <div style={{ position: "absolute", left: p.x - 8, top: p.y - 8, width: 16, height: 16, borderRadius: "50%", background: C.amber, boxShadow: "0 0 0 6px rgba(230,163,90,0.25)" }} />
