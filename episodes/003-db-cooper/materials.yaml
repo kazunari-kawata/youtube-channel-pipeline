@@ -102,6 +102,12 @@ items:
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: "FBIの作成。別のハイジャック事件と比べたテレタイプなので、NORJAK の行だけを切り出す。ほかの事件と人名の行は映さない"
+  - id: fbi_v52_p038
+    title: "FBIの文書 Part 52 p.38（2000年代の初め）：当時は死刑に当たる罪で、司法省は時効がないと助言。2001年にDNAの再鑑定を決めた経緯"
+    file: fbi/vault_p52_p038.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成（同じ文が Part 77 p.170、1984年の報告 Part 47 p.214 にも）。OCRで確認、原本の画像は未確認。時効の行だけを切り出す。1976年のテレタイプ（Part 61 p.244）には「時効が進んでいる」とあり、当時は時効があると見られていた"
   - id: fbi_v10_reno_teletype
     title: FBIラスベガス支局のテレタイプ（1971年11月25日。「305便は午後11時1分にリノに着陸」）Part 10 p.335
     file: fbi/vault_p10_reno.png
@@ -184,7 +190,7 @@ items:
     title: FBIの似顔絵のうち、サングラスをかけた版
     file: fbi/sketch_glasses.jpg
     original: https://vault.fbi.gov/D-B-Cooper%20
-    status: pd_federal
+    status: check
     note: FBIの人相書き（V77 p.250）に「飛行の後半は縁の黒い巻き付け型のサングラス」とある。Vault か FBI の公式ページで、FBIが作った版を探す。見つからなければ台本の s053 を fbi_sketch に替える
   - id: fbi_2006_story
     title: FBI記事「A Byte Out of History - The D.B. Cooper Mystery」（2006年11月24日。「目立たない男（non-descript man）」）
@@ -224,7 +230,7 @@ items:
     note: 航空史のサイトに「FBI撮影」として載っているが、FBI Vault のどのページかを確かめていない。Vault で見つけたら pd_federal にする。機体の社名ロゴが写るが、資料写真なので可（イメージ映像にはロゴを入れない）
   - id: fbi_2009_story
     title: "FBI記事（2009年3月17日）「In Search of D.B. Cooper: New Developments in the Unsolved Case」。ダン・クーパーという名前の、フランス語の漫画の主人公"
-    url: https://archives.fbi.gov/archives/news/stories/2009/march/in-search-of-d.b.-cooper
+    url: https://www.fbi.gov/news/stories/2009/march/in-search-of-d.b.-cooper/dbcooper_031709
     status: reference
     note: "2026-11-25、ページ本文は取得に失敗。検索結果の抜粋で「事件のころ人気だったフランス語の漫画のシリーズに、ダン・クーパーという主人公がいる」ことを確かめた。公開前に本文を読んで言い回しを確かめる。漫画の絵は出版社の著作物（© Le Lombard）なので画面に出さない。台本では、男の出身や国を推し量る言い方はしない"
   - id: fbi_video_2009
