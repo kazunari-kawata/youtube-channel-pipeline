@@ -98,7 +98,22 @@ const Briefcase: React.FC<{ position: V3; rotY?: number }> = ({ position, rotY =
 
 /* ---------- 1. 空港の通路を歩く ---------- */
 
+/** 確認用（本編では使わない）：人物 COOPER_71 を灰色の背景で前後左右から見る（F-008、F-010。Figure-Check の 003 版）。
+ *  共有の Figure-Check は 002 の体つきなので、003 の場面の角度 fig0・fig90・fig180・fig270 で見る */
+const Cooper71Check: React.FC<{ deg: number }> = ({ deg }) => {
+  const a = (deg / 180) * Math.PI;
+  const cam: CamKey = { pos: [Math.sin(a) * 3.4, 1.15, Math.cos(a) * 3.4], target: [0, 0.95, 0], fov: 35 };
+  return (
+    <Stage fog={0} exposure={1.0} bloom={0} grade="none" bg="#7a7a7a" hemi={["#ffffff", "#444444", 2.0]}>
+      <Camera from={cam} to={cam} />
+      <directionalLight position={[3, 5, 4]} intensity={2.5} />
+      <Figure clip="Idle_Loop" position={[0, 0, 0]} glasses={false} build={COOPER_71} />
+    </Stage>
+  );
+};
+
 export const InsertAirportWalk003: React.FC<SceneProps> = ({ variant = "a" }) => {
+  if (variant.startsWith("fig")) return <Cooper71Check deg={Number(variant.slice(3)) || 0} />;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
