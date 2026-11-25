@@ -1,0 +1,9 @@
+# 003 D.B.クーパー事件の設定（config/channel.yaml を上書きしたいキーだけ書く）
+id: 003-db-cooper
+
+bgm:
+  # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。70年代初めに合う曲をこれから選ぶ
+  tracks: []
+
+# 本人の姿（F-022）。写真はないので、FBIの Exhibit Section が作った似顔絵（V77 p.249）を本人の姿として扱う
+person_photos: [fbi_sketch, fbi_sketch_glasses]

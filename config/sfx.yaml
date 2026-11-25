@@ -30,6 +30,7 @@ sounds:
   amb_fence:  {ja: 風とフェンスのきしみ, level: bed, variants: 1, search: "wind chain link fence"}
   # 003-db-cooper（1971年の太平洋岸北西部）のイメージ映像の環境音
   amb_airport:     {ja: 70年代の空港の待合の環境音（遠いざわめき、空調。アナウンスの声は入れない）, level: bed, variants: 1, search: "airport terminal ambience no announcements"}
+  amb_concourse:   {ja: 空港の通路の環境音（足音の響き、遠いざわめき。アナウンスの声は入れない）, level: bed, variants: 1, search: "airport concourse footsteps ambience"}
   amb_rain:        {ja: 窓に当たる雨の音, level: bed, variants: 1, search: "rain on window glass"}
   amb_cabin:       {ja: 旅客機の機内の低い空調とエンジンの音, level: bed, variants: 1, search: "airplane cabin interior hum"}
   amb_wind_high:   {ja: 高い所の風（遠いジェットの音を含んでよい。爆音にしない）, level: bed, variants: 1, search: "high altitude wind distant jet"}
@@ -62,6 +63,7 @@ rules:
   insert/courthouse:   [{key: amb_court, at: 0.0}]
   insert/police_car:   [{key: amb_idle, at: 0.0}]
   insert/prison_fence: [{key: amb_fence, at: 0.0}]
+  insert/airport_walk: [{key: amb_concourse, at: 0.0}]
   insert/airport_wait: [{key: amb_airport, at: 0.0}]
   insert/rain_window:  [{key: amb_rain, at: 0.0}]
   insert/cabin_seat:   [{key: amb_cabin, at: 0.0}]

@@ -30,9 +30,15 @@ items:
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: FBIの作成。発見した家族の名前が載っているので、画面に出すなら名前の行は映さない（切り出すか、ぼかす）
-  - id: fbi_v76_summary
-    title: FBIシアトル支局の事件のまとめ（SE 164-81。離陸7時36分、8時5分の最後のやりとり、8時11分・1万フィート、リノで見つかった物）Part 76 p.77〜78
-    file: fbi/vault_p76_summary.png
+  - id: fbi_v76_p77
+    title: FBIシアトル支局の事件のまとめ（SE 164-81）Part 76 p.77（シアトル着陸、金とパラシュートの受け渡し、乗客を降ろす）
+    file: fbi/vault_p76_p77.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: FBIの作成。乗務員の名前は黒塗り（b6 b7C）
+  - id: fbi_v76_p78
+    title: FBIシアトル支局の事件のまとめ（SE 164-81）Part 76 p.78（離陸7時36分、8時5分の最後のやりとり、8時11分・1万フィート、リノで見つかった物）
+    file: fbi/vault_p76_p78.png
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: FBIの作成。乗務員の名前は黒塗り（b6 b7C）。爆発物の見た目の記述があるページ（Part 8 p.18 など）は画面に出さない
