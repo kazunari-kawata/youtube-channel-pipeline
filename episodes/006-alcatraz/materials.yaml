@@ -1,0 +1,144 @@
+# 素材台帳：アルカトラズ脱獄（第6回・1962年6月11〜12日、カリフォルニア州サンフランシスコ湾、3人の行方は不明）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status の意味は episodes/002-dahmer/materials.yaml の冒頭と pipeline/fetch_materials.py の STATUS を参照
+#   pd_federal / pd_no_notice / pd_other / cc_by / fair_use / own → 使用可
+#   check → 要確認（画面に出さない） / reference → 参照のみ / unusable → 使用不可
+# 取得：python pipeline/fetch_materials.py 006-alcatraz  → episodes/006-alcatraz/build/materials/
+# url のない項目は手作業で取得する（note に取り方）
+#
+# この回の注意
+# - 被害者も遺体も出てこない回。3人は銀行強盗などで有罪が確定した受刑者で、脱獄そのものも事実として確定している
+# - 分かっていないのは「湾を渡れたか」。FBIの結論（生存の信頼できる証拠なし）と、連邦保安官局が手配を続けたことを分けて言う。
+#   「生きていた」とする家族の主張・2013年の手紙・写真は、主張として扱う（FBIの鑑定は結論なし）。断定しない
+# - 脱獄の手口は、FBIの公式ページが書いている粗さまで（通気口から裏の通路、屋根、煙突、岸）。
+#   道具の作り方・いかだの継ぎ方などの手順は細かく描かない（CLAUDE.md「犯行の手順を描写しない」）
+# - 加害者を持ち上げない。「天才」「伝説の脱獄王」と売らない。焦点は、点検の穴、捜索、FBIと保安官局の結論の違い
+# - 4人目（Allen West）は脱獄できず、捜査に協力した受刑者。名前は必要な場面だけ
+# - 台帳の状態は調査の初回（2026-11-25）。FBIファイルのページ番号と写真1枚ごとの撮影者は、これから原本で確かめる
+
+case: June 1962 Alcatraz escape（1962年6月11日夜〜12日朝、アルカトラズ連邦刑務所。Frank Morris、John Anglin、Clarence Anglin）
+checked_on: 2026-11-25
+
+items:
+  # ---------- FBI（連邦政府の著作物） ----------
+  - id: fbi_vault
+    title: FBI Vault「Alcatraz Escape」（捜査ファイル。保存先の説明では1,757ページ）
+    file: ""
+    original: http://vault.fbi.gov/Alcatraz%20Escape
+    status: pd_federal
+    note: 政府刊行物の保存先は https://purl.fdlp.gov/GPO/LPS97352。FBI職員が書いたメモ・テレタイプ・報告は著作権なし。綴じ込まれた新聞記事と、刑務所局・沿岸警備隊など他機関の書類は作成者を1枚ずつ確かめる（連邦機関の書類なら使用可、新聞は不可）。取得は手作業（ページを決めてから）。探すページ：6月12日の第一報、捜索の報告、West の供述の要約、回収物の鑑定、1979年の終結のメモ
+  - id: fbi_famous_case
+    title: FBI公式「Famous Cases: Alcatraz Escape」（事件の経過とFBIの結論。写真14点）
+    file: fbi/famous_cases_alcatraz.html
+    url: https://www.fbi.gov/history/famous-cases/alcatraz-escape
+    status: pd_federal
+    note: 台本の事実の柱。1934〜63年に14回・36人が脱獄を試みた、3人の到着の時期、6月12日朝の点検、回収物、17年間の捜査で生存の信頼できる証拠なし。写真は下の項目に分けた
+  - id: fbi_2007_story
+    title: FBI公式「A Byte Out of History: Escape from Alcatraz」（2007年6月8日。写真12点）
+    file: fbi/byte_out_of_history_2007.html
+    url: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    status: pd_federal
+    note: 数字の出典。いかだは6×14フィート、レインコート50着以上、天井まで30フィート、煙突45フィート、エンジェル島まで1マイル余り、1979年12月31日にFBIが捜査を終え連邦保安官局へ引き継ぎ
+  - id: fbi_mugshots
+    title: 3人の顔写真（John Anglin、Clarence Anglin、Frank Morris。FBI公式ページに掲載）
+    file: fbi/mugshots_three.jpg
+    original: https://www.fbi.gov/history/famous-cases/alcatraz-escape
+    status: pd_federal
+    note: 連邦刑務所局が撮った受刑者の写真をFBIが掲載。最初の30秒に出す本人の姿（F-022）。episode.yaml の person_photos に書く。画像は手作業で保存
+  - id: fbi_dummy_head
+    title: Morris の房で見つかった人形の頭（横から。鼻が欠けている）と、Clarence Anglin の房の寝台に置かれた様子
+    file: fbi/dummy_head_morris.jpg
+    original: https://www.fbi.gov/history/famous-cases/alcatraz-escape
+    status: pd_federal
+    note: FBIの写真。この回でいちばん強い絵。人の頭に見えるが作り物（石膏・絵の具・髪）。遺体の写真ではない。サムネイルの候補
+  - id: fbi_evidence_photos
+    title: 回収物と現場の写真（手作りの櫂、救命胴衣、のぞき見の道具、いかだの内側、通気口の格子、Bブロックの上の作業場所、屋根の通気口のふた、煙突、北東の岸の航空写真）
+    file: fbi/evidence_set/
+    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    status: pd_federal
+    note: FBIの公式ページ2つに掲載。撮影者の表示はない（FBIか刑務所局の撮影と見られるが、Vault の原本で1枚ずつ確かめる）。素材の使い回しを避けるため、1枚ずつ別の id に分けてから使う
+  - id: fbi_aerial_1932
+    title: アルカトラズ島の航空写真（1932年1月。FBI公式ページに掲載）
+    file: fbi/alcatraz_aerial_1932.jpg
+    original: https://www.fbi.gov/history/famous-cases/alcatraz-escape
+    status: check
+    note: 撮影者の表示がない。1932年は連邦刑務所になる前（陸軍の時代）。陸軍か政府の撮影なら使用可。出どころを確かめるまで画面に出さない
+  # ---------- 連邦保安官局 ----------
+  - id: usms_poster_john
+    title: 連邦保安官局の手配書「WANTED by U.S. Marshals: ANGLIN, JOHN WILLIAM」（1958年2月10日に銀行強盗で10年の刑。年齢を進めた顔の絵つき）
+    file: usms/poster_anglin_john.pdf
+    url: https://usmarshals.gov/sites/default/files/media/document/Poster-California-Northern-Anglin-John-William.pdf
+    status: pd_federal
+    note: 連邦保安官局の作成。年齢を進めた絵はFBIの提供と書いてある。「2014年時点で84歳」の版。資料の画面には日本語の説明を付ける（F-020）
+  - id: usms_poster_clarence
+    title: 連邦保安官局の手配書「ANGLIN, CLARENCE」（1958年2月10日に銀行強盗で15年の刑）
+    file: usms/poster_anglin_clarence.pdf
+    url: https://edit.usmarshals.gov/sites/default/files/media/document/Poster-California-Northern-Anglin-Clarence.pdf
+    status: pd_federal
+    note: 同上。入れ墨の記述の行は映さなくてよい。Morris の手配書は同じ場所にあるはず（URLは未確認）
+  # ---------- 国立公園局・議会図書館・国立公文書館 ----------
+  - id: nps_heads
+    title: 国立公園局の所蔵品の写真「Fake Head」（GOGA 405、406、407。1962年の人形の頭の実物）
+    file: nps/goga_heads/
+    original: https://www.nps.gov/museum/exhibits/alca/exb/FederalPrison/Inmates/Escapes/1962Escape/goga405_head2_exb.html
+    status: check
+    note: 国立公園局のオンライン展示。職員の撮影なら著作権なし。ページのクレジットと利用条件を確かめてから pd_federal にする。ほかの頭は goga406_head_exb.html、goga407_head_exb.html
+  - id: nps_escapes_page
+    title: 国立公園局「At the Rock: Alcatraz Island」脱獄の解説ページ
+    url: https://www.nps.gov/museum/exhibits/alca/escapes.html
+    status: reference
+    note: 事実確認用（6月11日の夜に人形の頭を置いた、West は間に合わなかった）。画面に出す写真は1枚ずつ項目にする
+  - id: loc_habs
+    title: 議会図書館 HABS CA-1792-A「Alcatraz, Cell House」（1986年の記録写真と図面。撮影は国立公園局の Jet Lowe）
+    file: loc/habs_ca1792a/
+    original: https://www.loc.gov/item/ca1498
+    status: pd_federal
+    note: 連邦政府の記録事業。Bブロックと Cブロックの間の通路、房の内部、屋根、図面が使える。事件から24年後の写真なので「1986年撮影」と表示する。FBI公式ページの2枚目（3階の監視所から南を見た内部）もこの中の1枚
+  - id: nara_inmate_files
+    title: 国立公文書館サンフランシスコ分館のアルカトラズ受刑者ファイルと所長の手帳のページ（顔写真つき）
+    file: ""
+    original: https://www.archives.gov/san-francisco/finding-aids/alcatraz-numeric.html
+    status: check
+    note: 連邦刑務所局の記録で著作権なし。ただし公文書館の説明では、公開の審査が済んでいるのは受刑者番号1〜900。3人の番号はそれより後のはずなので、オンラインで見られるかは未確認。見られれば入所時の記録が使える
+  # ---------- 当時の実物資料・地図 ----------
+  - id: usgs_topo_aerial
+    title: USGSの当時の地形図（San Francisco North、1950年代）と航空写真（1960年前後のサンフランシスコ湾）
+    file: ""
+    original: https://earthexplorer.usgs.gov/
+    status: pd_federal
+    note: topoView と EarthExplorer から手作業で取得。島・エンジェル島・マリン岬・ゴールデンゲートの位置関係を見せる
+  - id: noaa_chart_tides
+    title: 当時の海図（米国沿岸測地局、サンフランシスコ湾）と、1962年6月11日夜の潮の記録
+    file: ""
+    status: check
+    note: 沿岸測地局（今のNOAA）の海図は連邦政府の刊行物。NOAA の歴史海図のコレクションで1960年前後の版を探す。潮の向きと水温は、FBIファイルの中の記述か NOAA の記録で確かめる（数字を出すなら出典が必要）
+  - id: own_maps
+    title: 自作の地図（実データ：Natural Earth、Copernicus DEM、湾の水深は使えるデータを確かめてから）。島、北東の岸、エンジェル島、クロンカイト・ビーチ、ゴールデンゲート
+    file: ""
+    status: own
+    note: maps.yaml で作る。回収物が見つかった場所はFBIの記述にある地点だけを点で出す。3人が進んだ経路は分かっていないので線を引かない（引くなら「推定」と注記）
+  # ---------- 参照のみ ----------
+  - id: ref_sept_2026
+    title: 「連邦保安官局の手配は2026年9月まで」という記述（Wikipedia と複数の解説サイト）
+    url: https://en.wikipedia.org/wiki/June_1962_Alcatraz_escape
+    status: reference
+    note: 要確認。Wikipedia は「2026年9月まで手配リストに載っていた」と書くが、連邦保安官局の発表はまだ見つけていない。本当なら「つい2か月前に手配が終わった」という強い入り方になる。一次資料で確かめるまで台本に入れない
+  - id: ref_2013_letter
+    title: 2013年に届いた「John Anglin」を名乗る手紙（2018年に報道）と、家族が示した写真
+    status: reference
+    note: 報道による。FBIの鑑定は結論なしと報じられている。手紙と写真の画像は報道機関・家族のもので使えない。台本では「主張」として1〜2文
+  - id: ref_wikipedia
+    title: Wikipedia「June 1962 Alcatraz escape」
+    url: https://en.wikipedia.org/wiki/June_1962_Alcatraz_escape
+    status: reference
+    note: 時系列の当たりをつけるだけ。台本の事実はFBIと国立公園局で確かめる
+  # ---------- 使用不可 ----------
+  - id: no_press
+    title: 新聞・通信社・写真代理店の写真（Denver Post / Getty の「房の穴の横の看守」など）、サンフランシスコ公共図書館の写真
+    status: unusable
+    note: 権利者がいる。同じ場面はFBIの写真と HABS で代える
+  - id: no_film
+    title: 映画『アルカトラズからの脱出』（1979年）の映像・スチール、テレビ番組の再現映像と実験映像
+    status: unusable
+    note: 権利者がいる。映画に触れるならナレーションだけ
