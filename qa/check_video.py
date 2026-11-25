@@ -187,6 +187,7 @@ def sfx_checks(episode: str, cfg: dict, rep: Report):
 
 
 INTERNAL_WORDS = ("個人宅", "示さない", "出さない", "縮尺まで", "位置まで")
+NARRATION_WORDS = ("別の方が住ん", "にとどめます", "単位でだけ")
 
 
 def onscreen_text_checks(episode: str, rep: Report):
@@ -201,8 +202,11 @@ def onscreen_text_checks(episode: str, rep: Report):
         if isinstance(v, dict):
             texts += [(s["id"], str(v.get(k) or "")) for k in ("text", "sub", "label", "source")]
             texts += [(s["id"], str(i)) for i in v.get("items", [])]
-    bad = [f"{w}：{t}" for w, t in texts if any(k in t for k in INTERNAL_WORDS)]
-    rep.add("画面の文字に制作上の配慮を書いていない", not bad, bad or "なし", "なし", "F-016")
+    # ナレーションにも制作上の配慮を言わない（「この動画では町の位置までにとどめます」など）
+    for s in json.loads((episode_dir(episode) / "narration.json").read_text(encoding="utf-8")):
+        texts.append((s["id"] + " ナレーション", s["caption"]))
+    bad = [f"{w}：{t}" for w, t in texts if any(k in t for k in INTERNAL_WORDS + NARRATION_WORDS)]
+    rep.add("画面とナレーションに制作上の配慮を入れていない", not bad, bad or "なし", "なし", "F-016")
 
 
 def main():
