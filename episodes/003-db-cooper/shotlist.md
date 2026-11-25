@@ -68,7 +68,7 @@
 | K48 | 5:55.4 | 7.0 | 写真 | fbi_parachute | FBIの写真：使われなかったパラシュート | 写真（小） | 切り出し待ち | s048 灰皿には吸い殻があり、使われなかったパラシュートも残… |
 | K49 | 6:02.4 | 5.8 | 写真 | fbi_sketch | FBIの似顔絵（再び） | 写真（小） | 切り出し待ち | s049 3つ目の理由は、人物の手がかりが少なかったことです。… |
 | K50 | 6:08.2 | 6.1 | イメージ映像 | cabin_seat（b） | 機内の通路と座席の列（人物は後ろ姿の輪郭だけ） | 旅客機の機内の低い空調とエンジンの音（下に流す） | 作る | s050 男と長く一緒にいたのは、数時間を共にした乗務員たちで… |
-| K51 | 6:14.3 | 7.0 | 資料 | fbi_v76_summary | FBIのまとめ（人相の部分。名前は黒塗り） | 紙を机に置く・めくる音（小） | 切り出し待ち | s051 2人の客室乗務員は別々に話を聞かれ、ほとんど同じ特徴… |
+| K51 | 6:14.3 | 7.0 | 資料 | fbi_v77_description | FBIの人相書きの表（NORJAK Page 2） | 紙を机に置く・めくる音（小） | 切り出し待ち | s051 2人の客室乗務員は別々に話を聞かれ、ほとんど同じ特徴… |
 | K52 | 6:21.4 | 6.7 | イメージ映像 | airport_wait（c） | 立ち上がる男の輪郭。トレンチコート、書類かばん（顔なし、遠目） | 70年代の空港の待合の環境音（下に流す） | 作る | s052 40代半ばで、背の高さは178センチから183センチ… |
 | K53 | 6:28.1 | 7.8 | 写真 | fbi_sketch_glasses | FBIの似顔絵のうち、サングラスをかけた版 | 写真（小） | 切り出し待ち | s053 黒っぽいスーツにコート。飛行の後半は、濃い色のサング… |
 | K54 | 6:35.8 | 6.0 | 文字カード | fact | 目立たない男 | 書類に判を押す鈍い音（中） | 部品で描く | s054 FBI自身が、のちに「目立たない男」と書いているほど… |
@@ -142,6 +142,7 @@
 - 資料：fbi_v43_decal_teletype（切り出し待ち）
 - 資料：fbi_v43_press_1980（切り出し待ち）
 - 資料：fbi_v76_summary（切り出し待ち）
+- 資料：fbi_v77_description（切り出し待ち）
 - 効果音のファイル 24本（assets/sfx/。取得して LICENSES.md に記録する）：amb_airport_1.wav、amb_cabin_1.wav、amb_forest_rain_1.wav、amb_office_1.wav、amb_rain_1.wav、amb_river_1.wav、amb_wind_high_1.wav、low_hit_1.wav、low_hit_2.wav、paper_1.wav、paper_2.wav、paper_3.wav、paper_4.wav、photo_1.wav、photo_2.wav、photo_3.wav、pin_1.wav、pin_2.wav、pin_3.wav、projector_1.wav、stamp_1.wav、stamp_2.wav、typewriter_1.wav、typewriter_2.wav
 
 ## 注意（CLAUDE.md のルールに照らして）

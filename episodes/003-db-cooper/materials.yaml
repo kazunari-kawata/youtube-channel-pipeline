@@ -36,6 +36,12 @@ items:
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: FBIの作成。乗務員の名前は黒塗り（b6 b7C）。爆発物の見た目の記述があるページ（Part 8 p.18 など）は画面に出さない
+  - id: fbi_v77_description
+    title: FBIの事件の概要と人相書き（NORJAK Page 2。年、身長、体重、髪、サングラス、服装）Part 77 p.249〜250
+    file: fbi/vault_p77_description.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: FBIの作成。似顔絵は「FBI の Exhibit Section が作った」と同じページにある（fbi_sketch の根拠）。肌の色・見た目の人種の記述の行は画面に出さない（台本で使わない）
   - id: fbi_v10_reno_teletype
     title: FBIラスベガス支局のテレタイプ（1971年11月25日。「305便は午後11時1分にリノに着陸」）Part 10 p.335
     file: fbi/vault_p10_reno.png
@@ -65,7 +71,7 @@ items:
     file: fbi/sketch.jpg
     original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
     status: pd_federal
-    note: 捜査資料として見せる。拡大して不気味に見せる演出や、ほかの人物の写真と並べる見せ方はしない（特定の人をほのめかすことになる）。どの版かと作成年をキャプションで確かめる
+    note: FBI の Exhibit Section が作った似顔絵（V77 p.249）。捜査資料として見せる。拡大して不気味に見せる演出や、ほかの人物の写真と並べる見せ方はしない（特定の人をほのめかすことになる）。どの版かと作成年をキャプションで確かめる
   - id: fbi_sketch_glasses
     title: FBIの似顔絵のうち、サングラスをかけた版
     file: fbi/sketch_glasses.jpg
