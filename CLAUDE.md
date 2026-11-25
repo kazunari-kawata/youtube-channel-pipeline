@@ -26,7 +26,8 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 
 - **字幕を画面に入れない**（F-004）。必要ならYouTubeのキャプションで出す
 - **最後に出典まとめの画面を入れない**（F-002）。出典は概要欄（`config/attributions.yaml`）。数字の画面下の小さな出典は入れる
-- **声は ElevenLabs**（F-003）。Kokoro など無料の軽量モデルには戻さない。声は `config/channel.yaml` の `tts.voice_id`
+- **声は ElevenLabs**（F-003）。Kokoro など無料の軽量モデルには戻さない。声は `config/channel.yaml` の `tts.voice_id`。
+  声を替えるときは、全編を作る前に `python pipeline/tts_voice_samples.py --sample <id,...>` でその回の冒頭を複数の声で読ませ、ユーザーが耳で選ぶ（F-017。低く重い声は不自然に聞こえて不採用になった）
 - **BGMは必ず入れ、聞こえる音量にする**（F-005）。YouTubeオーディオライブラリの「帰属表示不要」の曲だけ。
   使う曲は `assets/bgm/LICENSES.md` に記録してから `episode.yaml` の `bgm.tracks` に書く。数字だけでなく、実際に耳で聞いて確認する
 - **効果音を香盤表で決める**（F-012）。画面の動きに付ける（資料＝紙、写真＝厚紙、航空写真＝映写機、日付＝タイプライター、章の扉＝低い「ドン」）。
