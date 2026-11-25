@@ -1,0 +1,34 @@
+# 003 D.B.クーパー：画面に出す切り出し（pipeline/cut_materials.py が読む）
+#   name: remotion/public/003/<name>.jpg。台本の visual.src と同じ名前。同じ資料の別の行は <src>__<focus>
+#   file: episodes/003-db-cooper/build/materials/ の中のファイル（prepare_materials.py と fetch_materials.py が作る）
+#   crop: [左, 上, 右, 下]（ページに対する割合）
+# 切り出す範囲は、2026-11-25 に画像で読んで決めた。乗務員・捜査官の名前、見た目の人種の行、爆発物の記述、
+# 紙幣を見つけた家族の名前、ほかの事件の行は入れない。
+
+# ---------- FBI Vault ----------
+- {name: fbi_v43_press_1980, file: fbi/vault_p43_press_1980.png, crop: [0.08, 0.085, 0.95, 0.359]}   # 発表文の見出しと最初の段落
+- {name: fbi_v64_p159, file: fbi/vault_p64_p159.png, crop: [0.1, 0.496, 0.91, 0.599]}   # 離陸の直前にメモを渡した段落
+- {name: fbi_v26_p471, file: fbi/vault_p26_p471.png, crop: [0.11, 0.339, 0.9, 0.5045]}   # 航空券、座席18E、バーボンとセブンアップ、午後2時53分
+- {name: fbi_v24_p307, file: fbi/vault_p24_p307.png, crop: [0.05, 0.122, 0.9, 0.295]}   # 男が書き取らせた要求（NORJAK の段落だけ。別の事件の段落は入れない）
+- {name: fbi_v41_p27, file: fbi/vault_p41_p27.png, crop: [0.1, 0.378, 0.9, 0.476]}   # 吸い殻8本、7本はローリー
+- {name: fbi_v41_p27__tie, file: fbi/vault_p41_p27.png, crop: [0.1, 0.165, 0.9, 0.379]}   # 残されたネクタイ（ペニーズ、約1ドル50セント）
+- {name: fbi_v64_p161, file: fbi/vault_p64_p161.png, crop: [0.09, 0.247, 0.92, 0.405]}   # 恨みの発言、たばこをすすめた
+- {name: fbi_v74_p257, file: fbi/vault_p74_p257.png, crop: [0.09, 0.391, 0.9, 0.598]}   # 人物像：言葉づかい、酒とたばこ、手慣れていない、タコマ
+- {name: fbi_v74_p257__line2, file: fbi/vault_p74_p257.png, crop: [0.09, 0.481, 0.9, 0.598]}   # 人物像：手慣れた犯罪者には見えない
+- {name: fbi_v76_p77, file: fbi/vault_p76_p77.png, crop: [0.1, 0.702, 0.96, 0.8]}   # 午後5時46分に着陸、金とパラシュートの受け渡し
+- {name: fbi_v10_p448, file: fbi/vault_p10_p448.png, crop: [0.1, 0.165, 0.9, 0.305]}   # 子どものようなふるまい、おつり
+- {name: fbi_v95_p293, file: fbi/vault_p95_p293.png, crop: [0.1, 0.4245, 0.9, 0.594]}   # 男が求めた飛び方（捜査官の名前の行は入れない）
+- {name: fbi_v95_p293__reply, file: fbi/vault_p95_p293.png, crop: [0.1, 0.592, 0.96, 0.677]}   # 階段についての返事
+- {name: fbi_v76_p78, file: fbi/vault_p76_p78.png, crop: [0.1, 0.5935, 0.93, 0.746]}   # 8時5分の最後のやりとり、8時11分
+- {name: fbi_v76_p78__items, file: fbi/vault_p76_p78.png, crop: [0.1, 0.748, 0.93, 0.877]}   # リノで機内に残っていたパラシュート
+- {name: fbi_v10_reno_teletype, file: fbi/vault_p10_reno.png, crop: [0.07, 0.306, 0.93, 0.508]}   # 午後11時1分にリノ着
+- {name: fbi_v43_decal_teletype, file: fbi/vault_p43_decal.png, crop: [0.06, 0.387, 0.93, 0.606]}   # キャッスルロックの真東約12マイル、階段の表示
+- {name: fbi_v42_letter_1978, file: fbi/vault_p42_letter_1978.png, crop: [0.09, 0.385, 0.93, 0.494]}   # 1,000人近くを調べた
+- {name: fbi_v24_indictment, file: fbi/vault_p24_indictment.png, crop: [0.092, 0.352, 0.96, 0.614]}   # 起訴状の表題
+- {name: fbi_v24_indictment__name, file: fbi/vault_p24_indictment.png, crop: [0.092, 0.502, 0.53, 0.614]}   # 被告の名前
+- {name: fbi_v52_p038, file: fbi/vault_p52_p038.png, crop: [0.09, 0.603, 0.91, 0.67]}   # 時効はないという司法省の助言（2002年8月20日）
+- {name: fbi_v76_p76, file: fbi/vault_p76_p76.png, crop: [0.10, 0.688, 0.90, 0.7965]}   # 飲み物を買った行と、封筒を渡した行（メモの文面の行は入れない）
+- {name: fbi_v77_description, file: fbi/vault_p77_description.png, crop: [0.18, 0.7598, 0.88, 0.8252]}   # 人相書き：性別・年・身長・体重（人種と肌の色の行は入れない）
+- {name: fbi_v77_p250, file: fbi/vault_p77_p250.png, crop: [0.18, 0.2552, 0.88, 0.3518]}   # 人相書き 2ページ目：服装の行
+- {name: fbi_v77_p250__sunglasses, file: fbi/vault_p77_p250.png, crop: [0.36, 0.089, 0.88, 0.1445]}   # 人相書き 2ページ目：飛行の後半のサングラス
+- {name: fbi_sketch, file: fbi/sketch.jpg}   # 似顔絵（Part 77 p.250 の左の絵。次のページの見出しは ORIGINAL MONTAGE）

@@ -43,11 +43,17 @@ items:
     status: pd_federal
     note: FBIの作成。乗務員の名前は黒塗り（b6 b7C）。爆発物の見た目の記述があるページ（Part 8 p.18 など）は画面に出さない
   - id: fbi_v77_description
-    title: FBIの事件の概要と人相書き（NORJAK Page 2。年、身長、体重、髪、サングラス、服装）Part 77 p.249〜250
+    title: FBIの事件の概要と人相書き（NORJAK Page 2。年、身長、体重、髪、サングラス、服装）Part 77 p.249（1ページ目：性別・年・身長・体重）
     file: fbi/vault_p77_description.png
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: FBIの作成。似顔絵は「FBI の Exhibit Section が作った」と同じページにある（fbi_sketch の根拠）。肌の色・見た目の人種の記述の行は画面に出さない（台本で使わない）
+  - id: fbi_v77_p250
+    title: FBIの事件の概要と人相書き 2ページ目（NORJAK Page 2。サングラス、声、服装、似顔絵2枚）Part 77 p.250
+    file: fbi/vault_p77_p250.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。2026-11-25 に画像で確認。服装の行とサングラスの行だけを切り出す。同じページの似顔絵は、左が元の似顔絵（fbi_sketch の出どころ）、右が1999年の姿に年を取らせた版（使わない）"
   - id: fbi_v64_p159
     title: "FBIの聞き取りの記録（客室乗務員、FD-302）Part 64 p.159：離陸の直前に渡されたメモ、午後2時53分に出発・2時58分に離陸"
     file: fbi/vault_p64_p159.png
@@ -79,13 +85,13 @@ items:
     status: pd_federal
     note: "FBIの作成。毛髪の記述の行は映さなくてよい"
   - id: fbi_v10_p448
-    title: "FBIの聞き取りの記録（客室乗務員、FD-302）Part 10 p.448：金を受け取ったあと子どものようにふるまった、飲み物のおつりを渡そうとした、行き先の話"
+    title: "FBIの聞き取りの記録（客室乗務員、FD-302）Part 10 p.449（文字起こしでは p.448 の塊）：金を受け取ったあと子どものようにふるまった、飲み物のおつりを渡そうとした、行き先の話"
     file: fbi/vault_p10_p448.png
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: "FBIの作成。前のページ（p.447）は爆発物の見た目の記述なので映さない"
   - id: fbi_v74_p257
-    title: "FBIがまとめた人物像 Part 74 p.257：時代遅れのネクタイ、言葉づかいと教育、バーボンのセブンアップ割りとローリー、手慣れた犯罪者に見えない、「いまタコマの上だ」「マコード空軍基地は空港から20分」"
+    title: "FBIがまとめた人物像 Part 74 p.258（文字起こしでは p.257 の塊。p.257 は爆発物の記述があるので映さない）：時代遅れのネクタイ、言葉づかいと教育、バーボンのセブンアップ割りとローリー、手慣れた犯罪者に見えない、「いまタコマの上だ」「マコード空軍基地は空港から20分」"
     file: fbi/vault_p74_p257.png
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
@@ -109,7 +115,7 @@ items:
     status: pd_federal
     note: "FBIの作成（同じ文が Part 77 p.170、1984年の報告 Part 47 p.214 にも）。OCRで確認、原本の画像は未確認。時効の行だけを切り出す。1976年のテレタイプ（Part 61 p.244）には「時効が進んでいる」とあり、当時は時効があると見られていた"
   - id: fbi_v10_reno_teletype
-    title: FBIラスベガス支局のテレタイプ（1971年11月25日。「305便は午後11時1分にリノに着陸」）Part 10 p.335
+    title: FBIラスベガス支局のテレタイプ（1971年11月25日。「305便は午後11時1分にリノに着陸」）Part 10 p.336（p.335 は郡保安官事務所の書類でFBIの著作物ではないので映さない）
     file: fbi/vault_p10_reno.png
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
