@@ -313,33 +313,60 @@ const WindowWall: React.FC<{ x: number }> = ({ x }) => {
 
 /** 窓の外の空：雲の模様をゆっくり流す（窓に寄る角度だけ）。速く流すとチラつくので、1秒に模様の幅の1%ほど */
 const OutsideSky: React.FC<{ x: number; t: number; sky: "night" | "dusk" }> = ({ x, t, sky }) => {
+  // 窓から見えるのは空の狭い範囲なので、板を小さくして模様を細かくする（大きな板に粗い模様だと、窓いっぱいのぼやけた色になる）。
+  // 地平線（雲海の上の縁）は窓の真ん中の高さ。上は空、下は夕日（または月明かり）に縁を照らされた雲海
   const tex = useMemo(() => {
+    const W = 2048, H = 1024, hz = H * 0.5;
     const cv = document.createElement("canvas");
-    cv.width = 1024; cv.height = 512;
+    cv.width = W; cv.height = H;
     const c = cv.getContext("2d")!;
-    const g = c.createLinearGradient(0, 0, 0, 512);
-    if (sky === "dusk") { g.addColorStop(0, "#6f6c78"); g.addColorStop(0.55, "#b08c72"); g.addColorStop(1, "#4a4040"); }
-    else { g.addColorStop(0, "#0a0e18"); g.addColorStop(1, "#1a2030"); }
-    c.fillStyle = g; c.fillRect(0, 0, 1024, 512);
-    for (let i = 0; i < 260; i++) {
-      // 横につながる雲（左右の端で模様がつながるように、同じ雲を1024ずらして2回描く）
-      const cx = random(`os${i}`) * 1024, cy = 180 + random(`oy${i}`) * 300, r = 30 + random(`or${i}`) * 90;
-      for (const dx of [0, -1024, 1024]) {
-        const gg = c.createRadialGradient(cx + dx, cy, 0, cx + dx, cy, r);
-        gg.addColorStop(0, sky === "dusk" ? "rgba(225,200,180,0.20)" : "rgba(120,130,150,0.16)");
+    const dusk = sky === "dusk";
+    const g = c.createLinearGradient(0, 0, 0, hz);
+    if (dusk) { g.addColorStop(0, "#4e5068"); g.addColorStop(0.7, "#9a7c78"); g.addColorStop(1, "#d6a27c"); }
+    else { g.addColorStop(0, "#060810"); g.addColorStop(1, "#232c3e"); }
+    c.fillStyle = g; c.fillRect(0, 0, W, hz);
+    const d = c.createLinearGradient(0, hz, 0, H);
+    if (dusk) { d.addColorStop(0, "#8a6c66"); d.addColorStop(1, "#3a3036"); }
+    else { d.addColorStop(0, "#273043"); d.addColorStop(1, "#0d111a"); }
+    c.fillStyle = d; c.fillRect(0, hz, W, H - hz);
+    // 左右の端で模様がつながるように、同じものを W ずらして描く
+    const blob = (x: number, y: number, rx: number, ry: number, col: string) => {
+      for (const dx of [0, -W, W]) {
+        c.save();
+        c.translate(x + dx, y);
+        c.scale(1, ry / rx);
+        const gg = c.createRadialGradient(0, 0, 0, 0, 0, rx);
+        gg.addColorStop(0, col);
         gg.addColorStop(1, "rgba(0,0,0,0)");
-        c.fillStyle = gg; c.fillRect(cx + dx - r, cy - r, r * 2, r * 2);
+        c.fillStyle = gg;
+        c.fillRect(-rx, -rx, rx * 2, rx * 2);
+        c.restore();
       }
+    };
+    // 高い所の薄い筋雲
+    for (let i = 0; i < 26; i++) {
+      blob(random(`hs${i}`) * W, hz * (0.25 + random(`hy${i}`) * 0.6), 120 + random(`hr${i}`) * 220, 10 + random(`hq${i}`) * 14,
+        dusk ? "rgba(235,190,165,0.16)" : "rgba(90,100,125,0.12)");
+    }
+    // 雲海：奥ほど小さく低く。上の縁を明るく、下に影
+    for (let i = 0; i < 420; i++) {
+      const depth = random(`dd${i}`);
+      const y = hz + 6 + depth ** 1.6 * (H - hz) * 0.95;
+      const r = 18 + depth * 110 + random(`dr${i}`) * 30;
+      const xx = random(`dx${i}`) * W;
+      blob(xx, y + r * 0.18, r * 1.4, r * 0.5, dusk ? "rgba(40,30,38,0.22)" : "rgba(4,6,10,0.25)");
+      blob(xx, y - r * 0.12, r * 1.2, r * 0.42, dusk ? "rgba(240,196,160,0.20)" : "rgba(140,155,185,0.24)");
     }
     const tx = new THREE.CanvasTexture(cv);
     tx.colorSpace = THREE.SRGBColorSpace;
     tx.wrapS = THREE.RepeatWrapping;
+    tx.anisotropy = 8;
     return tx;
   }, [sky]);
-  tex.offset.x = t * 0.012;
+  tex.offset.x = t * 0.008;
   return (
-    <mesh position={[x, 1.2, 5]} rotation={[0, Math.PI, 0]}>
-      <planeGeometry args={[14, 7]} />
+    <mesh position={[x, 1.45, 6]} rotation={[0, Math.PI, 0]}>
+      <planeGeometry args={[12, 6]} />
       <meshBasicMaterial map={tex} side={THREE.DoubleSide} />
     </mesh>
   );
@@ -451,8 +478,9 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
     // b：通路の低い所から、座席の列と後ろ姿
     b: [{ pos: [-3.9, 1.12, -0.05], target: [3, 1.05, 0.45], fov: 40 }, { pos: [-3.6, 1.12, -0.05], target: [3, 1.05, 0.45], fov: 39 }],
     // c・d：窓に寄って、外を流れる雲（人物なし）
-    c: [{ pos: [row18 - 0.22, 1.4, 1.05], target: [row18 + 0.1, 1.45, 1.75], fov: 34 }, { pos: [row18 - 0.2, 1.4, 1.12], target: [row18 + 0.1, 1.45, 1.75], fov: 32 }],
-    d: [{ pos: [row18 + 0.3, 1.42, 1.05], target: [row18 + 0.05, 1.45, 1.75], fov: 34 }, { pos: [row18 + 0.28, 1.42, 1.12], target: [row18 + 0.05, 1.45, 1.75], fov: 32 }],
+    //   近すぎると窓が画面いっぱいの楕円になって何か分からないので、窓の周りの壁と座席の背が入る所まで離す
+    c: [{ pos: [row18 - 0.38, 1.36, 0.5], target: [row18 + 0.04, 1.4, 1.75], fov: 31 }, { pos: [row18 - 0.34, 1.37, 0.6], target: [row18 + 0.04, 1.41, 1.75], fov: 29 }],
+    d: [{ pos: [row18 + 0.46, 1.38, 0.55], target: [row18 + 0.02, 1.42, 1.75], fov: 31 }, { pos: [row18 + 0.42, 1.38, 0.64], target: [row18 + 0.02, 1.42, 1.75], fov: 29 }],
     // ash：肘掛けの灰皿と、袖口の輪郭
     ash: [{ pos: [row18 + 0.62, 1.02, seatZ - 0.15], target: [row18 + 0.04, 0.64, seatZ + 0.24], fov: 30 }, { pos: [row18 + 0.58, 0.99, seatZ - 0.1], target: [row18 + 0.04, 0.64, seatZ + 0.24], fov: 28 }],
     // ash2：灰皿のふちのたばこ（人物なし）

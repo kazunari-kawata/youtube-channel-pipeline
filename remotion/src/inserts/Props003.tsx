@@ -243,9 +243,9 @@ export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; li
       <mesh position={[18.6, 0.75, 0]} rotation={[0, 0, -0.5]} material={dark}>
         <boxGeometry args={[1.2, 0.3, 2.2]} />
       </mesh>
-      {/* 尾部：細くなって、下に階段の扉 */}
-      <mesh position={[-17 - 3.2, 0.35, 0]} rotation={[0, 0, Math.PI / 2]} material={skin} castShadow>
-        <cylinderGeometry args={[R, 0.7, 6.4, 28]} />
+      {/* 尾部：後ろへ細くなる（z 軸まわりに 90° 回すと円柱の上が後ろ（-x）に来るので、上の半径を小さくする） */}
+      <mesh position={[-17 - 3.2, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={skin} castShadow>
+        <cylinderGeometry args={[0.7, R, 6.4, 28]} />
       </mesh>
       {/* 客室の窓（細い帯。夜は中の明かりがうっすら） */}
       {[-1, 1].map((sd) => (

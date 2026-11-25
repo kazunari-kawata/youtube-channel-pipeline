@@ -50,34 +50,37 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
   if (variant === "e") return <RunwayNight t={t} />;
   // a・b・c：夜の雨雲の中。機体はゆっくり遠ざかる（画面の上で速く動かない距離に置く）
   const planeX = -t * 4; // 機体はゆっくり遠ざかる（カメラも少し追う）
-  const fade = variant === "c" ? interpolate(t, [0.5, 6], [0.5, 0], clamp) : 0.5;
+  const fade = variant === "c" ? interpolate(t, [1.5, 6.5], [0.9, 0], clamp) : 0.5;
   const cams: Record<string, [CamKey, CamKey]> = {
     a: [{ pos: [38, -5, 34], target: [0, 0, 0], fov: 34 }, { pos: [30, -4.5, 32], target: [-24, 0, 0], fov: 33 }], // 後ろ下から、雨雲の中を遠ざかる機体
     b: [{ pos: [70, 6, 120], target: [-10, 0, 0], fov: 24 }, { pos: [62, 6.5, 116], target: [-30, 0, 0], fov: 23 }], // さらに遠くから
-    c: [{ pos: [40, 2, 40], target: [-30, 2, 0], fov: 34 }, { pos: [38, 2.2, 39], target: [-36, 2, 0], fov: 33 }], // 雲だけ、遠い灯りが消える
+    // 雲だけ、遠い灯りが消える。雲の板は +z を向いているので、カメラは -z の方を向ける（横から見ると板が細くなって何も映らない）
+    c: [{ pos: [10, 2, 62], target: [-6, 1, 0], fov: 34 }, { pos: [8, 2.2, 59], target: [-11, 1, 0], fov: 33 }],
     zz: [{ pos: [0, 10, 70], target: [0, 0, 0], fov: 40 }, { pos: [0, 10, 70], target: [0, 0, 0], fov: 40 }], // 確認用：機体を横から（本編では使わない）
   };
   const [from, to] = cams[variant] ?? cams.a;
+  // c は機体がないので、雲そのものを見せる：月明かりを強めて、雲を明るく濃くする（暗いままだと何も映らない画面になる）
+  const cl = variant === "c" ? { k: 2.4, lo: "#aab6cc", hi: "#9aa6bc", mid: "#b6c0d4", near: "#c2cadc", op: 1.25 } : { k: 1.5, lo: "#8f9bb4", hi: "#7d89a3", mid: "#9ca8c0", near: "#a8b2c8", op: 1.1 };
   return (
-    <Stage fog={variant === "b" ? 0.006 : 0.008} exposure={1.15} bloom={0.5} bg="#1b2333" hemi={["#6a7a9a", "#10131a", 0.9]}>
+    <Stage fog={variant === "b" ? 0.006 : variant === "c" ? 0.006 : 0.008} exposure={1.15} bloom={0.5} bg={variant === "c" ? "#151b28" : "#1b2333"} hemi={["#6a7a9a", "#10131a", 0.9]}>
       <Camera from={from} to={to} />
-      <directionalLight position={[40, 60, 30]} intensity={0.8} color="#a8b8d8" />
+      <directionalLight position={[40, 60, 30]} intensity={cl.k} color="#a8b8d8" />
       {variant !== "c" ? <Jet727 position={[planeX, 0, 0]} rotation={[0, Math.PI, 0.02]} lights={0.9} cabin={0.6} /> : null}
       {variant === "c" ? (
         // 遠い灯りだけ。だんだん雲に消えていく
-        <mesh position={[-40 - t * 4, 2, 0]}>
+        <mesh position={[-14 - t * 3, 3, -40]}>
           <sphereGeometry args={[0.35, 10, 10]} />
           <meshBasicMaterial color={new THREE.Color("#ffffff").multiplyScalar(fade * 2)} toneMapped={false} transparent opacity={Math.min(1, fade * 2)} />
         </mesh>
       ) : null}
-      <CloudLayer t={t} y={-14} count={30} spread={220} drift={2.5} color="#7a86a0" opacity={0.85} seed={11} size={70} />
-      <CloudLayer t={t} y={16} count={26} spread={220} drift={1.6} color="#6a7690" opacity={0.7} seed={12} size={80} />
+      <CloudLayer t={t} y={-14} count={30} spread={220} drift={2.5} color={cl.lo} opacity={Math.min(1, 0.85 * cl.op)} seed={11} size={70} />
+      <CloudLayer t={t} y={16} count={26} spread={220} drift={1.6} color={cl.hi} opacity={Math.min(1, 0.7 * cl.op)} seed={12} size={80} />
       <group position={[0, 0, -30]}>
-        <CloudLayer t={t} y={2} count={14} spread={160} drift={3.2} color="#8a96b0" opacity={0.5} seed={13} size={50} />
+        <CloudLayer t={t} y={2} count={variant === "c" ? 22 : 14} spread={160} drift={3.2} color={cl.mid} opacity={Math.min(1, 0.5 * cl.op)} seed={13} size={50} />
       </group>
       {/* 手前を流れる薄い雲（雲の中を飛んでいる感じ）。カメラに近いのでごく薄く、ゆっくり */}
       <group position={[20, 0, 18]}>
-        <CloudLayer t={t} y={-1} count={8} spread={120} drift={2.0} color="#9aa6c0" opacity={0.28} seed={14} size={40} />
+        <CloudLayer t={t} y={-1} count={8} spread={120} drift={2.0} color={cl.near} opacity={0.28} seed={14} size={40} />
       </group>
       {variant === "zz" ? <ambientLight intensity={2} /> : null}
     </Stage>
@@ -190,6 +193,69 @@ const WetWindow: React.FC<{ drops?: number; frameColor?: string; children: React
   );
 };
 
+/** 昼・夕方の窓の外の遠景：空のグラデーション、遠い丘の稜線、低い格納庫の並び（実在の空港の建物はまねない）。
+ *  空が一色で舗装が黒いだけだと、上下に塗り分けた板にしか見えないので、地平線に物を置いて奥行きを出す */
+const DayBackdrop: React.FC<{ look: "overcast" | "clearing" }> = ({ look }) => {
+  const sky = useMemo(() => {
+    const cv = document.createElement("canvas");
+    cv.width = 512; cv.height = 512;
+    const c = cv.getContext("2d")!;
+    const g = c.createLinearGradient(0, 0, 0, 512);
+    if (look === "overcast") { g.addColorStop(0, "#58616c"); g.addColorStop(0.75, "#a9b0b8"); g.addColorStop(1, "#bcc2c8"); }
+    else { g.addColorStop(0, "#39414f"); g.addColorStop(0.55, "#7d7f88"); g.addColorStop(0.85, "#c6a88c"); g.addColorStop(1, "#d8b896"); }
+    c.fillStyle = g; c.fillRect(0, 0, 512, 512);
+    // 雲の筋（横に長く、薄く）
+    for (let i = 0; i < 24; i++) {
+      const x = random(`dbx${look}${i}`) * 512, y = 40 + random(`dby${look}${i}`) * 360, rx = 60 + random(`dbr${look}${i}`) * 140;
+      c.save(); c.translate(x, y); c.scale(1, 0.2);
+      const gg = c.createRadialGradient(0, 0, 0, 0, 0, rx);
+      gg.addColorStop(0, look === "overcast" ? "rgba(70,78,88,0.1)" : "rgba(60,64,78,0.12)");
+      gg.addColorStop(1, "rgba(0,0,0,0)");
+      c.fillStyle = gg; c.fillRect(-rx, -rx, rx * 2, rx * 2); c.restore();
+    }
+    const t = new THREE.CanvasTexture(cv);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }, [look]);
+  const ridge = useMemo(() => {
+    const cv = document.createElement("canvas");
+    cv.width = 1024; cv.height = 128;
+    const c = cv.getContext("2d")!;
+    c.clearRect(0, 0, 1024, 128);
+    c.fillStyle = look === "overcast" ? "#6f7880" : "#55596a";
+    c.beginPath(); c.moveTo(0, 128);
+    for (let x = 0; x <= 1024; x += 8) {
+      const y = 70 - 26 * Math.sin(x / 170 + 1.3) - 14 * Math.sin(x / 61) - 8 * random(`rg${x}`);
+      c.lineTo(x, y);
+    }
+    c.lineTo(1024, 128); c.closePath(); c.fill();
+    const t = new THREE.CanvasTexture(cv);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }, [look]);
+  const hangar = look === "overcast" ? "#5b6066" : "#4a4c54";
+  return (
+    <group>
+      {/* カメラの奥の限り（300m）より手前に置く */}
+      <mesh position={[0, 70, -240]}>
+        <planeGeometry args={[800, 200]} />
+        <meshBasicMaterial map={sky} fog={false} />
+      </mesh>
+      <mesh position={[0, 11, -225]}>
+        <planeGeometry args={[760, 46]} />
+        <meshBasicMaterial map={ridge} transparent fog={false} depthWrite={false} />
+      </mesh>
+      {/* 低い格納庫と建物（窓や文字は描かない） */}
+      {[[-90, 26, 9], [-52, 18, 6], [30, 34, 11], [78, 14, 5], [110, 22, 7]].map(([x, w, h], i) => (
+        <mesh key={i} position={[x * 0.8, h / 2, -165 - i * 5]}>
+          <boxGeometry args={[w, h, 14]} />
+          <meshStandardMaterial color={hangar} roughness={0.9} />
+        </mesh>
+      ))}
+    </group>
+  );
+};
+
 export const InsertRainWindow003: React.FC<SceneProps> = ({ variant = "d" }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -197,9 +263,9 @@ export const InsertRainWindow003: React.FC<SceneProps> = ({ variant = "d" }) => 
   const day = variant === "e" || variant === "c";
   const cams: Record<string, [CamKey, CamKey]> = {
     b: [{ pos: [0.3, 1.5, 2.6], target: [0, 1.5, 0], fov: 40 }, { pos: [0.25, 1.5, 2.3], target: [0, 1.5, 0], fov: 39 }], // 夜の雨の窓（室内側から）
-    c: [{ pos: [-0.6, 1.45, 2.4], target: [0.4, 1.4, -10], fov: 42 }, { pos: [-0.55, 1.45, 2.2], target: [0.4, 1.4, -10], fov: 41 }], // 雨の上がった窓、遠い滑走路の灯り
+    c: [{ pos: [-0.6, 1.45, 2.4], target: [0.4, 2.5, -10], fov: 42 }, { pos: [-0.55, 1.45, 2.2], target: [0.4, 2.5, -10], fov: 41 }], // 雨の上がった窓、遠い滑走路の灯り
     d: [{ pos: [0.8, 1.55, 2.2], target: [-0.3, 1.5, -10], fov: 40 }, { pos: [0.7, 1.55, 2.0], target: [-0.3, 1.5, -10], fov: 39 }], // 雨の窓に映る空港の灯り
-    e: [{ pos: [0.2, 1.6, 2.6], target: [0, 1.7, -30], fov: 40 }, { pos: [0.15, 1.6, 2.4], target: [0, 1.7, -30], fov: 39 }], // 窓越しの機体の尾部
+    e: [{ pos: [0.2, 1.6, 2.6], target: [0, 3.6, -30], fov: 40 }, { pos: [0.15, 1.6, 2.4], target: [0, 3.6, -30], fov: 39 }], // 窓越しの機体の尾部
     g: [{ pos: [0.5, 1.6, 2.5], target: [0, 1.4, -30], fov: 42 }, { pos: [0.45, 1.6, 2.3], target: [0, 1.4, -30], fov: 41 }], // 雨の駐機場の機体と、近づく車の灯り
   };
   const [from, to] = cams[variant] ?? cams.d;
@@ -216,7 +282,18 @@ export const InsertRainWindow003: React.FC<SceneProps> = ({ variant = "d" }) => 
       <Camera from={from} to={to} />
       <WetWindow t={t} drops={variant === "c" ? 0.3 : variant === "e" ? 0.45 : 0.8}>
         <group position={[0, 0, -2]}>
-          <Tarmac color={day ? "#3a3d40" : "#0c0e11"} />
+          {day ? (
+            <>
+              {/* 昼の濡れた舗装：空の明るさを受けて灰色に見える（金属っぽくすると真っ黒になる） */}
+              <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[400, 400]} />
+                <meshStandardMaterial color="#6c7177" roughness={0.55} metalness={0} />
+              </mesh>
+              <DayBackdrop look={variant === "c" ? "clearing" : "overcast"} />
+            </>
+          ) : (
+            <Tarmac color="#0c0e11" />
+          )}
           {day ? null : (
             <mesh position={[0, 14, -170]}>
               <planeGeometry args={[420, 50]} />
