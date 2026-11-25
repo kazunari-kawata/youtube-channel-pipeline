@@ -90,6 +90,18 @@ items:
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: "FBIの作成。同じ趣旨が Part 41 p.13 にもあるが、そちらは恨みの理由や出自の推測が続くので使わない"
+  - id: fbi_v95_p293
+    title: "FBIの報告 Part 95 p.293：男が離陸の前に求めた飛び方（車輪を下ろす、フラップ15度、高さ1万フィート、後ろの戸を開け階段を下ろす）と、階段を下ろしたままでは離陸できないと言われたときの返事"
+    file: fbi/vault_p95_p293.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成（1972年2月16日のシアトルの報告を引いている）。ボーイングの試験飛行の数字（125ノット、フラップ25度）は別の話なので映さない"
+  - id: fbi_v24_p307
+    title: "FBIのテレタイプ Part 24 p.307：1万フィートを超えず、フラップ15度、車輪を出し、後ろの階段も下ろす指示。最後は階段を上げることを受け入れた"
+    file: fbi/vault_p24_p307.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。別のハイジャック事件と比べたテレタイプなので、NORJAK の行だけを切り出す。ほかの事件と人名の行は映さない"
   - id: fbi_v10_reno_teletype
     title: FBIラスベガス支局のテレタイプ（1971年11月25日。「305便は午後11時1分にリノに着陸」）Part 10 p.335
     file: fbi/vault_p10_reno.png
@@ -210,6 +222,11 @@ items:
     original: ""
     status: check
     note: 航空史のサイトに「FBI撮影」として載っているが、FBI Vault のどのページかを確かめていない。Vault で見つけたら pd_federal にする。機体の社名ロゴが写るが、資料写真なので可（イメージ映像にはロゴを入れない）
+  - id: fbi_2009_story
+    title: "FBI記事（2009年3月17日）「In Search of D.B. Cooper: New Developments in the Unsolved Case」。ダン・クーパーという名前の、フランス語の漫画の主人公"
+    url: https://archives.fbi.gov/archives/news/stories/2009/march/in-search-of-d.b.-cooper
+    status: reference
+    note: "2026-11-25、ページ本文は取得に失敗。検索結果の抜粋で「事件のころ人気だったフランス語の漫画のシリーズに、ダン・クーパーという主人公がいる」ことを確かめた。公開前に本文を読んで言い回しを確かめる。漫画の絵は出版社の著作物（© Le Lombard）なので画面に出さない。台本では、男の出身や国を推し量る言い方はしない"
   - id: fbi_video_2009
     title: FBIの動画「Scientists Hunt for D.B. Cooper」（科学者のチームが紙幣の流れ着き方を調べる）
     file: ""
