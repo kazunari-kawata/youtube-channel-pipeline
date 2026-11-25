@@ -18,7 +18,7 @@ import pyloudnorm as pyln
 import soundfile as sf
 
 sys.path.insert(0, str(Path(__file__).parent))
-from common import (DATA_PROCESSED, PUBLIC, ROOT, SRC_DATA, build_dir, decode_audio,  # noqa: E402
+from common import (load_narration, DATA_PROCESSED, PUBLIC, ROOT, SRC_DATA, build_dir, decode_audio,  # noqa: E402
                     load_config, write_json)
 import json  # noqa: E402
 
@@ -39,6 +39,27 @@ def stage_terrain(cfg: dict) -> None:
         shutil.copy2(DATA_PROCESSED / "meta.json", SRC_DATA / "meta.json")
     elif not (SRC_DATA / "meta.json").exists():
         shutil.copy2(DEFAULT_META, SRC_DATA / "meta.json")
+
+
+# 画面の指定は台本（narration.json）が正本。声の尺（timeline.json）は時刻だけを使う
+SCREEN_KEYS = ("caption", "visual", "sfx", "reveal", "reveal_at", "cut", "chapter", "stat")
+
+
+def stage_timeline(ep: str, out: Path) -> dict:
+    """声の尺に、今の台本の画面指定を重ねて remotion/src/data/timeline.json に書く"""
+    tl = json.loads((out / "timeline.json").read_text(encoding="utf-8"))
+    narr = {s["id"]: s for s in load_narration(ep)}
+    missing = [s["id"] for s in tl["segments"] if s["id"] not in narr]
+    if missing or len(narr) != len(tl["segments"]):
+        sys.exit(f"台本と声の区間が合いません（声を作り直す）: 声だけ {missing[:5]}、台本 {len(narr)} 区間 / 声 {len(tl['segments'])} 区間")
+    for s in tl["segments"]:
+        for k in SCREEN_KEYS:
+            s.pop(k, None)
+            if k in narr[s["id"]]:
+                s[k] = narr[s["id"]][k]
+    SRC_DATA.mkdir(parents=True, exist_ok=True)
+    write_json(SRC_DATA / "timeline.json", tl)
+    return tl
 
 
 def check_public(ep: str) -> None:
@@ -89,8 +110,7 @@ def main():
     stage_terrain(cfg)
     check_public(args.episode)
     if args.draft:
-        tl = json.loads((out / "timeline.json").read_text(encoding="utf-8"))
-        shutil.copy2(out / "timeline.json", SRC_DATA / "timeline.json")
+        tl = stage_timeline(args.episode, out)
         a = cfg["audio"]
         write_json(SRC_DATA / "current.json", {
             "episode": args.episode,
@@ -105,8 +125,7 @@ def main():
             sys.exit(f"{out / f} がありません。先に tts_elevenlabs.py を実行してください。")
     PUBLIC.mkdir(parents=True, exist_ok=True)
     shutil.copy2(out / "narration.wav", PUBLIC / "narration.wav")
-    shutil.copy2(out / "timeline.json", SRC_DATA / "timeline.json")
-    tl = json.loads((out / "timeline.json").read_text(encoding="utf-8"))
+    tl = stage_timeline(args.episode, out)
 
     tracks = [ROOT / p for p in (cfg.get("bgm") or {}).get("tracks", [])]
     if not tracks:

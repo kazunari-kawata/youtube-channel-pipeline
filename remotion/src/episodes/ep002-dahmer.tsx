@@ -42,19 +42,30 @@ type Shot = { v: Visual; from: number; to: number; segs: Seg[]; reveal?: Reveal 
 
 const buildShots = (): Shot[] => {
   const out: Shot[] = [];
+  // 区間の中の位置（0〜1）をコマに直す
+  const at = (s: any, frac: number) => Math.round(s.startFrame + frac * (s.endFrame - s.startFrame));
   for (const s of segs) {
     const v = (s as any).visual as Visual | "same" | undefined;
     if (!v) throw new Error(`${s.id} に visual がありません（香盤表）`);
     if (v === "same") {
       if (!out.length) throw new Error("最初の区間は same にできません");
-      const sh = out[out.length - 1];
-      sh.segs.push(s);
-      // 続きの区間の "reveal": N → 年表の項目・地図の点の N 番目以降を、この区間の頭で出す（香盤表では印の音が付く）
-      const r = (s as any).reveal;
-      if (typeof r === "number") sh.reveal = { from: r, frame: Math.max(0, s.startFrame - sh.from) };
+      out[out.length - 1].segs.push(s);
     } else {
       out.push({ v, from: out.length ? Math.max(0, s.startFrame - LEAD) : 0, to: 0, segs: [s] });
     }
+    // "cut": {at, visual} → 区間の途中で次の画面に替える（1枚の絵が長くなりすぎるとき。声はそのまま）
+    // "reveal": N（"reveal_at": 区間の中の位置）→ 年表の項目・地図の点の N 番目以降をそこで出す（香盤表では印の音が付く）
+    //   cut より後ろの位置の reveal は、cut で始まったカットに付く
+    const c = (s as any).cut;
+    const r = (s as any).reveal;
+    const ra = (s as any).reveal_at ?? 0;
+    const addReveal = () => {
+      const sh = out[out.length - 1];
+      sh.reveal = { from: r, frame: Math.max(0, at(s, ra) - sh.from) };
+    };
+    if (typeof r === "number" && !(c && ra >= c.at)) addReveal();
+    if (c) out.push({ v: c.visual as Visual, from: at(s, c.at), to: 0, segs: [s] });
+    if (typeof r === "number" && c && ra >= c.at) addReveal();
   }
   out.forEach((sh, i) => (sh.to = i + 1 < out.length ? out[i + 1].from : TL.totalFrames));
   return out;

@@ -29,7 +29,7 @@ tts:
 
 # 声を作る前の仮の尺（pipeline/estimate_timeline.py）。読み（read）の文字数／秒。本番の声で作り直すと上書きされる
 estimate:
-  chars_per_sec: 6.0
+  chars_per_sec: 5.4   # Jun（JOcmGzB8OFjY8MhjHHEf）の実測 5.38字/秒（002、読み仮名の字数で）
 
 audio:
   narration_lufs: -16    # ナレーションの音量（ラウドネス）

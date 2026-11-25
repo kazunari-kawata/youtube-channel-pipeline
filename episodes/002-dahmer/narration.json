@@ -227,6 +227,15 @@
    "scene": "window",
    "var": "e",
    "note": "明かりの消えた窓（人物なし）"
+  },
+  "cut": {
+   "at": 0.63,
+   "visual": {
+    "kind": "insert",
+    "scene": "police_car",
+    "var": "a",
+    "note": "止めたパトカー（「止められたかもしれない場面」で）"
+   }
   }
  },
  {
@@ -294,6 +303,15 @@
    "scene": "ohio_road",
    "var": "a",
    "note": "70年代のオハイオの郊外の道を歩く若い人物（夕方）"
+  },
+  "cut": {
+   "at": 0.58,
+   "visual": {
+    "kind": "insert",
+    "scene": "night_walk",
+    "var": "c",
+    "note": "当時の車が並ぶ通りを歩く若者（顔なし）"
+   }
   }
  },
  {
@@ -476,6 +494,15 @@
    "scene": "night_walk",
    "var": "a",
    "note": "80年代の夜の通りを歩く人物"
+  },
+  "cut": {
+   "at": 0.43,
+   "visual": {
+    "kind": "insert",
+    "scene": "bus_stop",
+    "var": "a",
+    "note": "れんがの街のバス停"
+   }
   }
  },
  {
@@ -501,25 +528,30 @@
    "src": "mpd_p221",
    "focus": "header",
    "note": "修正起訴状（事件番号 F-912542）の見出し部分。被害者の名前と犯行の記述は映さない"
-  }
+  },
+  "cut": {
+   "at": 0.24,
+   "visual": {
+    "kind": "card",
+    "style": "timeline",
+    "items": [
+     "1988年1月",
+     "1988年3月",
+     "1989年3月"
+    ],
+    "highlight": 2,
+    "source": "ミルウォーキー警察の資料（起訴状）"
+   }
+  },
+  "reveal": 2,
+  "reveal_at": 0.76
  },
  {
   "id": "s035",
   "scene": "ch3",
   "caption": "注目したいのは、この3件目の日付です。",
   "read": "注目したいのは、この、三件目の日付です。",
-  "visual": {
-   "kind": "card",
-   "style": "timeline",
-   "items": [
-    "1988年1月",
-    "1988年3月",
-    "1989年1月30日 有罪判決",
-    "1989年3月"
-   ],
-   "highlight": 3,
-   "source": "ミルウォーキー警察の資料（起訴状、裁判記録）"
-  }
+  "visual": "same"
  },
  {
   "id": "s036",
@@ -612,7 +644,9 @@
     "oxford"
    ],
    "note": "ウェストアリスから市内のアパートへ（祖母の家は出さない）"
-  }
+  },
+  "reveal": 1,
+  "reveal_at": 0.3
  },
  {
   "id": "s042",
@@ -711,6 +745,15 @@
    "src": "mpd_p222",
    "focus": "date",
    "note": "起訴状の第11訴因の日付の部分だけ"
+  },
+  "cut": {
+   "at": 0.79,
+   "visual": {
+    "kind": "insert",
+    "scene": "night_walk",
+    "var": "empty2",
+    "note": "人のいない夜の通り（人物なし）"
+   }
   }
  },
  {
@@ -927,11 +970,20 @@
   "caption": "取り調べで、ダーマーは1978年のオハイオの事件を含め、17人の殺害への関与を認めました。",
   "read": "取り調べで、ダーマーは、千九百七十八年の、オハイオの事件を含め、十七人の殺害への関与を、認めました。",
   "visual": {
-   "kind": "card",
-   "style": "fact",
-   "text": "17人",
-   "sub": "1978年のオハイオの事件を含む",
-   "source": "FBI研究所ファイル"
+   "kind": "doc",
+   "src": "mpd_p064",
+   "focus": "header",
+   "note": "警察の補充報告書（取り調べの記録）の見出し"
+  },
+  "cut": {
+   "at": 0.74,
+   "visual": {
+    "kind": "card",
+    "style": "fact",
+    "text": "17人",
+    "sub": "1978年のオハイオの事件を含む",
+    "source": "FBI研究所ファイル"
+   }
   }
  },
  {
@@ -1060,6 +1112,16 @@
    "style": "date",
    "text": "1994年11月28日",
    "sub": "コロンビア矯正施設（ポーテージ）"
+  },
+  "cut": {
+   "at": 0.45,
+   "visual": {
+    "kind": "aerial",
+    "src": "naip_columbia",
+    "zoom": "in",
+    "label": "コロンビア矯正施設（ウィスコンシン州ポーテージ）",
+    "note": "写真は2022年"
+   }
   }
  },
  {
@@ -1147,6 +1209,15 @@
    "scene": "police_car",
    "var": "b",
    "note": "夜のパトカー（再登場）"
+  },
+  "cut": {
+   "at": 0.475,
+   "visual": {
+    "kind": "aerial",
+    "src": "naip_oxford",
+    "zoom": "in",
+    "label": "オックスフォード・アパート跡地の周辺（2022年）"
+   }
   }
  },
  {
@@ -1209,6 +1280,15 @@
    "scene": "window",
    "var": "e",
    "note": "明かりの消えた窓（人物なし）"
+  },
+  "cut": {
+   "at": 0.23,
+   "visual": {
+    "kind": "insert",
+    "scene": "bus_stop",
+    "var": "empty",
+    "note": "人のいないバス停（人物なし）"
+   }
   }
  },
  {

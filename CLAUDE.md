@@ -13,9 +13,11 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
    イメージ映像の人物の設定（性別・体型・髪型・眼鏡・時代の服装）と、時代の設定（年代・土地・使う小道具・色味）もここで決めて plan.md に書く
 2. 台本：`episodes/<id>/narration.json`（区間ごとに caption / read / visual / 必要なら sfx・tts・chapter・stat）。
    香盤表 `python pipeline/shotlist.py <id>`（画面と効果音。注意0件にする）、読みやすい台本 `python pipeline/script_md.py <id>`。
-   1枚の絵が長く続くときは、文の切れ目で区間を分けて次の絵に替えるか、続きの区間に `"reveal": N`（年表の項目・地図の点を、名前が出たときに出す。印の音が付く）
+   1枚の絵が長く続くときは、文の切れ目で区間を分けて次の絵に替えるか、`"reveal": N`（年表の項目・地図の点を、名前が出たときに出す。印の音が付く。
+   `"reveal_at"` で区間の途中）。声を作ったあとは、区間の途中で絵を替える `"cut": {"at": 0〜1, "visual": …}` を使う（声を作り直さずに済む）
 3. 動画の定義：`remotion/src/episodes/ep<id>.tsx` を作り、`remotion/src/episodes/index.ts` に登録
-4. 通しで作る：`python pipeline/run.py <id>`（ナレーション → 読み間違いチェック → 準備 → 書き出し → QA）
+4. 通しで作る：`python pipeline/run.py <id>`（ナレーション → 読み間違いチェック → 準備 → 書き出し → QA）。
+   声を作ったら香盤表を本番の尺でもう一度回し、注意0件にしてから書き出す（声は見積もりより遅く、イメージ映像の10秒・効果音の空白がはみ出しやすい）
 5. QAに合格したものだけをユーザーに見せる。不合格のまま見せない
 6. フィードバックをもらったら「フィードバックを受けたとき」の手順
 7. OKが出たら `metadata.yaml` を確定し、アップロードと公開予約（`docs/youtube-upload.md`）

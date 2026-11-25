@@ -17,7 +17,8 @@ kind
   "sfx": "none"                         そのカットの既定の効果音を付けない
   "sfx": "paper"  / ["paper", "pin"]    既定の代わりにこの音（カットの始まりの区間）／この区間の始まりに足す（続きの区間）
   "sfx": [{"key": "pin", "at": 2.0}]    区間の始まりから 2.0 秒後に鳴らす
-続きの区間（visual が "same"）に "reveal": N を書くと、年表の項目・地図の点の N 番目以降をその区間の頭で出し、印の音（pin）を付ける
+区間に "reveal": N を書くと、年表の項目・地図の点の N 番目以降をその区間の頭（"reveal_at": 0〜1 で区間の途中）で出し、印の音（pin）を付ける
+区間に "cut": {"at": 0〜1, "visual": {...}} を書くと、区間の途中で次のカットに替える（声を作り直さずに長い絵を分ける。"sfx" も書ける）
 間隔・強さの基準は config/channel.yaml の sfx。結果は shotlist.md の「効果音」と build/sfx_cues.json。
 
 尺は build/timeline.json（本番の声 or estimate_timeline.py の見積もり）から取る。
@@ -40,7 +41,13 @@ INSERT_MAX = 10.0
 STILL_MAX = 16.0
 
 
+def seg_at(s: dict, frac: float) -> float:
+    """区間の中の位置（0〜1）を秒に直す"""
+    return s["start"] + frac * (s["end"] - s["start"])
+
+
 def shots_of(segs: list[dict]) -> list[dict]:
+    """区間をカットにまとめる。"same" は前のカットの続き、"cut": {at, visual} は区間の途中で次のカットを始める"""
     shots = []
     for s in segs:
         v = s.get("visual")
@@ -51,13 +58,23 @@ def shots_of(segs: list[dict]) -> list[dict]:
                 sys.exit(f"{s['id']}：最初の区間は same にできません")
             shots[-1]["segs"].append(s)
         else:
-            shots.append({"v": v, "segs": [s]})
+            shots.append({"v": v, "segs": [s], "start": s["start"]})
+        cut, ra = s.get("cut"), s.get("reveal_at", 0)
+        late = cut is not None and s.get("reveal") is not None and ra >= cut["at"]  # cut より後ろの reveal は新しいカットに付く
+        if s.get("reveal") is not None and not late:
+            shots[-1].setdefault("reveals", []).append(seg_at(s, ra))
+        if cut:
+            shots.append({"v": cut["visual"], "segs": [s], "start": seg_at(s, cut["at"]), "mid": True})
+        if late:
+            shots[-1].setdefault("reveals", []).append(seg_at(s, ra))
     for i, sh in enumerate(shots):
         sh["id"] = f"K{i + 1:02d}"
-        sh["start"] = sh["segs"][0]["start"]
-        nxt = shots[i + 1]["segs"][0]["start"] if i + 1 < len(shots) else sh["segs"][-1]["end"]
+        nxt = shots[i + 1]["start"] if i + 1 < len(shots) else sh["segs"][-1]["end"]
         sh["end"] = nxt
         sh["dur"] = round(nxt - sh["start"], 1)
+        # 動きのない時間（カットの頭と後出しの間の最長）
+        marks = [sh["start"]] + sorted(sh.get("reveals", [])) + [nxt]
+        sh["still"] = round(max(b - a for a, b in zip(marks, marks[1:])), 1)
     return shots
 
 
@@ -96,20 +113,27 @@ def parse_sfx(x, default_at=0.15):
             for e in items]
 
 
+def own_sfx(sh: dict):
+    """カットに指定した効果音（区間の途中で始まるカットは cut の sfx、それ以外は最初の区間の sfx）"""
+    if sh.get("mid"):
+        return parse_sfx(sh["segs"][0]["cut"].get("sfx"))
+    return parse_sfx(sh["segs"][0].get("sfx"))
+
+
 def plan_sfx(shots: list[dict], lib: dict, scfg: dict, speech_end: float):
     """カットごとの効果音を決め、近すぎる音を落とし、間隔を集計する"""
     raw = []
     for sh in shots:
-        own = parse_sfx(sh["segs"][0].get("sfx"))
+        own = own_sfx(sh)
         base = own if own is not None else lib["rules"].get(rule_key(sh["v"]), [])
         for c in base:
             raw.append({"t": sh["start"] + c["at"], "key": c["key"], "shot": sh["id"]})
         for s in sh["segs"][1:]:
-            add = parse_sfx(s.get("sfx"))
-            if add is None and s.get("reveal") is not None:
-                add = [{"key": "pin", "at": 0.15}]  # 続きの区間で項目・点を出す（reveal）ときは印の音
-            for c in add or []:
+            for c in parse_sfx(s.get("sfx")) or []:
                 raw.append({"t": s["start"] + c["at"], "key": c["key"], "shot": sh["id"]})
+        for r in sh.get("reveals", []):
+            if r > sh["start"] + 0.3:  # 後から項目・点を出す（reveal）ときは印の音
+                raw.append({"t": r + 0.15, "key": "pin", "shot": sh["id"]})
     for c in raw:
         if c["key"] not in lib["sounds"]:
             sys.exit(f"{c['shot']}：効果音「{c['key']}」が config/sfx.yaml にありません")
@@ -163,9 +187,9 @@ def main():
     if ids != list(narr):
         sys.exit("timeline.json と narration.json の区間が違います。estimate_timeline.py（または tts_elevenlabs.py）を先に実行してください。")
     # 画面・効果音・後出しの指定は台本が正本（timeline.json は時刻だけ使う）
-    segs = [{**{k: v for k, v in s.items() if k not in ("sfx", "reveal")}, "visual": narr[s["id"]].get("visual"),
+    segs = [{**{k: v for k, v in s.items() if k not in ("sfx", "reveal", "reveal_at", "cut")}, "visual": narr[s["id"]].get("visual"),
              "caption": narr[s["id"]]["caption"],
-             **{k: narr[s["id"]][k] for k in ("sfx", "reveal") if k in narr[s["id"]]}} for s in tl["segments"]]
+             **{k: narr[s["id"]][k] for k in ("sfx", "reveal", "reveal_at", "cut") if k in narr[s["id"]]}} for s in tl["segments"]]
     shots = shots_of(segs)
 
     warn = []
@@ -176,8 +200,8 @@ def main():
                 warn.append(f"{sh['id']}：イメージ映像が {sh['dur']}秒（{INSERT_MAX:.0f}秒まで）")
             if i > 0 and shots[i - 1]["v"]["kind"] == "insert" and shots[i - 1]["v"]["scene"] == v["scene"]:
                 warn.append(f"{sh['id']}：同じイメージ映像（{v['scene']}）が続いている")
-        elif v["kind"] in ("doc", "photo", "card") and sh["dur"] > STILL_MAX:
-            warn.append(f"{sh['id']}：静止画が {sh['dur']}秒（{STILL_MAX:.0f}秒を超えたら分けるか動きを足す）")
+        elif v["kind"] in ("doc", "photo", "card") and sh["still"] > STILL_MAX:
+            warn.append(f"{sh['id']}：静止画が {sh['still']}秒動かない（{STILL_MAX:.0f}秒を超えたら分けるか動きを足す）")
 
     total = tl["totalSeconds"]
     cfg = load_config(a.episode)
@@ -193,8 +217,7 @@ def main():
     lo, hi = scfg["target_interval_sec"]
     # わざと音を付けないカット（遺族の言葉など、rules が [] か sfx: none）にかかる空白は注意に出さない
     quiet = [(sh["start"], sh["end"]) for sh in shots
-             if (parse_sfx(sh["segs"][0].get("sfx")) == []) or
-             (sh["segs"][0].get("sfx") is None and lib["rules"].get(rule_key(sh["v"])) == [])]
+             if own_sfx(sh) == [] or (own_sfx(sh) is None and lib["rules"].get(rule_key(sh["v"])) == [])]
     long_gaps = [(t0, g) for t0, g in gaps if g > scfg["max_gap_sec"]
                  and not any(q0 < t0 + g and t0 < q1 for q0, q1 in quiet)]
     if not lo <= avg <= hi:
@@ -205,7 +228,8 @@ def main():
         m0, s0 = divmod(t0, 60)
         warn.append(f"効果音のない時間が {g:.1f}秒（{int(m0)}:{s0:04.1f}から。{scfg['max_gap_sec']}秒まで）")
     for x, y in zip(cues, cues[1:]):
-        if x["file"] == y["file"] and scfg.get("same_in_row_max", 1) <= 1:
+        # 環境音（bed）は続いてよい（同じ街の音が続くのは自然）。慣れで効かなくなるのは鳴らす音
+        if x["file"] == y["file"] and y["level"] != "bed" and scfg.get("same_in_row_max", 1) <= 1:
             warn.append(f"{y['shot']}：同じ効果音のファイル（{y['file']}）が続いている")
     missing = sorted({c["file"] for c in cues if not (SFX_DIR / c["file"]).exists()})
     write_json(build_dir(a.episode) / "sfx_cues.json",

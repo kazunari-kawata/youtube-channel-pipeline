@@ -265,7 +265,9 @@ export const MapShot: React.FC<{ file: string; points: string[]; route?: string[
     return `M${p.x},${p.y} Q${mx},${my} ${q.x},${q.y}`;
   }, [data, route]);
   if (!data) return null;
-  const draw = interpolate(frame, [14, 60], [0, 1], clamp);
+  // 線は、両端の点が出てから引く（後から出す点＝reveal に向かって先に線が伸びないように）
+  const routeStart = route ? Math.max(...route.map((k) => revealStart(Math.max(0, points.indexOf(k)), 8, 14, reveal))) + 6 : 14;
+  const draw = interpolate(frame, [routeStart, routeStart + 46], [0, 1], clamp);
   return (
     <FilmFrame bg="#0f1726">
       {/* 地図は拡大・縮小しない（細い境界線と地名がゆっくり拡大されると、ピクセルの境目でちらつく） */}
