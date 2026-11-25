@@ -252,17 +252,24 @@ items:
     file: nara/us_attorney_file_cover.jpg
     url: https://www.archives.gov/files/seattle/images/image-6-rg-118.jpg
     original: https://catalog.archives.gov/id/325594129
-    status: pd_federal
-    note: 国立公文書館シアトル分館、記録群118（連邦検事局）。表紙の画像は archives.gov のページ（https://www.archives.gov/seattle/d-b-cooper）にあるもの。中身（実験の記録など）は目録のページから見て、使うページを決める
+    status: unusable
+    note: 2026-11-26 に画像を開いて確かめたら、連邦検事局の書類ではなく、ファイルに綴じ込まれた新聞の別冊の表紙だった（The Seattle Times Magazine、1976年10月3日、新聞社の画家の似顔絵）。連邦政府の著作物ではないので使わない。ファイルの中の連邦の書類（実験の記録など）は、目録のページで作成者を確かめてから、別の項目として足す
 
   # ---------- 連邦航空局（FAA）の規則 ----------
   - id: faa_rule_1972
     title: FAA の規則改正「Rear Exit Security」（改正 25-34・121-99、1972年11月24日署名、37 F.R. 25354）
-    file: faa/amdt_25-34_121-99.pdf
-    url: https://rosap.ntl.bts.gov/view/dot/76278/dot_76278_DS1.pdf
+    file: faa/fr_p25354-040.png
+    url: https://www.govinfo.gov/content/pkg/FR-1972-11-30/pdf/FR-1972-11-30.pdf
     original: https://rosap.ntl.bts.gov/view/dot/76278
     status: pd_federal
-    note: 機体の下や尾部の出口を、飛行中に開けられない作りにすることを求めた規則。前文に「パラシュートで逃げるためのハイジャックを防ぐ」趣旨がある。PDFの文字認識では改正番号が 121-69 と読めてしまうが、目録の題は 121-99。画面に出すなら文書の見出しの部分
+    note: 機体の下や尾部の出口を、飛行中に開けられない作りにすることを求めた規則。前文に「パラシュートで逃げるためのハイジャックを防ぐ」趣旨がある。画面に出すのは連邦官報（Federal Register、37巻231号、1972年11月30日）の 25354ページの見出しと 25355ページの前書き（PDF の 40・41ページ。pdftoppm -r 400 で画像に）。rosap の PDF はクラウドから 403。官報の見出しで改正番号 121-99 と署名日 11月24日（25355ページ）を確かめた
+  - id: faa_rule_1972_p25355
+    title: 同じ規則の続き（連邦官報 1972年11月30日、25355ページ。前書きの「パラシュートで逃げる」の段落と、署名日）
+    file: faa/fr_p25355-041.png
+    url: https://www.govinfo.gov/content/pkg/FR-1972-11-30/pdf/FR-1972-11-30.pdf
+    original: https://www.govinfo.gov/app/details/FR-1972-11-30
+    status: pd_federal
+    note: 官報の PDF の41ページ。画面に出すのは左の段の前書きの段落だけ（同じページの別の規則は入れない）
   - id: doj_crm_1409
     title: 米司法省 Criminal Resource Manual 1409「Indictment For Aircraft Piracy」（死者の出ていない乗っ取りの時効は通常5年）
     file: ""
@@ -298,7 +305,14 @@ items:
     url: https://commons.wikimedia.org/wiki/Special:FilePath/AT_CASCADE_LOCKS_ON_THE_COLUMBIA_RIVER_-_NARA_-_548138.jpg
     original: https://catalog.archives.gov/id/548138
     status: pd_federal
-    note: カスケード・ロックスは紙幣が見つかった場所よりずっと上流。川の雰囲気としてだけ使い、場所を取り違えさせない表示にする
+    note: カスケード・ロックスは紙幣が見つかった場所よりずっと上流。2026-11-26 に画像を確かめ、使わないことにした（釣りをする人が大きく写り、川と山はぼけている。事件と関係のある人に見えかねない）。代わりに doc_columbia_hayden
+  - id: doc_columbia_hayden
+    title: DOCUMERICA「THE HAYDEN ISLAND COMPLEX ON THE COLUMBIA RIVER ... THE INTERSTATE BRIDGE CONNECTS VANCOUVER, WA., AND PORTLAND, OR」（空から見たコロンビア川、NARA 548023）
+    file: documerica/hayden_island_548023.jpg
+    url: https://commons.wikimedia.org/wiki/Special:FilePath/THE_HAYDEN_ISLAND_COMPLEX_ON_THE_COLUMBIA_RIVER_INCLUDES_SHOPPING_CENTERS,_INDUSTRY,_HOUSEBOATS,_AND_CONDOMINIUMS...._-_NARA_-_548023.jpg
+    original: https://catalog.archives.gov/id/548023
+    status: pd_federal
+    note: EPA の DOCUMERICA（1970年代）。ポートランドとワシントン州バンクーバーを結ぶ州間橋と、砂の岸。紙幣が見つかったテナ・バーはこの下流。場所を取り違えさせないよう「1970年代のコロンビア川（ポートランドとバンクーバーの間）」と表示する。撮影年月は目録で確かめる
   - id: doc_more_candidates
     title: DOCUMERICA のほかの候補（コロンビア川のワシントン州側の岸、州間高速道路5号線、1973年のオレゴン州など）
     file: ""

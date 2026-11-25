@@ -108,6 +108,8 @@ export const InsertAirportWalk003: React.FC<SceneProps> = ({ variant = "a" }) =>
     a: [{ pos: [-1.6, 1.5, 11], target: [-0.6, 1.2, -1], fov: 34 }, { pos: [0.8, 1.5, 11], target: [1.8, 1.2, -1], fov: 34 }], // 横から、男と一緒にゆっくり流す（速く流すと奥の床がちらつく）
     b: [{ pos: [-9, 1.6, 2.6], target: [4, 1.2, 0.2], fov: 30 }, { pos: [-8.5, 1.6, 2.6], target: [5, 1.2, 0.2], fov: 30 }], // 後ろから、遠ざかる男
     gate: [{ pos: [9, 2.2, 7], target: [-2, 1.1, -1], fov: 36 }, { pos: [8, 2.1, 6.4], target: [-2, 1.1, -1.2], fov: 35 }], // 搭乗口の列と検査の台
+    // c：天井に近い高い所から、通路の奥へ小さく遠ざかる男（名前の分からない男）。カメラはほとんど動かさない
+    c: [{ pos: [9.5, 3.7, 5.5], target: [-1.5, 0.5, -0.5], fov: 42 }, { pos: [9.2, 3.7, 5.3], target: [-2.0, 0.5, -0.5], fov: 41 }],
   };
   const [from, to] = cams[variant] ?? cams.a;
   return (
@@ -139,7 +141,11 @@ export const InsertAirportWalk003: React.FC<SceneProps> = ({ variant = "a" }) =>
           </mesh>
         </>
       ) : (
-        <Figure clip="Walk_Formal_Loop" path={variant === "b" ? walkX(-4.5, 1) : walkX(-4.0, 1)} rotationY={Math.PI / 2} glasses={false} build={COOPER_71} />
+        variant === "c" ? (
+          <Figure clip="Walk_Formal_Loop" path={walkX(2.6, -1)} rotationY={-Math.PI / 2} glasses={false} build={COOPER_71} />
+        ) : (
+          <Figure clip="Walk_Formal_Loop" path={variant === "b" ? walkX(-4.5, 1) : walkX(-4.0, 1)} rotationY={Math.PI / 2} glasses={false} build={COOPER_71} />
+        )
       )}
       {/* 遠くを行き交う人（顔なし、小さく） */}
       {variant !== "gate" ? (
