@@ -8,17 +8,12 @@ video:
 
 tts:
   provider: elevenlabs
-  voice_id: JOcmGzB8OFjY8MhjHHEf    # Jun（日本語、落ち着いたナレーション向け。2026-11-25 ユーザーが選定）
-  model_id: eleven_multilingual_v2 # 使えるモデルは tts_voice_samples.py --models で確認
-  language_code: null              # multilingual_v2 では指定しない。v3系なら "ja"
+  voice_id: 3JDquces8E8bkmvbh6Bc    # Otani（日本語の男性、落ち着いた語り。2026-11-25 ユーザーが試聴して選定。Jun は低すぎて不採用：F-017）
+  model_id: eleven_v3              # v2 より日本語が自然（F-017 の聞き比べ）。使えるモデルは tts_voice_samples.py --models で確認
+  language_code: ja                # v3系では指定する。multilingual_v2 なら null
   output_format: mp3_44100_128     # 全プランで使える形式
-  voice_settings:
-    stability: 0.5
-    similarity_boost: 0.75
-    style: 0.0
-    use_speaker_boost: true
-    speed: 1.0
-  stitch: true                     # 前後の文を渡して、区切りごとの抑揚のつながりを良くする
+  voice_settings: null             # 声の初期値（試聴で選んだサンプルと同じ）。v2 に戻すなら stability 0.5 / similarity_boost 0.75 など
+  stitch: false                    # 前後の文を渡すつなぎは eleven_v3 では使えない（v2 なら true）
   seed: 42
   # 区切りの間（秒）
   lead: 1.2
@@ -29,7 +24,7 @@ tts:
 
 # 声を作る前の仮の尺（pipeline/estimate_timeline.py）。読み（read）の文字数／秒。本番の声で作り直すと上書きされる
 estimate:
-  chars_per_sec: 5.4   # Jun（JOcmGzB8OFjY8MhjHHEf）の実測 5.38字/秒（002、読み仮名の字数で）
+  chars_per_sec: 5.4   # Jun の実測 5.38字/秒（002、読み仮名の字数で）。Otani・v3 で全編を作ったら測り直す
 
 audio:
   narration_lufs: -16    # ナレーションの音量（ラウドネス）

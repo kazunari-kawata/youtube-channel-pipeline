@@ -171,6 +171,9 @@ def lint(rep: Report):
     rep.add("イメージ映像に「イメージ」の表示を入れていない", not bad, bad or "なし", "なし", "F-015")
     ok = all(k in ins for k in ("FILM_GRADE", "<Bloom")) and (src / "inserts" / "Era80s.tsx").exists()
     rep.add("イメージ映像に時代の質感（フィルムの色・にじみ・小道具）", ok, "あり" if ok else "外れている", "あり", "F-011")
+    pipe = Path(__file__).resolve().parents[1] / "pipeline"
+    bad = [n for n in ("tts_elevenlabs.py", "tts_voice_samples.py") if "numbers_to_kana" in (pipe / n).read_text(encoding="utf-8")]
+    rep.add("音声合成に渡す文の数字をひらがなに直していない", not bad, bad or "なし", "なし", "F-018")
 
 
 def sfx_checks(episode: str, cfg: dict, rep: Report):

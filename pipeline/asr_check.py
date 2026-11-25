@@ -58,7 +58,8 @@ def main():
         x = sg.resample_poly(a, 16000 // g, sr // g).astype(np.float32)
         parts, _ = model.transcribe(x, language="ja", beam_size=5, vad_filter=False)
         hyp = "".join(p.text for p in parts)
-        # 原稿と聞き取り結果の両方で数字を同じ読みに直してから比べる（数字が落ちて一致率が下がるのを防ぐ）
+        # 原稿と聞き取り結果の両方で数字を同じ読みに直してから比べる（数字が落ちて一致率が下がるのを防ぐ）。
+        # これは比べるためだけで、音声合成に渡す文はひらがなに直さない（F-018）
         ref = numbers_to_kana(s["caption"])
         r = difflib.SequenceMatcher(None, kana(ref), kana(numbers_to_kana(hyp))).ratio()
         rows.append({"id": s["id"], "ratio": round(r, 3), "caption": s["caption"], "heard": hyp})
