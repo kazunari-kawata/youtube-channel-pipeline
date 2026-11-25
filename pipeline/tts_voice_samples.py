@@ -7,7 +7,7 @@
   python pipeline/tts_voice_samples.py --add <public_owner_id>:<voice_id>
       ライブラリの声を自分のアカウントに追加（APIで使うのに必要）
   python pipeline/tts_voice_samples.py --sample <voice_id>[,<voice_id>...] [--model eleven_v3]
-      001話の冒頭3文を、その声で実際に読ませる（1声あたり約150文字を消費）
+      その回（--episode、既定 002-dahmer）の冒頭約60字（10秒前後）を、その声で読ませる（1声あたり約70文字を消費）
 
 聞き比べて決めたら、config/channel.yaml の tts.voice_id（と model_id）に書く。
 """
@@ -20,6 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from common import ROOT, require_env  # noqa: E402
+from numread import numbers_to_kana  # noqa: E402
 from tts_elevenlabs import API, request_audio  # noqa: E402
 
 OUT = ROOT / "build" / "voice_samples"
@@ -73,18 +74,33 @@ def add(key, spec):
     print("追加しました。voice_id =", res.get("voice_id"))
 
 
-def sample(key, ids, model):
-    segs = json.loads((ROOT / "episodes" / "001-plains" / "narration.json").read_text(encoding="utf-8"))[:3]
-    text = "".join(s.get("tts") or s["caption"] for s in segs)
-    OUT.mkdir(parents=True, exist_ok=True)
+def voice_name(key, vid) -> str:
+    try:
+        return call(f"/voices/{vid}", key).get("name", vid)
+    except Exception:
+        return vid
+
+
+def sample(key, ids, model, episode, chars):
+    """その回の冒頭（約 chars 文字＝10秒前後）を、その声で読ませる。数字はひらがなに直す（本番と同じ）"""
+    segs = json.loads((ROOT / "episodes" / episode / "narration.json").read_text(encoding="utf-8"))
+    text = ""
+    for s in segs:
+        text += s.get("tts") or s["caption"]
+        if len(text) >= chars:
+            break
+    text = numbers_to_kana(text)
+    out = OUT / episode
+    out.mkdir(parents=True, exist_ok=True)
     t = {"model_id": model, "voice_settings": None, "stitch": False, "output_format": "mp3_44100_128"}
     if model.startswith("eleven_v3"):
         t["language_code"] = "ja"
     for vid in ids:
         t["voice_id"] = vid
-        p = OUT / f"{vid}_{model}.mp3"
+        name = "".join(c if c.isalnum() else "_" for c in voice_name(key, vid))[:30]
+        p = out / f"{name}_{vid}_{model}.mp3"
         p.write_bytes(request_audio(text, t, key, "", ""))
-        print(f"{p}（{len(text)}文字）")
+        print(f"{p.name}（{len(text)}文字）")
 
 
 def main():
@@ -97,6 +113,8 @@ def main():
     ap.add_argument("--add")
     ap.add_argument("--sample")
     ap.add_argument("--model", default="eleven_multilingual_v2")
+    ap.add_argument("--episode", default="002-dahmer", help="--sample で読ませる回")
+    ap.add_argument("--chars", type=int, default=60, help="--sample の文字数の目安（60字で約10秒）")
     a = ap.parse_args()
     key = require_env("ELEVENLABS_API_KEY")
     if a.models:
@@ -106,7 +124,7 @@ def main():
     if a.add:
         add(key, a.add)
     if a.sample:
-        sample(key, a.sample.split(","), a.model)
+        sample(key, a.sample.split(","), a.model, a.episode, a.chars)
 
 
 if __name__ == "__main__":
