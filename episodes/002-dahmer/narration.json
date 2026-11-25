@@ -179,12 +179,7 @@
   "scene": "intro",
   "caption": "この動画では、ドラマの場面は使いません。",
   "read": "この動画では、ドラマの場面は使いません。",
-  "visual": {
-   "kind": "card",
-   "style": "netflix",
-   "text": "ドラマの場面は使いません",
-   "sub": "公開された記録で確かめられることだけ"
-  }
+  "visual": "same"
  },
  {
   "id": "s014a",

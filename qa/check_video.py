@@ -167,8 +167,8 @@ def lint(rep: Report):
     ok = all(k in fig for k in ("hideCovered(m)", "makeClothes(", "makeHair(")) and "SLIM_90S" in fig
     rep.add("人物は服・髪つきの痩せ型（筋肉質なマネキンを見せない）", ok, "あり" if ok else "外れている", "あり", "F-008")
     ins = text.get(src / "inserts" / "Inserts.tsx", "")
-    ok = "イメージ" in ins
-    rep.add("イメージ映像に「イメージ」表示", ok, "あり" if ok else "なし", "あり", "F-009")
+    bad = [str(p.relative_to(src)) for p, t in text.items() if "inserts" in p.parts and ">イメージ<" in t]
+    rep.add("イメージ映像に「イメージ」の表示を入れていない", not bad, bad or "なし", "なし", "F-015")
     ok = all(k in ins for k in ("FILM_GRADE", "<Bloom")) and (src / "inserts" / "Era80s.tsx").exists()
     rep.add("イメージ映像に時代の質感（フィルムの色・にじみ・小道具）", ok, "あり" if ok else "外れている", "あり", "F-011")
 

@@ -1,6 +1,6 @@
 /**
  * イメージ映像（挿入シーン）。事件の日常の場面だけを、顔のないシルエットで描く。
- * 犯行・被害者・暴力をほのめかす場面は作らない（CLAUDE.md）。画面に必ず「イメージ」と表示する。
+ * 犯行・被害者・暴力をほのめかす場面は作らない（CLAUDE.md）。「イメージ」の表示は出さない（F-015）。
  * 事件の時代（ダーマーは80年代）のアメリカらしさを、れんが・ナトリウム灯・当時の車・ネオン・公衆電話・
  * 木目の壁板・非常階段と、フィルムの色とにじみで出す（F-011。部品は ./Era80s.tsx）。
  */
@@ -11,7 +11,6 @@ import { AbsoluteFill, interpolate, random, useCurrentFrame, useVideoConfig } fr
 import * as THREE from "three";
 import { Figure } from "../lib/Figure";
 import { Bloom, Car80s, FireEscape, NeonSign, NewsBox, Payphone, slowWave, Storefront, WoodMaterial } from "./Era80s";
-import { FONT } from "../lib/font";
 import { H, W } from "../lib/geo";
 
 const SODIUM = "#ffa24a";
@@ -184,7 +183,7 @@ export const Building: React.FC<{ x: number; z: number; w: number; d: number; h:
   );
 };
 
-/** フィルムの粒子・周辺減光・「イメージ」表示 */
+/** フィルムの粒子・周辺減光（「イメージ」の表示は出さない：目線がそれてノイズになる。F-015） */
 const Overlay: React.FC = () => {
   const frame = useCurrentFrame();
   const seed = Math.floor(frame / 2);
@@ -197,8 +196,6 @@ const Overlay: React.FC = () => {
         </filter>
         <rect width="100%" height="100%" filter={`url(#g${seed})`} />
       </svg>
-      <div style={{ position: "absolute", left: 28, bottom: 22, fontFamily: FONT, fontSize: 15, color: "rgba(255,255,255,0.72)",
-        letterSpacing: 2, border: "1px solid rgba(255,255,255,0.4)", padding: "3px 10px", borderRadius: 3 }}>イメージ</div>
     </AbsoluteFill>
   );
 };
