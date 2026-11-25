@@ -484,10 +484,11 @@ const makeCap = (head: THREE.Box3, color: string) => {
   const g = new THREE.Group();
   const cloth = new THREE.MeshStandardMaterial({ color, roughness: 0.85 });
   const dark = new THREE.MeshStandardMaterial({ color: "#0c0c0d", roughness: 0.7 }); // つばはつやを抑える（小さく明るい反射はチラつく）
-  // 帽子は髪の上からかぶるので、頭より2割ほど大きく。帯が額の高さに来るように深くかぶせる
-  const crown = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.36, r * 1.2, 0.075, 28), cloth);
-  crown.position.y = 0.0125;
-  const band = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.21, r * 1.21, 0.034, 28), dark);
+  // 帯が額の高さに来るように深くかぶせる（警官は髪を付けないので、頭にぴったり）
+  // 上の山は低く、帯より大きく張り出す（高い筒にすると、正面からはシルクハットに見えた）
+  const crown = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.52, r * 1.16, 0.05, 28), cloth);
+  crown.position.y = 0.002;
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.17, r * 1.17, 0.034, 28), dark);
   band.position.y = -0.04;
   // つば：前半分の薄い円板を、少し下へ傾ける
   const visor = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.5, r * 1.5, 0.007, 24, 1, false, -Math.PI / 2, Math.PI), dark);

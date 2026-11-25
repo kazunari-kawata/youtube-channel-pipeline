@@ -63,13 +63,13 @@ const Entrance: React.FC<{ x: number; z: number }> = ({ x, z }) => {
   );
 };
 
-export const InsertArrest: React.FC<SceneProps> = ({ variant = "a" }) => {
+export const InsertArrest: React.FC<SceneProps> = ({ variant = "c" }) => {
   const cams: Record<string, [CamKey, CamKey]> = {
     a: [{ pos: [-10.5, 1.6, -0.6], target: [1.0, 1.05, -4.4], fov: 25 }, { pos: [-9.9, 1.6, -0.8], target: [1.0, 1.05, -4.4], fov: 24 }],
     b: [{ pos: [-2.6, 1.6, 4.2], target: [1.1, 1.0, -4.0], fov: 30 }, { pos: [-2.4, 1.6, 3.8], target: [1.1, 1.0, -4.0], fov: 29 }],
     c: [{ pos: [-3.4, 1.75, 3.0], target: [1.2, 1.0, -4.2], fov: 31 }, { pos: [-3.2, 1.75, 2.6], target: [1.2, 1.0, -4.2], fov: 30 }],
   };
-  const [from, to] = cams[variant] ?? cams.a;
+  const [from, to] = cams[variant] ?? cams.c;
   // 本人：歩道の上で、パトカーのほう（-z、少し車道側）を向く。警官は本人の右うしろ（建物側）に立ち、左手を本人の右腕に添える。
   // こうすると、通りの向かい（a）からも後ろ（c）からも、本人の両手が後ろに回っているのが警官に隠れずに見える
   const face = Math.PI + 0.25;
