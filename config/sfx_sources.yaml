@@ -30,3 +30,12 @@ files:
   amb_court_1:  {id: 2658, title: "Wind blowing ambience", max: 13, bed: true}   # 後半の風の笛のような音（サイレンに聞こえかねない）を使わない
   amb_idle_1:   {id: 1535, title: "Car ignition", start: 4.0, max: 6, bed: true}
   amb_fence_1:  {id: 1267, title: "Wind in the top of the mountain", max: 30, bed: true}
+  # 003-db-cooper のイメージ映像の環境音（2026-11-25 夜に題名と長さから選んだ。アナウンスの声・サイレンが入っていないかは耳で確かめる）
+  amb_airport_1:     {id: 1567, title: "People in airport ambience", max: 22, bed: true}
+  amb_concourse_1:   {id: 1573, title: "Busy crowd at airport terminal estation", start: 8, max: 25, bed: true}
+  amb_rain_1:        {id: 1249, title: "Light rain looping", max: 30, bed: true}
+  amb_cabin_1:       {id: 1574, title: "Jet plane hum flying", max: 28, bed: true}
+  amb_wind_high_1:   {id: 1177, title: "Deep cinematic wind hum", max: 30, bed: true}
+  amb_forest_rain_1: {id: 1225, title: "Forest rain loop", max: 24, bed: true}
+  amb_river_1:       {id: 2454, title: "River water flowing", start: 10, max: 30, bed: true}
+  amb_office_1:      {id: 447,  title: "Office ambience", max: 30, bed: true}
