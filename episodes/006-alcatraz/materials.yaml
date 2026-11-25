@@ -29,13 +29,13 @@ items:
     status: pd_federal
     note: 政府刊行物の保存先は https://purl.fdlp.gov/GPO/LPS97352。FBI職員が書いたメモ・テレタイプ・報告は著作権なし。綴じ込まれた新聞記事と、刑務所局・沿岸警備隊など他機関の書類は作成者を1枚ずつ確かめる（連邦機関の書類なら使用可、新聞は不可）。取得は手作業（ページを決めてから）。探すページ：6月12日の第一報、捜索の報告、West の供述の要約、回収物の鑑定、1979年の終結のメモ
   - id: fbi_famous_case
-    title: FBI公式「Famous Cases: Alcatraz Escape」（事件の経過とFBIの結論。写真14点）
+    title: "FBI公式「Famous Cases: Alcatraz Escape」（事件の経過とFBIの結論。写真14点）"
     file: fbi/famous_cases_alcatraz.html
     url: https://www.fbi.gov/history/famous-cases/alcatraz-escape
     status: pd_federal
     note: 台本の事実の柱。1934〜63年に14回・36人が脱獄を試みた、3人の到着の時期、6月12日朝の点検、回収物、17年間の捜査で生存の信頼できる証拠なし。写真は下の項目に分けた
   - id: fbi_2007_story
-    title: FBI公式「A Byte Out of History: Escape from Alcatraz」（2007年6月8日。写真12点）
+    title: "FBI公式「A Byte Out of History: Escape from Alcatraz」（2007年6月8日。写真12点）"
     file: fbi/byte_out_of_history_2007.html
     url: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
     status: pd_federal
@@ -66,7 +66,7 @@ items:
     note: 撮影者の表示がない。1932年は連邦刑務所になる前（陸軍の時代）。陸軍か政府の撮影なら使用可。出どころを確かめるまで画面に出さない
   # ---------- 連邦保安官局 ----------
   - id: usms_poster_john
-    title: 連邦保安官局の手配書「WANTED by U.S. Marshals: ANGLIN, JOHN WILLIAM」（1958年2月10日に銀行強盗で10年の刑。年齢を進めた顔の絵つき）
+    title: "連邦保安官局の手配書「WANTED by U.S. Marshals: ANGLIN, JOHN WILLIAM」（1958年2月10日に銀行強盗で10年の刑。年齢を進めた顔の絵つき）"
     file: usms/poster_anglin_john.pdf
     url: https://usmarshals.gov/sites/default/files/media/document/Poster-California-Northern-Anglin-John-William.pdf
     status: pd_federal
@@ -85,7 +85,7 @@ items:
     status: check
     note: 国立公園局のオンライン展示。職員の撮影なら著作権なし。ページのクレジットと利用条件を確かめてから pd_federal にする。ほかの頭は goga406_head_exb.html、goga407_head_exb.html
   - id: nps_escapes_page
-    title: 国立公園局「At the Rock: Alcatraz Island」脱獄の解説ページ
+    title: "国立公園局「At the Rock: Alcatraz Island」脱獄の解説ページ"
     url: https://www.nps.gov/museum/exhibits/alca/escapes.html
     status: reference
     note: 事実確認用（6月11日の夜に人形の頭を置いた、West は間に合わなかった）。画面に出す写真は1枚ずつ項目にする
