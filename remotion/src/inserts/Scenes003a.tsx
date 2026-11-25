@@ -253,15 +253,16 @@ export const InsertAirportWait003: React.FC<SceneProps> = ({ variant = "b" }) =>
 const CABIN_R = 1.85;
 const SEAT_PITCH = 0.86;
 
-/** 座席1つ（70年代の布張り） */
-const Seat: React.FC<{ position: V3; color: string }> = ({ position, color }) => (
+/** 座席1つ（70年代の布張り）。席の間隔は 0.47m。座面や肘掛けが隣の席と重なると、重なった面がちらつく（QAで検出）ので、
+ *  座面と背は間隔より狭くし、肘掛けは席の境目に1本だけ置く（arms：-1 は通路と反対側の端、1 は z の大きい側） */
+const Seat: React.FC<{ position: V3; color: string; arms?: number[] }> = ({ position, color, arms = [-1, 1] }) => (
   <group position={position}>
     <mesh position={[0, 0.44, 0]} castShadow receiveShadow>
-      <boxGeometry args={[0.46, 0.12, 0.5]} />
+      <boxGeometry args={[0.46, 0.12, 0.455]} />
       <meshStandardMaterial color={color} roughness={0.95} />
     </mesh>
     <mesh position={[-0.25, 0.76, 0]} rotation={[0, 0, 0.12]} castShadow>
-      <boxGeometry args={[0.09, 0.62, 0.47]} />
+      <boxGeometry args={[0.09, 0.62, 0.445]} />
       <meshStandardMaterial color={color} roughness={0.95} />
     </mesh>
     {/* 頭の当たる所の布（70年代の機内の白いカバー） */}
@@ -270,9 +271,9 @@ const Seat: React.FC<{ position: V3; color: string }> = ({ position, color }) =>
       <meshStandardMaterial color="#c9c0aa" roughness={0.9} />
     </mesh>
     {/* 肘掛け */}
-    {[-1, 1].map((sd) => (
-      <mesh key={sd} position={[0, 0.62, sd * 0.25]}>
-        <boxGeometry args={[0.44, 0.05, 0.05]} />
+    {arms.map((sd) => (
+      <mesh key={sd} position={[0, 0.62, sd * 0.235]}>
+        <boxGeometry args={[0.44, 0.05, 0.045]} />
         <meshStandardMaterial color="#3a352f" roughness={0.6} />
       </mesh>
     ))}
@@ -384,7 +385,9 @@ const Cabin: React.FC<{ t: number; sky: "night" | "dusk"; rows?: number; windowA
       ))}
       {/* 座席：左右3席ずつ（真ん中が通路） */}
       {Array.from({ length: rows }, (_, r) => -5 + r * SEAT_PITCH).flatMap((x) =>
-        [-1.42, -0.95, -0.48, 0.48, 0.95, 1.42].map((z, k) => <Seat key={`${x}-${z}`} position={[x, 0, z]} color={seatColors[(((k + Math.round(x * 3)) % 3) + 3) % 3]} />),
+        [-1.42, -0.95, -0.48, 0.48, 0.95, 1.42].map((z, k) => (
+          <Seat key={`${x}-${z}`} position={[x, 0, z]} color={seatColors[(((k + Math.round(x * 3)) % 3) + 3) % 3]} arms={k === 0 || k === 3 ? [-1, 1] : [1]} />
+        )),
       )}
       {/* 天井の明かり（暖かい色。にじまない明るさ） */}
       <mesh position={[0, 2.55, 0]} rotation={[Math.PI / 2, 0, 0]}>
@@ -474,7 +477,7 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
         </>
       ) : null}
       {/* 肘掛けの灰皿（70年代の機内には肘掛けに灰皿があった） */}
-      <group position={[row18 + 0.05, 0.645, seatZ + 0.25]}>
+      <group position={[row18 + 0.05, 0.645, seatZ + 0.235]}>
         <mesh>
           <boxGeometry args={[0.1, 0.02, 0.06]} />
           <meshStandardMaterial color="#8a8d90" roughness={0.45} metalness={0.6} />
@@ -506,7 +509,7 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
       </group>
       {variant === "ash" ? (
         // 袖口の輪郭だけ（腕を肘掛けに置いた形）。手や顔は描かない
-        <mesh position={[row18 - 0.15, 0.69, seatZ + 0.22]} rotation={[0, 0, Math.PI / 2 - 0.06]}>
+        <mesh position={[row18 - 0.15, 0.7, seatZ + 0.225]} rotation={[0, 0, Math.PI / 2 - 0.06]}>
           <cylinderGeometry args={[0.043, 0.048, 0.22, 12]} />
           <meshStandardMaterial color={COOPER_71.jacket} roughness={0.9} />
         </mesh>
