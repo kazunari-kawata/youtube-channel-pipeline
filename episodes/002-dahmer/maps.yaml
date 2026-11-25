@@ -16,7 +16,7 @@ views:
     states: true
     highlight: [Wisconsin, Ohio]
     lake_rank: 2
-    points: [milwaukee, bath, portage]
+    points: [milwaukee, bath, portage, akron]
     labels:
       - {lat: 44.7, lon: -90.2, text: "ウィスコンシン州"}
       - {lat: 40.2, lon: -82.9, text: "オハイオ州"}

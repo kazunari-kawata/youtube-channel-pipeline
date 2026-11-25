@@ -541,7 +541,7 @@
    "kind": "card",
    "style": "chapter",
    "text": "有罪判決のあとも",
-   "sub": "第3章　1988〜1990"
+   "sub": "第3章"
   },
   "cut": {
    "at": 0.4,
@@ -1125,10 +1125,16 @@
    "view": "greatlakes",
    "points": [
     "milwaukee",
-    "bath",
-    "portage"
+    "akron"
    ],
-   "note": "ミルウォーキー、オハイオ、ポーテージ"
+   "hl": [
+    "akron"
+   ],
+   "labels": {
+    "milwaukee": "ミルウォーキー（15回の終身刑）",
+    "akron": "アクロン（オハイオ州の裁判所）"
+   },
+   "note": "1992年5月、オハイオ州サミット郡の裁判所（アクロン）で16回目の終身刑（F-025）"
   }
  },
  {

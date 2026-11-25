@@ -282,7 +282,9 @@ type MapData = {
 };
 const mapCache: Record<string, Promise<MapData>> = {};
 
-export const MapShot: React.FC<{ file: string; points: string[]; route?: string[]; reveal?: Reveal }> = ({ file, points, route, reveal }) => {
+/** 地図の点。hl の点は赤く大きくして、ナレーションが指している場所だと分かるようにする（F-025）。labels でその場面だけの地名に替える */
+const HL = "#e0504a";
+export const MapShot: React.FC<{ file: string; points: string[]; route?: string[]; reveal?: Reveal; hl?: string[]; labels?: Record<string, string> }> = ({ file, points, route, reveal, hl = [], labels = {} }) => {
   const frame = useCurrentFrame();
   const dur = useInsertDur();
   const [data, setData] = useState<MapData | null>(null);
@@ -327,11 +329,15 @@ export const MapShot: React.FC<{ file: string; points: string[]; route?: string[
           if (!p) return null;
           const s0 = revealStart(i, 8, 14, reveal);
           const o = interpolate(frame, [s0, s0 + 12], [0, 1], clamp);
+          const h = hl.includes(k);
+          const r = h ? 12 : 8;
           return (
             <div key={k} style={{ opacity: o }}>
-              <div style={{ position: "absolute", left: p.x - 8, top: p.y - 8, width: 16, height: 16, borderRadius: "50%", background: C.amber, boxShadow: "0 0 0 6px rgba(230,163,90,0.25)" }} />
+              <div style={{ position: "absolute", left: p.x - r, top: p.y - r, width: r * 2, height: r * 2, borderRadius: "50%", background: h ? HL : C.amber,
+                boxShadow: h ? "0 0 0 8px rgba(224,80,74,0.30)" : "0 0 0 6px rgba(230,163,90,0.25)" }} />
               {/* 右端に近い地名は点の左に出す（画面からはみ出さないように） */}
-              <div style={{ position: "absolute", ...(p.x > W - 300 ? { right: W - p.x + 16 } : { left: p.x + 16 }), top: p.y - 18, fontFamily: FONT, fontSize: 26, fontWeight: 700, color: C.cream, textShadow: "0 2px 8px rgba(0,0,0,0.9)", whiteSpace: "nowrap" }}>{p.label}</div>
+              <div style={{ position: "absolute", ...(p.x > W - 360 ? { right: W - p.x + r + 10 } : { left: p.x + r + 10 }), top: p.y - 19, fontFamily: FONT, fontSize: h ? 28 : 26, fontWeight: 700,
+                color: h ? "#ff8a80" : C.cream, textShadow: "0 2px 8px rgba(0,0,0,0.9)", whiteSpace: "nowrap" }}>{labels[k] ?? p.label}</div>
             </div>
           );
         })}

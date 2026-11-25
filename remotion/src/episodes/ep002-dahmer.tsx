@@ -140,7 +140,7 @@ const ShotView: React.FC<{ v: Visual; reveal?: Reveal }> = ({ v, reveal }) => {
     case "aerial":
       return <AerialShot src={`${DIR}/${v.src}.jpg`} label={v.label} zoom={v.zoom ?? "in"} date={NAIP_DATE[v.src] ?? ""} />;
     case "map":
-      return <MapShot file={`${DIR}/map_${v.view}.json`} points={v.points ?? []} route={v.route} reveal={reveal} />;
+      return <MapShot file={`${DIR}/map_${v.view}.json`} points={v.points ?? []} route={v.route} reveal={reveal} hl={v.hl} labels={v.labels} />;
     case "insert": {
       const Scene = INSERT_SCENES[v.scene];
       if (!Scene) throw new Error(`イメージ映像 ${v.scene} がありません（inserts/registry.ts）`);

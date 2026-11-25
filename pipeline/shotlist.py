@@ -191,6 +191,25 @@ def material_key(v: dict) -> str | None:
     return None
 
 
+def year_warnings(shots: list[dict]) -> list[str]:
+    """文字カードの年と、カードと同時に読むナレーションの年が食い違っていないか（F-024）。
+    カードに「1988〜1990」のような期間があるのに、ナレーションが期間の外の年（1991年など）から始まると、時間が飛んだように見える"""
+    out = []
+    for sh in shots:
+        v = sh["v"]
+        if v.get("kind") != "card":
+            continue
+        cyears = [int(y) for y in re.findall(r"(1[89]\d\d|20\d\d)", f"{v.get('text', '')} {v.get('sub', '')}")]
+        if not cyears:
+            continue
+        lo, hi = min(cyears), max(cyears)
+        nyears = [int(y) for y in re.findall(r"(1[89]\d\d|20\d\d)年", sh["segs"][0]["caption"])]
+        bad = [y for y in nyears if not lo <= y <= hi]
+        if bad:
+            out.append(f"{sh['id']}：カードの年（{lo}〜{hi}）と、同時に読むナレーションの年（{'、'.join(map(str, bad))}年）が食い違っている")
+    return out
+
+
 def reuse_warnings(shots: list[dict], cfg: dict) -> list[str]:
     """素材の使い回し（F-021）と、本人の姿が出るまでの時間（F-022）"""
     r = cfg.get("shots", {})
@@ -249,6 +268,7 @@ def main():
         if sh["v"]["kind"] == "card" and sh["dur"] > card_max:
             warn.append(f"{sh['id']}：文字カードが {sh['dur']}秒（約4秒まで。{card_max:g}秒を超えたら区間の途中で cut して資料・地図・イメージ映像に替える。F-023）")
     warn += reuse_warnings(shots, cfg)
+    warn += year_warnings(shots)
     lib = load_sfx()
     cues, dropped, gaps = plan_sfx(shots, lib, scfg, segs[-1]["end"])
     for sh in shots:
