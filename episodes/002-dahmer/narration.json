@@ -188,18 +188,32 @@
   "scene": "intro",
   "caption": "この動画では、ドラマの場面は使いません。",
   "read": "この動画では、ドラマの場面は使いません。",
-  "visual": "same"
+  "visual": "same",
+  "cut": {
+   "at": 0.7,
+   "visual": {
+    "kind": "doc",
+    "src": "fbi1_cover",
+    "focus": "page",
+    "note": "FBIファイルの表紙・最初のページ"
+   }
+  }
  },
  {
   "id": "s014a",
   "scene": "intro",
   "caption": "FBIの公開ファイル、警察の報告書と起訴状、そして実際の航空写真で、確かめられることだけを追っていきます。",
   "read": "FBIの公開ファイル、警察の報告書と起訴状、そして、実際の航空写真で、確かめられることだけを、追っていきます。",
-  "visual": {
-   "kind": "doc",
-   "src": "fbi1_cover",
-   "focus": "page",
-   "note": "FBIファイルの表紙・最初のページ"
+  "visual": "same",
+  "cut": {
+   "at": 0.55,
+   "visual": {
+    "kind": "aerial",
+    "src": "naip_oxford",
+    "zoom": "slow",
+    "label": "ミルウォーキーの航空写真（2022年）",
+    "note": "「実際の航空写真で」で出す。場所の名前は出さない（後の章で出す）"
+   }
   }
  },
  {
@@ -543,7 +557,7 @@
   "read": "それによると、ウェストアリスの祖母の家で起きた事件は、三件。千九百八十八年一月、千九百八十八年三月、そして、千九百八十九年三月です。",
   "visual": "same",
   "cut": {
-   "at": 0.24,
+   "at": 0.12,
    "visual": {
     "kind": "card",
     "style": "timeline",
@@ -928,6 +942,17 @@
    "src": "mpd_p064",
    "focus": "header",
    "note": "逮捕の報告書（再掲、別の部分）"
+  },
+  "cut": {
+   "at": 0.6,
+   "visual": {
+    "kind": "map",
+    "view": "milwaukee",
+    "points": [
+     "oxford"
+    ],
+    "note": "逮捕の場所（アパート跡。1992年に取り壊し、市の縮尺）"
+   }
   }
  },
  {
