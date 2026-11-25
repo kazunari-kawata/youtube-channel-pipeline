@@ -44,6 +44,11 @@ def tts_text(s: dict) -> str:
     return s.get("tts") or s["caption"]
 
 
+def stitching(t: dict) -> bool:
+    """前後の文を渡すつなぎ（request stitching）を使うか。eleven_v3 では使えない（公式ドキュメント）"""
+    return bool(t.get("stitch", True)) and not t["model_id"].startswith("eleven_v3")
+
+
 def request_audio(text: str, t: dict, key: str, prev: str, nxt: str) -> bytes:
     body = {"text": text, "model_id": t["model_id"]}
     if t.get("voice_settings"):
@@ -52,8 +57,7 @@ def request_audio(text: str, t: dict, key: str, prev: str, nxt: str) -> bytes:
         body["language_code"] = t["language_code"]
     if t.get("seed") is not None:
         body["seed"] = int(t["seed"])
-    # 前後の文を渡すつなぎ（request stitching）は eleven_v3 では使えない（公式ドキュメント）
-    if t.get("stitch", True) and not t["model_id"].startswith("eleven_v3"):
+    if stitching(t):
         if prev:
             body["previous_text"] = prev
         if nxt:
@@ -150,8 +154,9 @@ def main():
             pieces.append(np.zeros(int(g * SR), np.float32))
             pos += g
         text = tts_text(s)
-        prev = tts_text(segs[i - 1]) if i > 0 else ""
-        nxt = tts_text(segs[i + 1]) if i + 1 < len(segs) else ""
+        # つなぎを使わないときは前後の文をキャッシュの鍵に入れない（1区間を直しても、隣の区間を作り直さずに済む）
+        prev = tts_text(segs[i - 1]) if i > 0 and stitching(t) else ""
+        nxt = tts_text(segs[i + 1]) if i + 1 < len(segs) and stitching(t) else ""
         sig = json.dumps([text, prev, nxt, t["voice_id"], t["model_id"], t.get("voice_settings"), t.get("seed"),
                           t.get("language_code"), t.get("stitch", True)], ensure_ascii=False, sort_keys=True)
         h = hashlib.sha1(sig.encode("utf-8")).hexdigest()[:16]
