@@ -3,6 +3,7 @@
   python pipeline/script_md.py 002-dahmer [--mark s055,s055b]
 
 正本は narration.json。この md は確認用なので手で直さない（直したら作り直す）。
+区間の途中で画面を替える cut も「→ 0:14ごろから …」と書く。
 時間は build/timeline.json（本番の声 or estimate_timeline.py の見積もり）から取る。
 --mark に区間IDを渡すと、その行に「★」を付ける（直した箇所を見せるとき）。
 """
@@ -63,7 +64,15 @@ def main():
         st = t.get(s["id"], {}).get("start", 0)
         m, sec = divmod(int(st), 60)
         star = "★ " if s["id"] in mark else ""
-        L.append(f"| {m}:{sec:02d} | {star}{s['caption']} | {screen(s.get('visual'))} |")
+        cell = screen(s.get("visual"))
+        c = s.get("cut")
+        if c:
+            # 区間の途中で画面を替える（cut）も書く。書かないと、香盤表では直っているのに台本では直っていないように見える
+            ct = t.get(s["id"], {})
+            at = ct.get("start", 0) + c["at"] * (ct.get("end", 0) - ct.get("start", 0))
+            cm, cs = divmod(int(at), 60)
+            cell += f"<br>→ {cm}:{cs:02d}ごろから {screen(c['visual'])}"
+        L.append(f"| {m}:{sec:02d} | {star}{s['caption']} | {cell} |")
     out = episode_dir(a.episode) / "script.md"
     out.write_text("\n".join(L) + "\n", encoding="utf-8")
     print(f"台本 → {out}")
