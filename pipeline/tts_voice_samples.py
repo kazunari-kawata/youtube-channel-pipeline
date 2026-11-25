@@ -81,7 +81,7 @@ def voice_name(key, vid) -> str:
         return vid
 
 
-def sample(key, ids, model, episode, chars):
+def sample(key, ids, model, episode, chars, raw=False):
     """その回の冒頭（約 chars 文字＝10秒前後）を、その声で読ませる。数字はひらがなに直す（本番と同じ）"""
     segs = json.loads((ROOT / "episodes" / episode / "narration.json").read_text(encoding="utf-8"))
     text = ""
@@ -89,7 +89,8 @@ def sample(key, ids, model, episode, chars):
         text += s.get("tts") or s["caption"]
         if len(text) >= chars:
             break
-    text = numbers_to_kana(text)
+    if not raw:
+        text = numbers_to_kana(text)
     out = OUT / episode
     out.mkdir(parents=True, exist_ok=True)
     t = {"model_id": model, "voice_settings": None, "stitch": False, "output_format": "mp3_44100_128"}
@@ -98,7 +99,7 @@ def sample(key, ids, model, episode, chars):
     for vid in ids:
         t["voice_id"] = vid
         name = "".join(c if c.isalnum() else "_" for c in voice_name(key, vid))[:30]
-        p = out / f"{name}_{vid}_{model}.mp3"
+        p = out / f"{name}_{vid}_{model}{'_raw' if raw else ''}.mp3"
         p.write_bytes(request_audio(text, t, key, "", ""))
         print(f"{p.name}（{len(text)}文字）")
 
@@ -115,6 +116,7 @@ def main():
     ap.add_argument("--model", default="eleven_multilingual_v2")
     ap.add_argument("--episode", default="002-dahmer", help="--sample で読ませる回")
     ap.add_argument("--chars", type=int, default=60, help="--sample の文字数の目安（60字で約10秒）")
+    ap.add_argument("--raw", action="store_true", help="--sample で数字をひらがなに直さず、台本の文のまま渡す")
     a = ap.parse_args()
     key = require_env("ELEVENLABS_API_KEY")
     if a.models:
@@ -124,7 +126,7 @@ def main():
     if a.add:
         add(key, a.add)
     if a.sample:
-        sample(key, a.sample.split(","), a.model, a.episode, a.chars)
+        sample(key, a.sample.split(","), a.model, a.episode, a.chars, a.raw)
 
 
 if __name__ == "__main__":
