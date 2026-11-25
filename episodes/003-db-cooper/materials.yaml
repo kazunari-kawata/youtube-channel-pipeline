@@ -1,0 +1,201 @@
+# 素材台帳：D.B.クーパー事件（第3回・1971年のハイジャック、未解決）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status（権利の状態）の意味は episodes/002-dahmer/materials.yaml の冒頭と pipeline/fetch_materials.py の STATUS を参照
+#   pd_federal / pd_no_notice / pd_other / cc_by / fair_use / own → 使用可
+#   check → 要確認（画面に出さない） / reference → 参照のみ / unusable → 使用不可
+# 取得：python pipeline/fetch_materials.py 003-db-cooper  → episodes/003-db-cooper/build/materials/
+# url も naip もない項目は手作業で取得する（note に取り方）
+#
+# この回の注意
+# - 未解決事件。容疑者として名前が挙がった人の写真・名前・説は、画面にもナレーションにも出さない（CLAUDE.md「特定の人をほのめかさない」）
+# - 乗務員・乗客はハイジャックの被害者。写真は使わず、名前も必要な場面だけ
+# - 1980年に紙幣を見つけたのは当時8歳の子ども。事実だけを短く、名前は出さない
+
+case: D.B. Cooper（NORJAK、1971年11月24日、オレゴン州ポートランド〜ワシントン州南西部）
+checked_on: 2026-11-25
+
+items:
+  # ---------- FBI（連邦政府の著作物） ----------
+  - id: fbi_vault
+    title: FBI Vault「D. B. Cooper」（NORJAK の捜査ファイル。1971年11月〜1992年5月。2025年に追加公開あり）
+    file: ""
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: FBI職員が書いたメモ・報告・写真は著作権なし。綴じ込まれた新聞記事・他機関の書類・個人の手紙はその限りでないので、画面に出すページは1枚ずつ作成者を確かめる。容疑者の名前が載ったページは画面に出さない。最初の公開分（Part 01〜17）は政府刊行物の保存先 https://purl.fdlp.gov/GPO/LPS97624 にもある。取得は手作業（ページを決めてから）
+  - id: fbi_famous_case
+    title: FBI公式ページ「D.B. Cooper Hijacking」（本文と写真7点：似顔絵、ネクタイ、1980年に見つかった紙幣2点、パラシュートの袋、残されたパラシュート、使われなかったパラシュート）
+    file: fbi/famous_case/
+    original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
+    status: pd_federal
+    note: 本文は事実確認に使う（timeline.md の FBI-FC）。写真はFBIの証拠写真。手作業でページの画像を保存する（高解像度のリンクがあればそちら）
+  - id: fbi_sketch
+    title: FBIの似顔絵（乗務員の証言から作った人物像。複数の版がある）
+    file: fbi/sketch.jpg
+    original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
+    status: pd_federal
+    note: 捜査資料として見せる。拡大して不気味に見せる演出や、ほかの人物の写真と並べる見せ方はしない（特定の人をほのめかすことになる）。どの版かと作成年をキャプションで確かめる
+  - id: fbi_2007_story
+    title: FBI記事（2007年12月31日）。人物の特徴、パラシュートの技量の見方、着地点の見方、ネクタイのDNA、捜索範囲の地図
+    file: fbi/2007_story/
+    original: https://www.fbi.gov/news/stories/2007/december/dbcooper_123107
+    status: pd_federal
+    note: 本文は事実確認に使う（FBI-2007）。地図（着地点を絞り込むために作ったもの）とネクタイ・紙幣の写真は手作業で保存。捜査官の見方（「パラシュートは開かなかったと思う」など）はFBIの見解として扱い、事実として言い切らない
+  - id: fbi_ticket
+    title: 「ダン・クーパー」名義の航空券の写真
+    file: fbi/ticket.jpg
+    original: https://www.fbi.gov/history/artifacts/d-b-cooper-plane-ticket
+    status: check
+    note: FBIのページに載っているが、同じ券の画像を「ワシントン州歴史協会の提供」とするサイトもある。撮影者（FBIか協会か）が分かるまで画面に出さない
+  - id: fbi_2016_update
+    title: FBIシアトル支局の発表（2016年7月12日）「捜査の人員を他に回す」
+    file: ""
+    original: https://www.fbi.gov/seattle/press-releases/2016/update-on-investigation-of-1971-hijacking-by-d.b.-cooper
+    status: reference
+    note: 文面はFBIの著作物で使えるが、画面に出すのは文書の見た目まで。要点はナレーションで言う（FBI-2016）
+  - id: fbi_foia_index_2004
+    title: FBIのFOIA索引ページ「D.B. Cooper」（2004年の保存版。事件の概要文）
+    file: ""
+    original: https://webharvest.gov/peth04/20041015024656/http:/foia.fbi.gov/foiaindex/dbcooper.htm
+    status: reference
+    note: 事実確認用（FBI-FOIA2004）。シアトルで乗客と客室乗務員2人を降ろしたこと、見つかった紙幣が唯一回収された身代金であること
+  - id: fbi_plane_reno
+    title: ハイジャックされた機体（ボーイング727、N467US）のリノでの写真
+    file: ""
+    original: ""
+    status: check
+    note: 航空史のサイトに「FBI撮影」として載っているが、FBI Vault のどのページかを確かめていない。Vault で見つけたら pd_federal にする。機体の社名ロゴが写るが、資料写真なので可（イメージ映像にはロゴを入れない）
+  - id: fbi_video_2009
+    title: FBIの動画「Scientists Hunt for D.B. Cooper」（科学者のチームが紙幣の流れ着き方を調べる）
+    file: ""
+    original: https://www.fbi.gov/news/videos/scientists-hunt-for-d.b.-cooper/view
+    status: reference
+    note: 1980年に紙幣を見つけた本人のインタビューが入っている。映像は使わず、内容の確認だけ
+
+  # ---------- 国立公文書館（連邦の記録） ----------
+  - id: nara_us_attorney
+    title: 連邦検事局の事件ファイル「D.B. Cooper」（1971年。写真、最初の似顔絵、米空軍とFBIの実験の記録）
+    file: nara/us_attorney_file_cover.jpg
+    url: https://www.archives.gov/files/seattle/images/image-6-rg-118.jpg
+    original: https://catalog.archives.gov/id/325594129
+    status: pd_federal
+    note: 国立公文書館シアトル分館、記録群118（連邦検事局）。表紙の画像は archives.gov のページ（https://www.archives.gov/seattle/d-b-cooper）にあるもの。中身（実験の記録など）は目録のページから見て、使うページを決める
+
+  # ---------- 連邦航空局（FAA）の規則 ----------
+  - id: faa_rule_1972
+    title: FAA の規則改正「Rear Exit Security」（改正 25-34・121-99、1972年11月24日署名、37 F.R. 25354）
+    file: faa/amdt_25-34_121-99.pdf
+    url: https://rosap.ntl.bts.gov/view/dot/76278/dot_76278_DS1.pdf
+    original: https://rosap.ntl.bts.gov/view/dot/76278
+    status: pd_federal
+    note: 機体の下や尾部の出口を、飛行中に開けられない作りにすることを求めた規則。前文に「パラシュートで逃げるためのハイジャックを防ぐ」趣旨がある。PDFの文字認識では改正番号が 121-69 と読めてしまうが、目録の題は 121-99。画面に出すなら文書の見出しの部分
+  - id: tsa_timeline
+    title: TSAの年表「TSA Evolution」（2012年の保存版。1973年の初めから全乗客の検査が義務になったこと）
+    file: ""
+    original: https://webarchive.library.unt.edu/web/20120916212147/http://www.tsa.gov/assets/pdf/TSA_evolution_timeline.pdf
+    status: reference
+    note: 事実確認用（TSA）。連邦の文書なので画面にも出せるが、年表の見た目が今風なので使わない予定
+
+  # ---------- 当時の実物資料（時代の空気） ----------
+  # 事件そのものと関係のない写真は、「1973年のポートランド」のように年と場所が分かる表示をつける（CLAUDE.md）
+  - id: doc_pdx_airport
+    title: DOCUMERICA「AT PORTLAND INTERNATIONAL AIRPORT」（ポートランド国際空港、NARA 548166）
+    file: documerica/pdx_airport_548166.jpg
+    url: https://commons.wikimedia.org/wiki/Special:FilePath/AT_PORTLAND_INTERNATIONAL_AIRPORT_-_NARA_-_548166.jpg
+    original: https://catalog.archives.gov/id/548166
+    status: pd_federal
+    note: EPA の DOCUMERICA（1972〜77年、NARA 412-DA）。撮影年月は目録で確かめる（事件の1〜数年後）。事件当日の写真ではない
+  - id: doc_portland_misty_evening
+    title: DOCUMERICA「霧の夕方のポートランド、サウスウエスト・ブロードウェイ」（エネルギー危機で街灯を減らした通り、NARA 555446）
+    file: documerica/portland_broadway_555446.jpg
+    url: https://commons.wikimedia.org/wiki/Special:FilePath/LOOKING_DOWN_SOUTHWEST_BROADWAY_IN_PORTLAND,_DURING_THE_ENERGY_CRISIS_SHOWS_LIMITED_LIGHTING_ON_A_MISTY_EVENING_-_NARA_-_555446.jpg
+    original: https://catalog.archives.gov/id/555446
+    status: pd_federal
+    note: 1973〜74年のエネルギー危機の写真。雨と霧の夜の空気に合う。「1973年ごろのポートランド」と表示する
+  - id: doc_columbia_cascade_locks
+    title: DOCUMERICA「AT CASCADE LOCKS ON THE COLUMBIA RIVER」（コロンビア川、NARA 548138）
+    file: documerica/columbia_cascade_locks_548138.jpg
+    url: https://commons.wikimedia.org/wiki/Special:FilePath/AT_CASCADE_LOCKS_ON_THE_COLUMBIA_RIVER_-_NARA_-_548138.jpg
+    original: https://catalog.archives.gov/id/548138
+    status: pd_federal
+    note: カスケード・ロックスは紙幣が見つかった場所よりずっと上流。川の雰囲気としてだけ使い、場所を取り違えさせない表示にする
+  - id: doc_more_candidates
+    title: DOCUMERICA のほかの候補（コロンビア川のワシントン州側の岸、州間高速道路5号線、1973年のオレゴン州など）
+    file: ""
+    original: ""
+    status: pd_federal
+    note: 国立公文書館の目録（https://catalog.archives.gov/）でシリーズ DOCUMERICA（412-DA）を検索し、場所と年月を見て選ぶ。Flickr から写した重複ファイルではなく、国立公文書館が上げた NARA 番号つきのファイルを使う
+
+  # ---------- 航空写真・地形図（USGS・USDA、パブリックドメイン） ----------
+  - id: usgs_aerial_1970s
+    title: USGS の航空写真（1970年代、ワシントン州南西部：ルイス川・アリエル周辺、テナ・バー周辺）
+    file: ""
+    original: https://earthexplorer.usgs.gov/
+    status: pd_federal
+    note: EarthExplorer の「Aerial Photo Single Frames」で1970年代の撮影を探す（ログインが必要なので手作業）。1980年前後のテナ・バーは NHAP（1980〜89年）も候補。位置合わせしてから地図に重ねる
+  - id: usgs_topo_1970s
+    title: USGS の当時の地形図（topoView。ルイス川・アリエル、キャッスルロック東部、バンクーバー周辺の1970年前後の版）
+    file: ""
+    original: https://ngmdb.usgs.gov/topoview/
+    status: pd_federal
+    note: どの図幅を使うかは構成案のあとで決める。地図の上に「当時の地形図（USGS、19xx年版）」と表示する
+  - id: naip_tena_bar
+    title: テナ・バー（コロンビア川のワシントン州側の砂州、クラーク郡）の現在の航空写真
+    file: naip/tena_bar.png
+    status: pd_federal
+    note: 位置をまだ確かめていない。地名辞典（USGS GNIS）などで緯度経度を確かめてから naip:{lat, lon, half_m} を書く。写っているのは現在の様子と表示する。近くの農場や家が写り込む場合は、地域が分かる縮尺にとどめる
+
+  # ---------- 自作（実データの3D地図） ----------
+  - id: own_maps
+    title: ポートランド〜シアトル〜リノの位置関係、ワシントン州南西部の3D地形（ルイス川、コロンビア川、テナ・バー、説明板が見つかった一帯）
+    file: ""
+    status: own
+    note: Copernicus DEM ほか（出典は config/attributions.yaml）。飛行経路と飛び降りた一帯は推定なので、地図に「推定」と表示する（見方に関わる注記）。点や線は順に出し、地図をゆっくり拡大しない（チラつき対策）
+
+  # ---------- 参照のみ ----------
+  - id: ref_historylink
+    title: HistoryLink.org「$5,800 of airplane hijacker D. B. Cooper's ransom money is found near the Columbia River on February 10, 1980」（File 23059）
+    file: ""
+    original: https://www.historylink.org/file/23059
+    status: reference
+    note: ワシントン州の歴史事典。1980年当時のシアトルの新聞を出典に挙げている。紙幣の発見の日付・場所・束の数・FBIの発掘の確認用（HL）。最終的には FBI Vault（Part 11・Part 67 とされる）で確かめる
+  - id: ref_faa_screening
+    title: National Research Council『Airline Passenger Security Screening』（1996年）第1章
+    file: ""
+    original: https://www.nationalacademies.org/read/5116/chapter/3
+    status: reference
+    note: 1972年2月1日の規則と、1972年12月5日の緊急規則（全乗客と手荷物の検査）の確認用（NRC）
+  - id: ref_wikipedia
+    title: 英語版 Wikipedia「D. B. Cooper」「Cooper vane」「D. B. Cooper copycat hijackings」
+    file: ""
+    original: https://en.wikipedia.org/wiki/D._B._Cooper
+    status: reference
+    note: 二次資料。時刻・機体番号・リノへの着陸などの手がかりにするが、一次資料で確かめるまで「要確認」（WP）
+  - id: ref_ocr_text
+    title: FBI ファイルの文字起こし（Hugging Face のデータセット）
+    file: ""
+    original: https://huggingface.co/datasets/mysocratesnote/db-cooper-text
+    status: reference
+    note: 第三者が FBI ファイルを文字認識したもの。目当てのページを探す索引としてだけ使い、引用は FBI Vault の原本から
+
+  # ---------- 使わないもの ----------
+  - id: no_suspects
+    title: 容疑者として名前が挙がった人々の写真・経歴・説（雑誌、本、番組、民間の調査団体の主張を含む）
+    file: ""
+    status: unusable
+    note: 未解決事件で特定の人をほのめかさない（CLAUDE.md）。FBIが除外した人も、名前を出すと疑いを連想させるので出さない
+  - id: no_crew_photos
+    title: 客室乗務員・機長・乗客の写真
+    file: ""
+    status: unusable
+    note: ハイジャックの被害者。被害者の写真は使わない
+  - id: no_media
+    title: 報道写真（AP、Getty/Bettmann、UPI）、テレビのニュース映像、ドキュメンタリー番組、映画・ドラマ
+    file: ""
+    status: unusable
+    note: いずれも権利者がいる。まとめサイトに載っていても使わない
+  - id: no_finder_photos
+    title: 1980年に紙幣を見つけた人の写真、紙幣の競売の写真
+    file: ""
+    status: unusable
+    note: 当時は子ども。発見の事実だけを短く伝える
