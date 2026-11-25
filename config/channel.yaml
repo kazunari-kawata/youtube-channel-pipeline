@@ -14,6 +14,7 @@ tts:
   output_format: mp3_44100_128     # 全プランで使える形式
   voice_settings: null             # 声の初期値（試聴で選んだサンプルと同じ）。v2 に戻すなら stability 0.5 / similarity_boost 0.75 など
   stitch: false                    # 前後の文を渡すつなぎは eleven_v3 では使えない（v2 なら true）
+  max_chunk_chars: 450             # v3 は章ごとにまとめて生成（長い章はこの字数で区間の切れ目で分ける）。次の文を足して無音で切る（F-019）
   seed: 42
   # 区切りの間（秒）
   lead: 1.2

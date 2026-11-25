@@ -176,6 +176,29 @@ def lint(rep: Report):
     rep.add("音声合成に渡す文の数字をひらがなに直していない", not bad, bad or "なし", "なし", "F-018")
 
 
+def narration_cut_checks(episode: str, rep: Report):
+    """声が途中で切れていないか（F-019）。無音の間（デジタルの0）に入る直前の10msが十分小さいこと"""
+    f = build_dir(episode) / "narration.wav"
+    if not f.exists():
+        rep.add("声の途切れ（区間の変わり目の「ブツッ」「スッ」）", False, "narration.wav なし", "なし", "F-019")
+        return
+    a = decode_audio(f, 48000)
+    w = 480
+    silent = np.abs(a) < 1e-5
+    # 0 が 50ms 以上続く所の始まり
+    starts, run = [], 0
+    for i in np.flatnonzero(np.diff(silent.astype(np.int8)) == 1) + 1:
+        if i > w and silent[i: i + 2400].all():
+            starts.append(i)
+    bad = []
+    for i in starts:
+        lvl = 20 * np.log10(np.sqrt(np.mean(a[i - w: i] ** 2)) + 1e-9)
+        if lvl > -45:
+            bad.append(f"{i / 48000:.1f}秒（{lvl:.0f}dB）")
+    rep.add("声の途切れ（区間の変わり目の「ブツッ」「スッ」）", not bad, f"{len(bad)}か所 " + "、".join(bad[:5]) if bad else "なし",
+            "なし（無音に入る直前10msが -45dB 未満）", "F-019")
+
+
 def sfx_checks(episode: str, cfg: dict, rep: Report):
     """効果音の計画（pipeline/shotlist.py が作る build/sfx_cues.json）が基準内か"""
     s = cfg["sfx"]
@@ -249,6 +272,7 @@ def main():
         audio_checks(video, out / "narration.wav", tl, q, rep)
     lint(rep)
     sfx_checks(args.episode, cfg, rep)
+    narration_cut_checks(args.episode, rep)
     onscreen_text_checks(args.episode, rep)
 
     write_json(out / ("qa_report_partial.json" if args.partial else "qa_report.json"),

@@ -16,6 +16,7 @@ narration.json の各区間：
   timeline.json       区間の開始・終了（秒とフレーム）
 """
 import argparse
+import base64
 import hashlib
 import json
 import sys
@@ -49,7 +50,7 @@ def stitching(t: dict) -> bool:
     return bool(t.get("stitch", True)) and not t["model_id"].startswith("eleven_v3")
 
 
-def request_audio(text: str, t: dict, key: str, prev: str, nxt: str) -> bytes:
+def _body(text: str, t: dict, prev: str = "", nxt: str = "") -> dict:
     body = {"text": text, "model_id": t["model_id"]}
     if t.get("voice_settings"):
         body["voice_settings"] = t["voice_settings"]
@@ -62,11 +63,15 @@ def request_audio(text: str, t: dict, key: str, prev: str, nxt: str) -> bytes:
             body["previous_text"] = prev
         if nxt:
             body["next_text"] = nxt
-    url = f"{API}/text-to-speech/{t['voice_id']}?output_format={t.get('output_format', 'mp3_44100_128')}"
+    return body
+
+
+def _post(path: str, body: dict, key: str, accept: str) -> bytes:
+    url = f"{API}{path}"
     data = json.dumps(body).encode("utf-8")
     for attempt in range(5):
         req = urllib.request.Request(url, data=data, method="POST",
-                                     headers={"xi-api-key": key, "Content-Type": "application/json", "Accept": "audio/mpeg"})
+                                     headers={"xi-api-key": key, "Content-Type": "application/json", "Accept": accept})
         try:
             with urllib.request.urlopen(req, timeout=300) as r:
                 return r.read()
@@ -76,7 +81,24 @@ def request_audio(text: str, t: dict, key: str, prev: str, nxt: str) -> bytes:
                 time.sleep(4 * (attempt + 1))
                 continue
             sys.exit(f"ElevenLabs API エラー {e.code}: {msg}")
+        except urllib.error.URLError:
+            if attempt < 4:
+                time.sleep(4 * (attempt + 1))
+                continue
+            raise
     sys.exit("ElevenLabs API に接続できませんでした")
+
+
+def request_audio(text: str, t: dict, key: str, prev: str, nxt: str) -> bytes:
+    fmt = t.get("output_format", "mp3_44100_128")
+    return _post(f"/text-to-speech/{t['voice_id']}?output_format={fmt}", _body(text, t, prev, nxt), key, "audio/mpeg")
+
+
+def request_with_timestamps(text: str, t: dict, key: str) -> dict:
+    """音声と、文字ごとの読まれた時刻（alignment）を返す"""
+    fmt = t.get("output_format", "mp3_44100_128")
+    raw = _post(f"/text-to-speech/{t['voice_id']}/with-timestamps?output_format={fmt}", _body(text, t), key, "application/json")
+    return json.loads(raw)
 
 
 def level_segments(segs_audio: list[np.ndarray], max_gain_db: float = 6.0) -> list[np.ndarray]:
@@ -120,31 +142,8 @@ def trim(a: np.ndarray, db: float, pad: float = 0.05) -> np.ndarray:
     return a[s:e]
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("episode")
-    ap.add_argument("--only", help="作り直す区間ID（カンマ区切り）。キャッシュを使わない")
-    ap.add_argument("--dry-run", action="store_true")
-    args = ap.parse_args()
-
-    cfg = load_config(args.episode)
-    t, fps = cfg["tts"], cfg["video"]["fps"]
-    segs = load_narration(args.episode)
-    chars = sum(len(tts_text(s)) for s in segs)
-    print(f"{len(segs)}区間 / {chars}文字（全区間を新規生成した場合の概算 ${chars / 1000 * USD_PER_1K:.2f}）")
-    if args.dry_run:
-        return
-    if not t.get("voice_id"):
-        sys.exit("config/channel.yaml の tts.voice_id が未設定です。tts_voice_samples.py で声を決めてください。")
-    key = require_env("ELEVENLABS_API_KEY")
-
-    out = build_dir(args.episode)
-    cache = out / "tts_cache"
-    seg_dir = out / "segments"
-    cache.mkdir(exist_ok=True)
-    seg_dir.mkdir(exist_ok=True)
-    only = set(args.only.split(",")) if args.only else set()
-
+def build_segmentwise(segs, t, fps, key, cache, seg_dir, only):
+    """区間ごとに生成し、前後の文を渡してつなぐ（multilingual_v2 など、つなぎが使えるモデル）"""
     pieces = [np.zeros(int(t["lead"] * SR), np.float32)]
     pos = t["lead"]
     timeline, billed = [], 0
@@ -183,6 +182,188 @@ def main():
     leveled = level_segments([pieces[i] for i in voiced])
     for i, a in zip(voiced, leveled):
         pieces[i] = a
+    return pieces, timeline, billed
+
+
+# ---------- まとめて生成（eleven_v3 など、前後の文を渡すつなぎが使えないモデル。F-019） ----------
+# v3 は1回の生成の終わりで、音が鳴っている途中で打ち切る（語尾の「す」が「スッ」と切れる）。
+# そこで、章（長ければ途中の区間の切れ目）ごとに1回で読ませ、うしろに「次の文」を1つ足しておき、
+# 文字ごとの時刻（alignment）で足した文の手前の無音を探して切る。区間の境目も同じ無音から求める。
+TAIL_LAST = "それでは、また次の動画でお会いしましょう。"  # 最後のまとまりに足す文（切り捨てるので聞こえない）
+QUIET_DB = (-50, -45, -40)  # 無音とみなす音量（見つからなければ順にゆるめる）
+VOICE_DB = -45              # 声の始まり・終わりとみなす音量
+
+
+def plan_chunks(segs, limit):
+    """章の始まりで分け、limit 字を超える章は区間の切れ目で分ける"""
+    chunks, cur, n = [], [], 0
+    for s in segs:
+        m = len(tts_text(s))
+        if cur and (s.get("chapter") or n + m > limit):
+            chunks.append(cur)
+            cur, n = [], 0
+        cur.append(s)
+        n += m
+    chunks.append(cur)
+    return chunks
+
+
+def _align_index(text: str, chars: list[str]):
+    """台本の文字の位置 → alignment の文字の位置（ふつうは同じ。違えば近い位置に寄せる）"""
+    al = "".join(chars)
+    if al == text:
+        return lambda i: i
+    import difflib
+    sm = difflib.SequenceMatcher(None, text, al, autojunk=False)
+    pairs = [(b.a + k, b.b + k) for b in sm.get_matching_blocks() for k in range(b.size)]
+    def f(i):
+        best = min(pairs, key=lambda p: abs(p[0] - i)) if pairs else (i, i)
+        return max(0, min(len(chars) - 1, best[1] + (i - best[0])))
+    return f
+
+
+def _env_db(a: np.ndarray) -> np.ndarray:
+    w = int(0.01 * SR)
+    n = len(a) // w
+    return 20 * np.log10(np.sqrt((a[: n * w].reshape(n, w) ** 2).mean(axis=1)) + 1e-9)
+
+
+def _quiet_point(env, t0, t1) -> float:
+    """t0〜t1 秒の中で、いちばん長く続く無音のまん中（秒）"""
+    lo, hi = max(0, int(t0 * 100)), min(len(env), int(t1 * 100))
+    for th in QUIET_DB:
+        runs, cur = [], []
+        for i in range(lo, hi):
+            if env[i] < th:
+                if cur and i != cur[-1] + 1:
+                    runs.append(cur)
+                    cur = []
+                cur.append(i)
+        if cur:
+            runs.append(cur)
+        if runs:
+            r = max(runs, key=len)
+            return (r[0] + len(r) / 2) / 100
+    return (lo + int(np.argmin(env[lo:hi]))) / 100 if hi > lo else t0
+
+
+def _onset(env, t0, t1) -> float:
+    lo, hi = int(t0 * 100), min(len(env), int(t1 * 100))
+    on = [i for i in range(lo, hi) if env[i] >= VOICE_DB]
+    return max(t0, on[0] / 100 - 0.04) if on else t0
+
+
+def _offset(env, t0, t1) -> float:
+    lo, hi = int(t0 * 100), min(len(env), int(t1 * 100))
+    on = [i for i in range(lo, hi) if env[i] >= VOICE_DB]
+    return min(t1, (on[-1] + 1) / 100 + 0.06) if on else t1
+
+
+def gen_chunk(chunk, tail, t, key, cache, force):
+    """まとまり1つを生成（キャッシュあり）。返り値：音声、区間ごとの（声の始まり, 終わり）秒、課金文字数"""
+    texts = [tts_text(s) for s in chunk]
+    full = "".join(texts) + tail
+    sig = json.dumps([texts, tail, t["voice_id"], t["model_id"], t.get("voice_settings"), t.get("seed"),
+                      t.get("language_code"), "chunk-v1"], ensure_ascii=False, sort_keys=True)
+    h = hashlib.sha1(sig.encode("utf-8")).hexdigest()[:16]
+    mp3, js = cache / f"chunk_{chunk[0]['id']}_{h}.mp3", cache / f"chunk_{chunk[0]['id']}_{h}.json"
+    billed = 0
+    if force or not (mp3.exists() and js.exists()):
+        r = request_with_timestamps(full, t, key)
+        mp3.write_bytes(base64.b64decode(r["audio_base64"]))
+        js.write_text(json.dumps({"text": full, "alignment": r.get("alignment")}, ensure_ascii=False), encoding="utf-8")
+        billed = len(full)
+    a = decode_audio(mp3, SR)
+    al = json.loads(js.read_text(encoding="utf-8"))["alignment"]
+    idx = _align_index(full, al["characters"])
+    st = al["character_start_times_seconds"]
+    env = _env_db(a)
+    # 区間 j の始まりの文字の時刻（最後は足した文の始まり）
+    heads, p = [], 0
+    for x in texts:
+        heads.append(p)
+        p += len(x)
+    heads.append(p)
+    cuts = [0.0] + [_quiet_point(env, st[idx(hp)] - 0.8, st[idx(hp)] + 0.3) for hp in heads[1:]]
+    spans = []
+    for j in range(len(texts)):
+        s0 = _onset(env, cuts[j], cuts[j + 1])
+        spans.append((s0, max(s0 + 0.1, _offset(env, s0, cuts[j + 1]))))
+    return a, spans, cuts[-1], billed, h
+
+
+def build_chunked(segs, t, fps, key, cache, seg_dir, only):
+    chunks = plan_chunks(segs, int(t.get("max_chunk_chars", 450)))
+    pieces = [np.zeros(int(t["lead"] * SR), np.float32)]
+    pos = t["lead"]
+    timeline, billed, audios, metas = [], 0, [], []
+    for k, ch in enumerate(chunks):
+        tail = tts_text(chunks[k + 1][0]) if k + 1 < len(chunks) else TAIL_LAST
+        force = any(s["id"] in only for s in ch)
+        a, spans, cut, b, h = gen_chunk(ch, tail, t, key, cache, force)
+        billed += b
+        # 残すのは最初の声の始まりから、最後の声の終わり＋0.12秒（足した文の手前の無音まで）
+        s_keep = spans[0][0]
+        e_keep = min(cut, spans[-1][1] + 0.12)
+        x = a[int(s_keep * SR): int(e_keep * SR)].copy()
+        fi, fo = int(0.005 * SR), int(0.08 * SR)
+        x[:fi] *= np.linspace(0, 1, fi, dtype=np.float32)
+        x[-fo:] *= np.linspace(1, 0, fo, dtype=np.float32) ** 2
+        audios.append(x)
+        metas.append((ch, spans, s_keep))
+        print(f"まとまり {k + 1}/{len(chunks)}（{ch[0]['id']}〜{ch[-1]['id']}、{sum(len(tts_text(s)) for s in ch)}字）"
+              f" {'生成' if b else 'キャッシュ'} {len(x) / SR:.1f}秒")
+    audios = level_segments(audios)
+    for k, (x, (ch, spans, s_keep)) in enumerate(zip(audios, metas)):
+        if k > 0:
+            g = t["chapter_gap"] if ch[0].get("chapter") else t["gap"]
+            pieces.append(np.zeros(int(g * SR), np.float32))
+            pos += g
+        for s, (s0, s1) in zip(ch, spans):
+            a0, a1 = pos + s0 - s_keep, pos + s1 - s_keep
+            sf.write(seg_dir / f"{s['id']}.wav", x[int((s0 - s_keep) * SR): int((s1 - s_keep) * SR)], SR)
+            timeline.append({**s, "start": round(a0, 3), "end": round(a1, 3),
+                             "startFrame": int(round(a0 * fps)), "endFrame": int(round(a1 * fps))})
+        pieces.append(x)
+        pos += len(x) / SR
+    pieces.append(np.zeros(int(t["tail"] * SR), np.float32))
+    return pieces, timeline, billed
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("episode")
+    ap.add_argument("--only", help="作り直す区間ID（カンマ区切り）。キャッシュを使わない")
+    ap.add_argument("--dry-run", action="store_true")
+    args = ap.parse_args()
+
+    cfg = load_config(args.episode)
+    t, fps = cfg["tts"], cfg["video"]["fps"]
+    segs = load_narration(args.episode)
+    chars = sum(len(tts_text(s)) for s in segs)
+    if not stitching(t):  # まとめて生成：足す「次の文」の分も課金される
+        chunks = plan_chunks(segs, int(t.get("max_chunk_chars", 450)))
+        chars += sum(len(tts_text(chunks[k + 1][0])) if k + 1 < len(chunks) else len(TAIL_LAST) for k in range(len(chunks)))
+        print(f"まとめて生成：{len(chunks)}まとまり（章ごと、{t.get('max_chunk_chars', 450)}字まで）")
+    print(f"{len(segs)}区間 / {chars}文字（全区間を新規生成した場合の概算 ${chars / 1000 * USD_PER_1K:.2f}）")
+    if args.dry_run:
+        return
+    if not t.get("voice_id"):
+        sys.exit("config/channel.yaml の tts.voice_id が未設定です。tts_voice_samples.py で声を決めてください。")
+    key = require_env("ELEVENLABS_API_KEY")
+
+    out = build_dir(args.episode)
+    cache = out / "tts_cache"
+    seg_dir = out / "segments"
+    cache.mkdir(exist_ok=True)
+    seg_dir.mkdir(exist_ok=True)
+    only = set(args.only.split(",")) if args.only else set()
+
+    if stitching(t):
+        pieces, timeline, billed = build_segmentwise(segs, t, fps, key, cache, seg_dir, only)
+    else:
+        pieces, timeline, billed = build_chunked(segs, t, fps, key, cache, seg_dir, only)
+    pos = sum(len(x) for x in pieces) / SR
     wav = np.concatenate(pieces)
     meter = pyln.Meter(SR)
     speech = np.concatenate(pieces[1:-1])
