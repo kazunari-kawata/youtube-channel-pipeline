@@ -52,22 +52,32 @@ def probe(video: Path) -> dict:
     return json.loads(out)
 
 
-def scan_frames(video: Path, cfg_qa: dict):
-    """縮小グレー画像で全フレームを読み、チラつきと真っ黒を数える"""
-    proc = subprocess.Popen([ffmpeg_bin(), "-v", "error", "-i", str(video), "-vf", f"scale={SW}:{SH},format=gray",
+def scan_frames(video: Path, cfg_qa: dict, start: int | None = None, count: int | None = None, fps: float = 30.0):
+    """縮小グレー画像で全フレームを読み、チラつきと真っ黒を数える。
+    start・count を渡すと、そのフレームの範囲だけ読む（前の2フレームから読み始め、つなぎ目の明滅も数える）。
+    1回のコマンドに時間の上限がある所（Windows の作業用シェル）で、区間に分けて検査するため"""
+    seek = []
+    skip = 0
+    if start is not None:
+        skip = min(2, start)
+        seek = ["-ss", f"{(start - skip - 0.5) / fps:.4f}"] if start - skip > 0 else []
+    lim = ["-frames:v", str(count + skip)] if count is not None else []
+    proc = subprocess.Popen([ffmpeg_bin(), "-v", "error", *seek, "-i", str(video), *lim, "-vf", f"scale={SW}:{SH},format=gray",
                              "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
     size = SW * SH
     prev2 = prev1 = None
-    flicker, black, idx = [], [], 0
+    base = (start - skip) if start is not None else 0
+    flicker, black, idx = [], [], base
     while True:
         buf = proc.stdout.read(size * 120)
         if not buf:
             break
         frames = np.frombuffer(buf, np.uint8).reshape(-1, SH, SW).astype(np.int16)
         for f in frames:
-            if f.max() < cfg_qa["black_max_luma"]:
+            warm = start is not None and idx < start  # 前の区間の最後の2フレーム（明滅の比較にだけ使う）
+            if f.max() < cfg_qa["black_max_luma"] and not warm:
                 black.append(idx)
-            if prev2 is not None:
+            if prev2 is not None and not warm:
                 # 明るさが「上がって下がる／下がって上がる」画素。カメラ移動で細かい光が流れるだけでも
                 # 点状に出るので、3x3のまとまり（＝面で起きる明滅。Zファイティングはこれ）だけを数える
                 d1, d2 = prev1 - prev2, f - prev1
@@ -79,6 +89,32 @@ def scan_frames(video: Path, cfg_qa: dict):
             idx += 1
     proc.wait()
     return idx, flicker, black
+
+
+def scan_dir(out: Path) -> Path:
+    return out / "qa_scan"
+
+
+def video_key(video: Path) -> str:
+    st = video.stat()
+    return f"{video.name}:{st.st_size}:{int(st.st_mtime)}"
+
+
+def load_scan_parts(out: Path, video: Path, total: int):
+    """--scan-part で区間ごとに検査した結果をまとめる。同じ動画で全フレームがそろっていなければ None"""
+    d = scan_dir(out)
+    if not d.exists():
+        return None
+    parts = [json.loads(f.read_text(encoding="utf-8")) for f in sorted(d.glob("part_*.json"))]
+    parts = sorted((p for p in parts if p.get("video") == video_key(video)), key=lambda p: p["start"])
+    pos, flicker, black = 0, [], []
+    for p in parts:
+        if p["start"] != pos:
+            return None
+        pos = p["end"]
+        flicker += [tuple(x) for x in p["flicker"]]
+        black += p["black"]
+    return (pos, flicker, black) if pos >= total else None
 
 
 def ranges(frames: list[int]) -> str:
@@ -266,6 +302,8 @@ def main():
     ap.add_argument("episode")
     ap.add_argument("--video")
     ap.add_argument("--partial", action="store_true", help="一部だけの書き出し（長さと音は検査しない）")
+    ap.add_argument("--scan-part", nargs=2, type=float, metavar=("START_SEC", "LEN_SEC"),
+                    help="チラつき・真っ黒の検査を区間だけ行い、build/qa_scan/ に残して終わる（時間の上限がある所で分けて検査する。全区間がそろうと本検査で使う）")
     args = ap.parse_args()
     cfg = load_config(args.episode)
     q = cfg["qa"]
@@ -273,6 +311,17 @@ def main():
     video = Path(args.video) if args.video else out / ("preview.mp4" if args.partial else "video.mp4")
     if not video.exists():
         sys.exit(f"{video} がありません")
+    if args.scan_part:
+        fps = 30.0
+        s0 = int(round(args.scan_part[0] * fps))
+        cnt = int(round(args.scan_part[1] * fps))
+        end_idx, fl, bl = scan_frames(video, q, start=s0, count=cnt, fps=fps)
+        d = scan_dir(out)
+        d.mkdir(exist_ok=True)
+        part = {"video": video_key(video), "start": s0, "end": end_idx, "flicker": fl, "black": bl}
+        (d / f"part_{s0:06d}.json").write_text(json.dumps(part), encoding="utf-8")
+        print(f"区間 {s0}〜{end_idx}：チラつき {len(fl)}、真っ黒 {len(bl)}")
+        return
     tl = json.loads((out / "timeline.json").read_text(encoding="utf-8"))
     rep = Report()
     print(f"検査: {video}")
@@ -288,7 +337,11 @@ def main():
         rep.add("長さ", abs(dur - tl["totalSeconds"]) < 0.2, f"{dur:.2f}秒", f"{tl['totalSeconds']:.2f}秒")
         rep.add("音声トラック", has_audio, "あり" if has_audio else "なし", "あり")
 
-    n, flicker, black = scan_frames(video, q)
+    total = int(round(dur * 30))
+    pre = load_scan_parts(out, video, total - 2)
+    n, flicker, black = pre if pre else scan_frames(video, q)
+    if pre:
+        print("（チラつき・真っ黒は、区間ごとの検査 build/qa_scan/ の結果を使った）")
     worst = max((c for _, c in flicker), default=0)
     rep.add("チラつき", len(flicker) <= q["flicker_max_frames"], f"{len(flicker)}フレーム（最大{worst}画素）",
             f"{q['flicker_max_frames']}フレーム", "該当: " + ranges([i for i, _ in flicker]) if flicker else "")

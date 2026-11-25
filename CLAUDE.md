@@ -176,6 +176,10 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 ## 書き出し環境
 
 - 本番の書き出しはユーザーの Windows PC（GPUあり）。Remotion は ANGLE（GPU）で描く。`render.py` が自動で選ぶ
+  - Windows では `powershell -ExecutionPolicy Bypass -File pipeline\render_windows.ps1 <回>` で書き出し、かかった時間を `build/render_time.json` に残す（今後の見積もりに使う）。
+    Claude が使える Windows の作業用シェルは、GPU のない小さな Linux（2コア）なので GPU で書き出せない。このコマンドはユーザーに実行してもらう
+  - 書き出したあとの音の上限処理と QA は作業用シェルで行う。1回のコマンドに時間の上限があるので、チラつきの検査は
+    `python qa/check_video.py <回> --scan-part 開始秒 長さ秒` で区間に分けて回し（結果は build/qa_scan/）、全区間がそろってから本検査を回す
 - クラウドでは SwANGLE（CPU、毎秒約1フレーム）。確認用の静止画や短い区間だけにする
 - 作業解像度は 1280x720、書き出しは1.5倍の 1920x1080。文字の位置は 1280x720 の座標で決める
 - フォントは `remotion/public/fonts/NotoSansJP.ttf` に固定（PCによって見た目が変わらないように）
