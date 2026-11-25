@@ -34,15 +34,16 @@ def db(x: np.ndarray) -> float:
 
 
 def shape_oneshot(a: np.ndarray, mx: float) -> np.ndarray:
+    a = np.array(a, dtype=np.float32)  # decode_audio は読み取り専用の配列を返す
     peak = np.abs(a).max() + 1e-12
     on = np.flatnonzero(np.abs(a) > peak * 10 ** (-40 / 20))
     a = a[max(0, on[0] - int(0.005 * SR)):] if len(on) else a
     if len(a) > mx * SR:
-        a = a[: int(mx * SR)].copy()
+        a = a[: int(mx * SR)]
         f = int(min(0.25, mx / 3) * SR)
         a[-f:] *= np.linspace(1, 0, f) ** 2
     else:
-        f = int(0.02 * SR)
+        f = min(len(a), int(0.02 * SR))
         a[-f:] *= np.linspace(1, 0, f)
     act = a[np.abs(a) > (np.abs(a).max() * 0.05)]
     a = a * 10 ** ((-18 - db(act if len(act) else a)) / 20)
@@ -53,7 +54,7 @@ def shape_oneshot(a: np.ndarray, mx: float) -> np.ndarray:
 
 
 def shape_bed(a: np.ndarray, start: float, mx: float) -> np.ndarray:
-    a = a[int(start * SR): int((start + mx) * SR)].copy()
+    a = np.array(a[int(start * SR): int((start + mx) * SR)], dtype=np.float32)
     a = a * 10 ** ((-18 - pyln.Meter(SR).integrated_loudness(a)) / 20)
     f = int(0.5 * SR)
     a[:f] *= np.linspace(0, 1, f)
