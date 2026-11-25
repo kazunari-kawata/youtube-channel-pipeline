@@ -51,6 +51,8 @@ shots:
   reuse_needs_reason: true # 2回目からは visual.reuse に理由を書く（ナレーションが中身を指すときだけ。埋めるための使い回しは不可：F-029）
   person_first_sec: 30     # 本人の姿（episode.yaml の person_photos）を最初の30秒以内に出す（F-022）
   card_max_sec: 5.0        # 文字カードは約4秒まで。これを超えたら注意（F-023。長く見せると離脱されやすい）。遺族の言葉など切らないカードは visual.keep に理由
+  busy_run: 5             # 5秒未満の絵がこの回数続いたら注意（F-033。カードと短いイメージ映像の交互はせわしない）
+  busy_sec: 5.0
 
 render:
   gl_linux: swangle    # クラウド（GPUなし）

@@ -1,6 +1,6 @@
 /**
  * 002 ダーマー：文字カードを約4秒にして空いた時間を埋める場面（2026-11-25 追加。F-023・F-029）。人物は出さない。
- *   tv_room       2022年の居間。テレビの光だけ（画面の中身・ロゴは見せない）。a：ソファの後ろから、b：横の低い所から、c：テレビの横から壁の光、d：入口から引いて、e：窓の側から
+ *   tv_room       2022年の居間。テレビの光だけ（画面の中身・ロゴは見せない）。テーブルにビール瓶（ラベルなし。飲酒の問題に重ねる：ユーザー指定）。a：ソファの後ろから、b：横の低い所から、c：テレビの横から壁の光、d：入口から引いて、e：窓の側から
  *   windows_2022  2022年の集合住宅を外から。窓ごとにテレビの青い光。a：見上げる、b：通りの向かいから、c：斜めから
  *   phone         1991年ごろの台所の壁の電話（受話器は掛けたまま）。a：電話に寄る、b：入口から台所を引いて、c：調理台の側から
  *   court_hall    裁判所の中の廊下（大理石の床、木の扉、長いす、冬の昼の窓）。a：廊下の奥へ、b：長いすの横の低い所から、c：窓の側から振り返る
@@ -16,12 +16,27 @@ const pick = (cams: Record<string, [CamKey, CamKey]>, v: string) => cams[v] ?? c
 
 /* ---------- 2022年の居間（テレビの光） ---------- */
 
+/** ビール瓶（茶色のガラス。ラベル・文字・ロゴなし）。原点は瓶の底の中心 */
+const BeerBottle: React.FC<{ position: [number, number, number]; rotation?: [number, number, number] }> = ({ position, rotation = [0, 0, 0] }) => {
+  const geo = useMemo(() => {
+    // 胴 → 肩 → 首 → 口の輪郭を回して作る（高さ約24cm）
+    const pts = [[0, 0], [0.031, 0], [0.033, 0.004], [0.033, 0.14], [0.03, 0.16], [0.018, 0.185], [0.013, 0.2], [0.013, 0.232], [0.015, 0.236], [0.012, 0.24], [0, 0.24]]
+      .map(([r, y]) => new THREE.Vector2(r, y));
+    return new THREE.LatheGeometry(pts, 24);
+  }, []);
+  return (
+    <mesh geometry={geo} position={position} rotation={rotation} castShadow>
+      <meshStandardMaterial color="#5a2f0e" roughness={0.38} metalness={0} />
+    </mesh>
+  );
+};
+
 export const InsertTvRoom: React.FC<SceneProps> = ({ variant = "a" }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
   const cams: Record<string, [CamKey, CamKey]> = {
-    a: [{ pos: [0.2, 1.35, 2.6], target: [0, 0.9, -2.4], fov: 40 }, { pos: [0.15, 1.3, 2.2], target: [0, 0.9, -2.4], fov: 39 }],
+    a: [{ pos: [0.35, 1.7, 2.7], target: [0, 0.7, -2.0], fov: 40 }, { pos: [0.3, 1.65, 2.3], target: [0, 0.7, -2.0], fov: 39 }], // ソファの後ろの高い所から（テーブルの瓶が見えるように）
     b: [{ pos: [2.4, 0.6, 0.9], target: [-0.6, 0.8, -1.6], fov: 42 }, { pos: [2.25, 0.62, 0.6], target: [-0.6, 0.8, -1.7], fov: 41 }],
     c: [{ pos: [-2.2, 1.1, -1.2], target: [0.4, 1.0, -2.5], fov: 44 }, { pos: [-2.1, 1.1, -1.45], target: [0.4, 1.0, -2.5], fov: 43 }],
     d: [{ pos: [2.6, 1.6, 2.9], target: [-0.4, 0.8, -1.4], fov: 46 }, { pos: [2.45, 1.6, 2.6], target: [-0.4, 0.8, -1.5], fov: 45 }],
@@ -93,6 +108,12 @@ export const InsertTvRoom: React.FC<SceneProps> = ({ variant = "a" }) => {
         <boxGeometry args={[1.0, 0.06, 0.55]} />
         <meshStandardMaterial color="#4a3a2c" roughness={0.6} />
       </mesh>
+      {/* テーブルの上のビール瓶（茶色のガラス、ラベルも文字もなし。飲酒の問題のくだりに重ねる：ユーザー指定）。
+          つやは抑える（小さく明るい映り込みはブルームでチラつく） */}
+      <BeerBottle position={[-0.28, 0.23, -0.52]} />
+      <BeerBottle position={[-0.12, 0.23, -0.7]} />
+      <BeerBottle position={[0.05, 0.23, -0.5]} />
+      <BeerBottle position={[0.28, 0.265, -0.62]} rotation={[0, 0.6, Math.PI / 2]} />
       {/* 消えたフロアランプ */}
       <mesh position={[1.9, 0.75, -1.9]}>
         <cylinderGeometry args={[0.02, 0.02, 1.5, 8]} />

@@ -22,6 +22,28 @@ sys.path.insert(0, str(Path(__file__).parent))
 from common import (load_narration, DATA_PROCESSED, PUBLIC, ROOT, SRC_DATA, build_dir, decode_audio,  # noqa: E402
                     load_config, write_json)
 import json  # noqa: E402
+import filecmp  # noqa: E402
+import os  # noqa: E402
+
+
+def place(src: Path, dst: Path) -> None:
+    """public/ に大きな音のファイルを置く。中身が同じなら触らない。違うときは隣で書き終えてから一度に差し替える。
+    Remotion Studio は public/ の変化を見て読み直すので、書いている途中のファイルを読むと声が鳴らなくなる（F-032：
+    確認用の準備をし直したら「ナレーションが消えた」。中身は同じでも、上書きの途中で読まれていた）"""
+    if dst.exists() and dst.stat().st_size == src.stat().st_size and filecmp.cmp(src, dst, shallow=False):
+        return
+    tmp = src.with_name(src.name + ".placing")
+    shutil.copy2(src, tmp)
+    os.replace(tmp, dst)
+
+
+def write_wav(dst: Path, data, out: Path) -> None:
+    """作った音を、作業フォルダで書き終えてから public/ に置く（place と同じ理由）"""
+    tmp = out / ("_" + dst.name)
+    sf.write(tmp, data, SR, subtype="PCM_16")
+    place(tmp, dst)
+    if tmp.exists():
+        tmp.unlink()
 
 SR = 48000
 DEFAULT_META = ROOT / "remotion" / "src" / "defaults" / "meta.json"
@@ -149,14 +171,14 @@ def main():
         voice = not tl.get("estimated") and (out / "narration.wav").exists()
         if voice:
             PUBLIC.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(out / "narration.wav", PUBLIC / "narration.wav")
+            place(out / "narration.wav", PUBLIC / "narration.wav")
         # 声があるときは BGM も入れる（声と効果音だけで Studio に出し、ユーザーに「音楽が消えた」と言われた：F-031）。
         # 声がまだない仮の尺では、曲の長さを合わせられないので BGM なし
         bgm = False
         if voice:
             tracks = [ROOT / p for p in (cfg.get("bgm") or {}).get("tracks", [])]
             if tracks and all(t.exists() for t in tracks):
-                sf.write(PUBLIC / "bgm.wav", bgm_bed(tracks, tl["totalSeconds"], cfg["audio"]["bgm_lufs"]), SR, subtype="PCM_16")
+                write_wav(PUBLIC / "bgm.wav", bgm_bed(tracks, tl["totalSeconds"], cfg["audio"]["bgm_lufs"]), out)
                 bgm = True
             else:
                 print("注意: BGM の曲が見つからないので、BGM なしで準備しました（episode.yaml の bgm.tracks を確かめる。BGMなしで見せない：F-005）")
@@ -175,7 +197,7 @@ def main():
         if not (out / f).exists():
             sys.exit(f"{out / f} がありません。先に tts_elevenlabs.py を実行してください。")
     PUBLIC.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(out / "narration.wav", PUBLIC / "narration.wav")
+    place(out / "narration.wav", PUBLIC / "narration.wav")
     tl = stage_timeline(args.episode, out)
 
     tracks = [ROOT / p for p in (cfg.get("bgm") or {}).get("tracks", [])]
@@ -185,7 +207,7 @@ def main():
     if missing:
         sys.exit(f"BGMファイルがありません: {missing}")
     bed = bgm_bed(tracks, tl["totalSeconds"], cfg["audio"]["bgm_lufs"])
-    sf.write(PUBLIC / "bgm.wav", bed, SR, subtype="PCM_16")
+    write_wav(PUBLIC / "bgm.wav", bed, out)
 
     a = cfg["audio"]
     write_json(SRC_DATA / "current.json", {

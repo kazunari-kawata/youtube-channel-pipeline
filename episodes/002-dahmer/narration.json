@@ -138,20 +138,12 @@
   "caption": "この事件は、2022年に、あらためて世界中で注目されました。",
   "read": "この事件は、二千二十二年に、あらためて、世界中で注目されました。",
   "visual": {
-   "kind": "card",
-   "style": "chapter",
-   "text": "なぜ今、この事件か",
-   "sub": "はじめに"
+   "kind": "insert",
+   "scene": "tv_room",
+   "var": "a",
+   "note": "2022年の居間、テレビの光とテーブルのビール瓶（画面の中身は見せない）。カードより先に居間を出す（F-033）"
   },
-  "cut": {
-   "at": 0.562,
-   "visual": {
-    "kind": "insert",
-    "scene": "tv_room",
-    "var": "a",
-    "note": "2022年の居間、テレビの光（画面の中身は見せない）"
-   }
-  }
+  "cut": null
  },
  {
   "id": "s010",
@@ -162,16 +154,16 @@
    "kind": "card",
    "style": "netflix",
    "text": "『ダーマー モンスター：ジェフリー・ダーマー物語』",
-   "sub": "Netflix",
+   "sub": "Netflix　2022年9月21日配信開始・全10話",
    "source": "Wikipedia（英語版）"
   },
   "cut": {
-   "at": 0.618,
+   "at": 0.634,
    "visual": {
     "kind": "insert",
     "scene": "tv_room",
     "var": "b",
-    "note": "2022年の居間（横の低い所から）"
+    "note": "2022年の居間（横の低い所から）。配信開始のくだりまで続ける"
    }
   }
  },
@@ -180,20 +172,15 @@
   "scene": "intro",
   "caption": "2022年9月21日に配信が始まった、全10話の作品です。",
   "read": "二千二十二年九月二十一日に配信が始まった、全十話の作品です。",
-  "visual": {
-   "kind": "card",
-   "style": "date",
-   "text": "2022年9月21日",
-   "sub": "配信開始　全10話",
-   "source": "Wikipedia（英語版）"
-  },
+  "visual": "same",
   "cut": {
-   "at": 0.653,
+   "at": 1.0,
    "visual": {
-    "kind": "insert",
-    "scene": "tv_room",
-    "var": "c",
-    "note": "2022年の居間（テレビの横から壁の光）"
+    "kind": "card",
+    "style": "fact",
+    "text": "60日で10億時間",
+    "sub": "Netflix作品で3本目",
+    "source": "Wikipedia（英語版）"
    }
   }
  },
@@ -202,15 +189,9 @@
   "scene": "intro",
   "caption": "配信から60日で、視聴時間が10億時間を超えました。Netflixの作品で3本目の記録です。",
   "read": "配信から六十日で、視聴時間が、十億時間を超えました。ネットフリックスの作品で、三本目の記録です。",
-  "visual": {
-   "kind": "card",
-   "style": "fact",
-   "text": "60日で10億時間",
-   "sub": "Netflix作品で3本目",
-   "source": "Wikipedia（英語版）"
-  },
+  "visual": "same",
   "cut": {
-   "at": 0.441,
+   "at": 0.322,
    "visual": {
     "kind": "insert",
     "scene": "windows_2022",
@@ -548,7 +529,8 @@
    "style": "fact",
    "text": "軍に3年",
    "sub": "除隊の理由は飲酒の問題",
-   "source": "ミルウォーキー警察の資料（本人の供述）、ブリタニカ百科事典"
+   "source": "ミルウォーキー警察の資料（本人の供述）、ブリタニカ百科事典",
+   "lead": "本人の話では"
   },
   "cut": {
    "at": 0.392,

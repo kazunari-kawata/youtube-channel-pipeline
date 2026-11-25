@@ -279,6 +279,17 @@ def main():
         # 遺族の言葉のように、途中で絵を替えないと決めたカードは visual.keep に理由を書く
         if sh["v"]["kind"] == "card" and sh["dur"] > card_max and not str(sh["v"].get("keep", "")).strip():
             warn.append(f"{sh['id']}：文字カードが {sh['dur']}秒（約4秒まで。{card_max:g}秒を超えたら区間の途中で cut して資料・地図・イメージ映像に替える。F-023）")
+    # 絵が短い間隔で続けて替わると、せわしない（F-033：文字カードを約4秒で切ったあと、3秒台のイメージ映像とカードを交互に続けた）。
+    # 続くカードは1枚にまとめるか、イメージ映像を区間をまたいで長めに出す（次の区間は same）
+    run_n, run_sec = cfg.get("shots", {}).get("busy_run", 5), cfg.get("shots", {}).get("busy_sec", 5.0)
+    run: list[dict] = []
+    for sh in shots + [{"dur": 1e9, "id": "", "start": 0}]:
+        if sh["dur"] < run_sec:
+            run.append(sh)
+            continue
+        if len(run) >= run_n:
+            warn.append(f"{run[0]['id']}〜{run[-1]['id']}（{int(run[0]['start'] // 60)}:{run[0]['start'] % 60:04.1f}から）：{run_sec:g}秒未満の絵が {len(run)}回続く（せわしない。カードをまとめるか、イメージ映像を区間をまたいで長めに出す。F-033）")
+        run = []
     warn += reuse_warnings(shots, cfg)
     warn += year_warnings(shots)
     lib = load_sfx()

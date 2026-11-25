@@ -53,7 +53,7 @@ const useIn = (delay = 0, len = 14) => {
 
 /* ---------- 文字カード ---------- */
 
-export type CardV = { style: string; text?: string; sub?: string; source?: string; items?: string[]; highlight?: number };
+export type CardV = { style: string; text?: string; sub?: string; source?: string; items?: string[]; highlight?: number; lead?: string };
 
 /** 続きの区間で後から出す項目：items / points の from 番目以降を、カットの frame コマ目から順に出す（台本の "reveal"） */
 export type Reveal = { from: number; frame: number };
@@ -94,6 +94,8 @@ export const CardShot: React.FC<{ v: CardV; reveal?: Reveal }> = ({ v, reveal })
   } else if (v.style === "fact" || v.style === "span") {
     body = (
       <div style={{ ...base, opacity: a, transform: `translateY(${rise}px)` }}>
+        {/* lead：大きな数字の前に置く短い断り（「本人の話では」など。数字が本人の供述であることを示す） */}
+        {v.lead ? <div style={{ fontSize: 36, letterSpacing: 4, marginBottom: 6, color: C.cream }}>{v.lead}</div> : null}
         <div style={{ fontSize: v.style === "span" ? 110 : 130, fontWeight: 800, color: C.amber, letterSpacing: 4, ...glow }}>{v.text}</div>
         <div style={{ fontSize: 32, marginTop: 14, letterSpacing: 2 }}>{v.sub}</div>
       </div>
