@@ -8,7 +8,7 @@ video:
 
 tts:
   provider: elevenlabs
-  voice_id: ""                     # 声の候補を聞き比べて決める（pipeline/tts_voice_samples.py）
+  voice_id: JOcmGzB8OFjY8MhjHHEf    # Jun（日本語、落ち着いたナレーション向け。2026-11-25 ユーザーが選定）
   model_id: eleven_multilingual_v2 # 使えるモデルは tts_voice_samples.py --models で確認
   language_code: null              # multilingual_v2 では指定しない。v3系なら "ja"
   output_format: mp3_44100_128     # 全プランで使える形式

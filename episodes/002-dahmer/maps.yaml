@@ -1,4 +1,5 @@
 # 地図の範囲と地名（pipeline/make_maps.py）。個人宅は出さない：町・市の位置まで
+# note は画面に出る。制作上の配慮（「個人宅は示さない」など）は書かない（F-016。視聴者向けの情報ではない）
 places:
   milwaukee: {lat: 43.0389, lon: -87.9065, label: "ミルウォーキー"}
   westallis: {lat: 43.0167, lon: -88.0070, label: "ウェストアリス"}
@@ -30,7 +31,6 @@ views:
     labels:
       - {lat: 43.02, lon: -87.72, text: "ミシガン湖", kind: water}
       - {lat: 43.17, lon: -88.3, text: "ウィスコンシン州"}
-    note: "市の位置まで（個人宅は示さない）"
   atlantic:
     lon: [-92.0, 16.0]
     lat: [28.0, 60.0]
@@ -53,4 +53,4 @@ views:
     labels:
       - {lat: 41.72, lon: -81.3, text: "エリー湖", kind: water}
       - {lat: 40.75, lon: -82.6, text: "オハイオ州"}
-    note: "オハイオ州北東部（町の位置まで。家は示さない）"
+    note: "オハイオ州北東部"

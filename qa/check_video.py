@@ -24,7 +24,7 @@ import pyloudnorm as pyln
 from scipy.ndimage import binary_opening
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "pipeline"))
-from common import REMOTION, build_dir, decode_audio, ffmpeg_bin, load_config, write_json  # noqa: E402
+from common import REMOTION, build_dir, decode_audio, episode_dir, ffmpeg_bin, load_config, write_json  # noqa: E402
 
 SR = 48000
 SW, SH = 320, 180
@@ -186,6 +186,25 @@ def sfx_checks(episode: str, cfg: dict, rep: Report):
     rep.add("強い効果音の頻度", d["hits_per_min"] <= s["hit_per_min_max"], f"{d['hits_per_min']}回/分", f"{s['hit_per_min_max']}回/分まで", "F-012")
 
 
+INTERNAL_WORDS = ("個人宅", "示さない", "出さない", "縮尺まで", "位置まで")
+
+
+def onscreen_text_checks(episode: str, rep: Report):
+    """画面に出る文字に、制作上の配慮（「個人宅は示さない」など）が入っていないか（F-016）"""
+    num = episode.split("-")[0]
+    texts = []
+    for f in sorted((REMOTION / "public" / num).glob("map_*.json")):
+        d = json.loads(f.read_text(encoding="utf-8"))
+        texts += [(f.name, d.get("note") or "")] + [(f.name, l["text"]) for l in d.get("labels", [])]
+    for s in json.loads((episode_dir(episode) / "narration.json").read_text(encoding="utf-8")):
+        v = s.get("visual")
+        if isinstance(v, dict):
+            texts += [(s["id"], str(v.get(k) or "")) for k in ("text", "sub", "label", "source")]
+            texts += [(s["id"], str(i)) for i in v.get("items", [])]
+    bad = [f"{w}：{t}" for w, t in texts if any(k in t for k in INTERNAL_WORDS)]
+    rep.add("画面の文字に制作上の配慮を書いていない", not bad, bad or "なし", "なし", "F-016")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
@@ -223,6 +242,7 @@ def main():
         audio_checks(video, out / "narration.wav", tl, q, rep)
     lint(rep)
     sfx_checks(args.episode, cfg, rep)
+    onscreen_text_checks(args.episode, rep)
 
     write_json(out / ("qa_report_partial.json" if args.partial else "qa_report.json"),
                {"video": str(video), "frames": n, "passed": rep.passed, "items": rep.items})
