@@ -42,6 +42,9 @@ export const SLIM_90S: Build = {
   hair: "#7d6748",
 };
 
+// 同じ痩せ型の体つきで、刑務所の中の服（色だけ替える。体の形は SLIM_90S のまま）
+export const SLIM_PRISON: Build = { ...SLIM_90S, jacket: "#5d6670", trousers: "#4b535d", shoes: "#18181a" };
+
 // ジャケットの胴：[高さ, 横幅の半分, 奥行きの半分, 前後の中心, 後ろ側の持ち上げ]
 const JACKET_BODY = [
   [0.862, 0.168, 0.13, 0.006, 0], // 裾は少し広げる（脚の付け根が横から出ないように）
@@ -471,9 +474,11 @@ export type FigureProps = {
   timeOffset?: number;
   glasses?: boolean;
   build?: Build;
+  /** 動きを止める位置（秒）。"end" は動きの最後の姿勢（倒れた姿勢など）で止める */
+  freeze?: number | "end";
 };
 
-export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rotationY = 0, path, timeOffset = 0, glasses = true, build = SLIM_90S }) => {
+export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rotationY = 0, path, timeOffset = 0, glasses = true, build = SLIM_90S, freeze }) => {
   const { advance } = useThree();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -525,20 +530,20 @@ export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rota
     const anim = gltf.animations.find((a) => a.name === clip);
     if (!anim) cancelRender(new Error(`動き ${clip} がありません`));
     mixer.clipAction(anim!).play();
-    return { obj, mixer, arms };
+    return { obj, mixer, arms, duration: anim!.duration };
   }, [gltf, clip, build, glasses]);
 
   useLayoutEffect(() => {
     if (!rig) return;
     const t = frame / fps;
-    rig.mixer.setTime(t + timeOffset);
+    rig.mixer.setTime(freeze === "end" ? rig.duration - 0.001 : freeze !== undefined ? freeze : t + timeOffset);
     // 肩幅を狭める：動きが毎フレーム骨の位置を書き戻すので、その後で掛ける
     for (const a of rig.arms) a.position.multiplyScalar(build.shoulder);
     const p = path ? path(t) : position;
     rig.obj.position.set(p[0], p[1], p[2]);
     rig.obj.rotation.y = rotationY;
     rig.obj.updateMatrixWorld(true);
-  }, [rig, frame, fps, path, position, rotationY, timeOffset, build]);
+  }, [rig, frame, fps, path, position, rotationY, timeOffset, build, freeze]);
 
   useEffect(() => {
     if (!rig) return;

@@ -5,6 +5,7 @@
 import React from "react";
 import { InsertBusStop, InsertNightWalk, InsertWindow, SceneProps } from "./Inserts";
 import { InsertCourthouse, InsertOhioRoad, InsertPoliceCar, InsertPrisonFence } from "./Scenes2";
+import { InsertPrisonFloor } from "./ScenesPrison";
 
 export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   night_walk: InsertNightWalk,
@@ -14,4 +15,5 @@ export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   courthouse: InsertCourthouse,
   police_car: InsertPoliceCar,
   prison_fence: InsertPrisonFence,
+  prison_floor: InsertPrisonFloor,
 };

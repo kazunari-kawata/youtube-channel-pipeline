@@ -63,6 +63,7 @@ rules:
   insert/courthouse:   [{key: amb_court, at: 0.0}]
   insert/police_car:   [{key: amb_idle, at: 0.0}]
   insert/prison_fence: [{key: amb_fence, at: 0.0}]
+  insert/prison_floor: [{key: amb_room, at: 0.0}]   # 静かな室内の音だけ（倒れた場面に強い音は付けない）
   insert/airport_walk: [{key: amb_concourse, at: 0.0}]
   insert/airport_wait: [{key: amb_airport, at: 0.0}]
   insert/rain_window:  [{key: amb_rain, at: 0.0}]

@@ -59,13 +59,16 @@ const brickTextures = () => {
 };
 
 /** 壁の大きさ（m）に合わせてれんがの目の大きさをそろえた材質 */
-export const BrickMaterial: React.FC<{ w: number; h: number; tint?: string }> = ({ w, h, tint = "#8a7468" }) => {
+export const BrickMaterial: React.FC<{ w: number; h: number; tint?: string; painted?: boolean }> = ({ w, h, tint = "#8a7468", painted = false }) => {
   const mat = useMemo(() => {
     const { map, bump } = brickTextures();
     const m2 = map.clone(), b2 = bump.clone();
     for (const t of [m2, b2]) { t.repeat.set(w / BRICK_TILE_M, h / BRICK_TILE_M); t.needsUpdate = true; }
-    return new THREE.MeshStandardMaterial({ map: m2, bumpMap: b2, bumpScale: 1.2, color: tint, roughness: 0.92 });
-  }, [w, h, tint]);
+    // painted：塗装したブロック壁（色むらは消し、目地の凹凸だけ残す。刑務所や学校の廊下）
+    return painted
+      ? new THREE.MeshStandardMaterial({ bumpMap: b2, bumpScale: 1.0, color: tint, roughness: 0.85 })
+      : new THREE.MeshStandardMaterial({ map: m2, bumpMap: b2, bumpScale: 1.2, color: tint, roughness: 0.92 });
+  }, [w, h, tint, painted]);
   return <primitive object={mat} attach="material" />;
 };
 
@@ -82,7 +85,7 @@ export const useInsertDur = () => {
 };
 export type SceneProps = { variant?: string };
 
-type CamKey = { pos: [number, number, number]; target: [number, number, number]; fov?: number };
+export type CamKey = { pos: [number, number, number]; target: [number, number, number]; fov?: number };
 
 export const Camera: React.FC<{ from: CamKey; to: CamKey }> = ({ from, to }) => {
   const { camera, advance } = useThree();

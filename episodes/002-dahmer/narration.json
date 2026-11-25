@@ -1162,13 +1162,12 @@
    "sub": "コロンビア矯正施設（ポーテージ）"
   },
   "cut": {
-   "at": 0.45,
+   "at": 0.33,
    "visual": {
-    "kind": "aerial",
-    "src": "naip_columbia",
-    "zoom": "in",
-    "label": "コロンビア矯正施設（ウィスコンシン州ポーテージ）",
-    "note": "写真は2022年"
+    "kind": "insert",
+    "scene": "prison_floor",
+    "var": "a",
+    "note": "刑務所の床に倒れた人物（ユーザーの指示。血・凶器・襲う人物は出さない：F-027）"
    }
   }
  },
