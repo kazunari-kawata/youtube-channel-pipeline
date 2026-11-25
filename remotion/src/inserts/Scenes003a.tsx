@@ -153,7 +153,7 @@ export const InsertAirportWalk003: React.FC<SceneProps> = ({ variant = "a" }) =>
 export const InsertAirportWait003: React.FC<SceneProps> = ({ variant = "b" }) => {
   const cams: Record<string, [CamKey, CamKey]> = {
     // b：座って待つ男を横から（足元に書類かばん）
-    b: [{ pos: [2.6, 1.15, 1.2], target: [-0.7, 0.75, -3.8], fov: 34 }, { pos: [2.3, 1.15, 0.95], target: [-0.7, 0.75, -3.8], fov: 33 }],
+    b: [{ pos: [2.3, 2.3, 0.4], target: [-0.7, 0.55, -4.0], fov: 36 }, { pos: [2.1, 2.25, 0.2], target: [-0.7, 0.55, -4.0], fov: 35 }], // 少し上から（背中が暗い窓に溶けないよう、床を背に）
     // c：立っている男を遠目に（トレンチコート、かばん）
     c: [{ pos: [-7, 1.6, 7], target: [1.5, 1.1, -3.2], fov: 30 }, { pos: [-6.4, 1.6, 6.6], target: [1.5, 1.1, -3.2], fov: 30 }],
     // ticket：カウンターの上の航空券と紙幣（人物なし）
@@ -184,7 +184,7 @@ export const InsertAirportWait003: React.FC<SceneProps> = ({ variant = "b" }) =>
       <ChairRow position={[3.6, 0, -4.2]} n={6} color="#7a6a3a" />
       {variant === "b" ? (
         <>
-          <Figure clip="Sitting_Idle_Loop" position={[-0.6, 0, -4.32]} rotationY={0} glasses={false} build={COOPER_71} />
+          <Figure clip="Sitting_Idle_Loop" position={[-0.6, 0, -4.1]} rotationY={0} glasses={false} build={COOPER_71} />
           <Briefcase position={[-1.15, 0, -3.75]} rotY={0.2} />
         </>
       ) : null}
@@ -241,7 +241,7 @@ export const InsertAirportWait003: React.FC<SceneProps> = ({ variant = "b" }) =>
       </group>
       {/* 遠くに座る旅行者（顔なし）。待合が無人の角度では出さない */}
       {variant === "b" || variant === "c" ? (
-        <Figure clip="Sitting_Idle_Loop" position={[5.46, 0, -4.32]} rotationY={0} timeOffset={1.9} glasses={false} build={TRAVELER_A} />
+        <Figure clip="Sitting_Idle_Loop" position={[5.46, 0, -4.1]} rotationY={0} timeOffset={1.9} glasses={false} build={TRAVELER_A} />
       ) : null}
     </Stage>
   );

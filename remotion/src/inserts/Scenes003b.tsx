@@ -274,7 +274,7 @@ export const InsertRainForest003: React.FC<SceneProps> = ({ variant = "a" }) => 
   const t = frame / fps;
   type Look = { bg: string; fog: number; hemi: [string, string, number]; sun: number; sunColor: string; mist: string; mistO: number; tree: string | undefined; ground: string; exposure: number };
   const looks: Record<string, Look> = {
-    night: { bg: "#1a2230", fog: 0.04, hemi: ["#6a7a9a", "#0c100c", 0.85], sun: 0.6, sunColor: "#9fb2d4", mist: "#5a6a84", mistO: 0.35, tree: "#1c2a24", ground: "#18201a", exposure: 1.2 },
+    night: { bg: "#232c3c", fog: 0.035, hemi: ["#8090b0", "#141a14", 1.1], sun: 0.9, sunColor: "#a8bcdc", mist: "#6a7a94", mistO: 0.35, tree: "#22322a", ground: "#1e2820", exposure: 1.3 },
     dawn: { bg: "#5e6870", fog: 0.07, hemi: ["#8e9aa8", "#1c1f1c", 0.7], sun: 0.35, sunColor: "#b8c4d0", mist: "#a8b2bc", mistO: 0.45, tree: "#1e2a24", ground: "#232a22", exposure: 1.0 },
     morning: { bg: "#8d969a", fog: 0.035, hemi: ["#c8d0d4", "#2a2a22", 0.8], sun: 1.1, sunColor: "#f2e2c4", mist: "#d8dcd8", mistO: 0.3, tree: "#22322a", ground: "#2c3424", exposure: 1.0 },
   };
