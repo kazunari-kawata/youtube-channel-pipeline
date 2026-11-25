@@ -3,7 +3,7 @@
   python pipeline/stage.py 001-plains
 
 やること
-  data/processed/ の地形・夜景テクスチャ → remotion/public/
+  data/processed/ の地形・夜景テクスチャ → remotion/public/（地形を使う回だけ。episode.yaml の terrain: true）
   episodes/<id>/build/narration.wav, timeline.json → remotion/public/, remotion/src/data/
   episode.yaml の bgm.tracks をつないで動画の長さに合わせ、音量をそろえたBGM → remotion/public/bgm.wav
   どの回を書き出すか・音量の設定 → remotion/src/data/current.json
@@ -23,6 +23,34 @@ from common import (DATA_PROCESSED, PUBLIC, ROOT, SRC_DATA, build_dir, decode_au
 import json  # noqa: E402
 
 SR = 48000
+DEFAULT_META = ROOT / "remotion" / "src" / "defaults" / "meta.json"
+
+
+def stage_terrain(cfg: dict) -> None:
+    """地形を使う回は data/processed/ を配る。使わない回も geo.ts が meta.json を読むので、無ければ既定を置く"""
+    SRC_DATA.mkdir(parents=True, exist_ok=True)
+    if cfg.get("terrain"):
+        if not (DATA_PROCESSED / "meta.json").exists():
+            sys.exit("data/processed/ が空です。先に fetch_data.py と process_geo.py を実行してください。")
+        PUBLIC.mkdir(parents=True, exist_ok=True)
+        for f in DATA_PROCESSED.iterdir():
+            if f.suffix in (".png", ".bin"):
+                shutil.copy2(f, PUBLIC / f.name)
+        shutil.copy2(DATA_PROCESSED / "meta.json", SRC_DATA / "meta.json")
+    elif not (SRC_DATA / "meta.json").exists():
+        shutil.copy2(DEFAULT_META, SRC_DATA / "meta.json")
+
+
+def check_public(ep: str) -> None:
+    """書き出しに要る remotion/public/ のファイル（Gitに入らない）がそろっているか"""
+    need = [PUBLIC / "fonts" / "NotoSansJP.ttf", PUBLIC / "figures" / "mannequin.glb"]
+    num = ep.split("-")[0]
+    if (PUBLIC / num).exists() or (ROOT / "episodes" / ep / "cuts.yaml").exists():
+        need.append(PUBLIC / num)
+    missing = [str(p.relative_to(ROOT)) for p in need if not p.exists()]
+    if missing:
+        sys.exit("remotion/public/ に足りないものがあります: " + ", ".join(missing)
+                 + "（フォントは fetch_data.py、資料と地図は cut_materials.py と make_maps.py で作る）")
 
 
 def bgm_bed(tracks: list[Path], seconds: float, lufs: float, xfade: float = 3.0, fade_out: float = 4.0) -> np.ndarray:
@@ -58,9 +86,10 @@ def main():
     cfg = load_config(args.episode)
     out = build_dir(args.episode)
 
+    stage_terrain(cfg)
+    check_public(args.episode)
     if args.draft:
         tl = json.loads((out / "timeline.json").read_text(encoding="utf-8"))
-        SRC_DATA.mkdir(parents=True, exist_ok=True)
         shutil.copy2(out / "timeline.json", SRC_DATA / "timeline.json")
         a = cfg["audio"]
         write_json(SRC_DATA / "current.json", {
@@ -71,20 +100,10 @@ def main():
         print(f"仮編集の準備完了: {args.episode}（{tl['totalSeconds']:.1f}秒、{kind}）")
         return
 
-    if not (DATA_PROCESSED / "meta.json").exists():
-        sys.exit("data/processed/ が空です。先に fetch_data.py と process_geo.py を実行してください。")
     for f in ("narration.wav", "timeline.json"):
         if not (out / f).exists():
             sys.exit(f"{out / f} がありません。先に tts_elevenlabs.py を実行してください。")
-    if not (PUBLIC / "fonts" / "NotoSansJP.ttf").exists():
-        sys.exit("フォントがありません。fetch_data.py を実行してください。")
-
     PUBLIC.mkdir(parents=True, exist_ok=True)
-    SRC_DATA.mkdir(parents=True, exist_ok=True)
-    for f in DATA_PROCESSED.iterdir():
-        if f.suffix in (".png", ".bin"):
-            shutil.copy2(f, PUBLIC / f.name)
-    shutil.copy2(DATA_PROCESSED / "meta.json", SRC_DATA / "meta.json")
     shutil.copy2(out / "narration.wav", PUBLIC / "narration.wav")
     shutil.copy2(out / "timeline.json", SRC_DATA / "timeline.json")
     tl = json.loads((out / "timeline.json").read_text(encoding="utf-8"))

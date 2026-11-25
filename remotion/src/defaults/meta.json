@@ -1,0 +1,30 @@
+{
+  "japan": {
+    "west": 128.6,
+    "south": 30.8,
+    "east": 146.0,
+    "north": 45.6,
+    "tex_w": 1800,
+    "tex_h": 1948,
+    "mesh_w": 600,
+    "mesh_h": 649,
+    "km_x": 1522.18,
+    "km_y": 1647.54,
+    "land_share_below_100m": 0.275,
+    "max_elev": 3605.775634765625
+  },
+  "kanto": {
+    "west": 138.7,
+    "south": 34.9,
+    "east": 140.95,
+    "north": 36.6,
+    "tex_w": 1800,
+    "tex_h": 1676,
+    "mesh_w": 640,
+    "mesh_h": 596,
+    "km_x": 203.27,
+    "km_y": 189.24,
+    "land_share_below_100m": 0.568,
+    "max_elev": 3740.90625
+  }
+}

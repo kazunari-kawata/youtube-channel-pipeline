@@ -1,5 +1,6 @@
 # 第1回の設定（config/channel.yaml を上書きしたいキーだけ書く）
 id: 001-plains
+terrain: true      # 3Dの地形を使う（stage.py が data/processed/ を配る）
 status: on-hold    # 2026-11 ジャンル変更で保留。pilot-v1 はフィードバック済み（docs/feedback.md）
 
 bgm:
