@@ -28,7 +28,7 @@ export type Build = {
   trousers: string;
   shoes: string;
   skin: string;
-  hair: string;
+  hair: string; // "none" で髪を付けない（帽子をかぶる警官など）
 };
 
 // 痩せ型の成人男性、90年代の私服（ジャケットとジーンズ）
@@ -44,6 +44,9 @@ export const SLIM_90S: Build = {
 
 // 同じ痩せ型の体つきで、刑務所の中の服（色だけ替える。体の形は SLIM_90S のまま）
 export const SLIM_PRISON: Build = { ...SLIM_90S, jacket: "#5d6670", trousers: "#4b535d", shoes: "#18181a" };
+
+// 90年代の警官（紺の制服）。ダーマーより肩幅も胴も太く、並んだときに見分けられるように。記章・文字は付けない。帽子は Figure の hat で
+export const OFFICER_90S: Build = { shoulder: 0.96, width: 1.14, jacket: "#222a3a", trousers: "#1d2230", shoes: "#0d0d0e", skin: "#16110e", hair: "none" };
 
 // ジャケットの胴：[高さ, 横幅の半分, 奥行きの半分, 前後の中心, 後ろ側の持ち上げ]
 const JACKET_BODY = [
@@ -463,6 +466,38 @@ const makeGlasses = () => {
   return g;
 };
 
+/** 頭の頂点の範囲（静止姿勢の座標）。帽子を頭の大きさに合わせるため */
+const headBox = (body: THREE.SkinnedMesh) => {
+  const headIdx = body.skeleton.bones.findIndex((b) => b.name === "DEF-head");
+  const dom = dominantBones(body.geometry);
+  const p = body.geometry.getAttribute("position");
+  const box = new THREE.Box3();
+  const v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) if (dom[i] === headIdx) box.expandByPoint(v.fromBufferAttribute(p, i));
+  return box;
+};
+
+/** 警官の制帽（上の広い山、黒い帯、前のつば）。記章は付けない。原点は頭のてっぺんの真上 */
+const makeCap = (head: THREE.Box3, color: string) => {
+  const size = head.getSize(new THREE.Vector3());
+  const r = (size.x / 2) * 1.02; // 頭の横幅に合わせる（奥行きはあごや首の点を含んで大きく出る）
+  const g = new THREE.Group();
+  const cloth = new THREE.MeshStandardMaterial({ color, roughness: 0.85 });
+  const dark = new THREE.MeshStandardMaterial({ color: "#0c0c0d", roughness: 0.7 }); // つばはつやを抑える（小さく明るい反射はチラつく）
+  // 帽子は髪の上からかぶるので、頭より2割ほど大きく。帯が額の高さに来るように深くかぶせる
+  const crown = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.36, r * 1.2, 0.075, 28), cloth);
+  crown.position.y = 0.0125;
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.21, r * 1.21, 0.034, 28), dark);
+  band.position.y = -0.04;
+  // つば：前半分の薄い円板を、少し下へ傾ける
+  const visor = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.5, r * 1.5, 0.007, 24, 1, false, -Math.PI / 2, Math.PI), dark);
+  visor.position.set(0, -0.056, 0.012);
+  visor.rotation.x = 0.3;
+  g.add(crown, band, visor);
+  g.traverse((o) => ((o as THREE.Mesh).castShadow = true));
+  return g;
+};
+
 /* ---------- 人物 ---------- */
 
 export type FigureProps = {
@@ -480,9 +515,11 @@ export type FigureProps = {
   tilt?: [number, number];
   /** 骨ごとに足す回転（骨の名前 → [x, y, z] ラジアン）。止めた姿勢の膝や腕を曲げるとき。名前は "DEF-thighL" のように "." を除く */
   pose?: Record<string, [number, number, number]>;
+  /** 制帽の色（警官）。指定しなければかぶらない */
+  hat?: string;
 };
 
-export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rotationY = 0, path, timeOffset = 0, glasses = true, build = SLIM_90S, freeze, tilt, pose }) => {
+export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rotationY = 0, path, timeOffset = 0, glasses = true, build = SLIM_90S, freeze, tilt, pose, hat }) => {
   const { advance } = useThree();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -514,10 +551,11 @@ export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rota
       return Array.from(dominantBones(m.geometry)).filter((d) => d === hi).length;
     };
     const main = [...bodies].sort((a, b) => headCount(b) - headCount(a))[0];
-    const hair = makeHair(main, build.hair); // 体を削る前に頭の形を取る
+    const hair = build.hair === "none" ? null : makeHair(main, build.hair); // 体を削る前に頭の形を取る
+    const hbox = headBox(main);
     for (const m of bodies) hideCovered(m);
     for (const c of makeClothes(main, build)) main.parent!.add(c);
-    main.parent!.add(hair);
+    if (hair) main.parent!.add(hair);
     const head = obj.getObjectByName("DEF-head");
     if (head && glasses) {
       // 眼鏡は静止姿勢の座標で目の高さ・顔の前に置き、頭の骨の子にして一緒に動かす
@@ -526,6 +564,15 @@ export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rota
       const gl = makeGlasses();
       local.decompose(gl.position, gl.quaternion, gl.scale);
       head.add(gl);
+    }
+    if (head && hat) {
+      // 帽子も同じように、静止姿勢の頭のてっぺんに置いて頭の骨の子にする
+      const hi = main.skeleton.bones.findIndex((b) => b.name === "DEF-head");
+      const c = hbox.getCenter(new THREE.Vector3());
+      const local = new THREE.Matrix4().copy(main.skeleton.boneInverses[hi]).multiply(new THREE.Matrix4().makeTranslation(c.x, hbox.max.y - 0.026, c.z + 0.002));
+      const cap = makeCap(hbox, hat);
+      local.decompose(cap.position, cap.quaternion, cap.scale);
+      head.add(cap);
     }
     // 骨の名前は読み込み時に "." が消える（DEF-upper_arm.L → DEF-upper_armL）
     const arms: THREE.Object3D[] = [];
@@ -539,7 +586,7 @@ export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rota
     // 前のフレームで足した変更（肩幅・pose）。次のフレームの頭で取り消す（下のコメント）
     const applied = { done: false, pose: [] as [THREE.Object3D, THREE.Quaternion][] };
     return { obj, mixer, arms, bones, duration: anim!.duration, applied };
-  }, [gltf, clip, build, glasses]);
+  }, [gltf, clip, build, glasses, hat]);
 
   useLayoutEffect(() => {
     if (!rig) return;

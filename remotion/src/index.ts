@@ -8,6 +8,7 @@ import "./lib/font";
 import { FigureCheck, InsertBusStop, InsertNightWalk, InsertWindow, PropsCheck } from "./inserts/Inserts";
 import { InsertCourthouse, InsertOhioRoad, InsertPoliceCar, InsertPrisonFence } from "./inserts/Scenes2";
 import { InsertPrisonFloor } from "./inserts/ScenesPrison";
+import { InsertArrest, OfficerCheck } from "./inserts/ScenesArrest";
 
 // どの回を書き出すかは pipeline/stage.py が src/data/current.json に書く
 const Episode = EPISODES[(current as any).episode];
@@ -15,7 +16,8 @@ if (!Episode) throw new Error(`回 ${(current as any).episode} が src/episodes/
 
 // イメージ映像（挿入シーン）の単体確認用。本編では各回の定義から呼び出す
 const INSERTS: [string, React.FC][] = [["Insert-NightWalk", InsertNightWalk], ["Insert-Window", InsertWindow], ["Insert-BusStop", InsertBusStop], ["Figure-Check", FigureCheck], ["Props-Check", PropsCheck],
-  ["Insert-OhioRoad", InsertOhioRoad], ["Insert-Courthouse", InsertCourthouse], ["Insert-PoliceCar", InsertPoliceCar], ["Insert-PrisonFence", InsertPrisonFence], ["Insert-PrisonFloor", InsertPrisonFloor]];
+  ["Insert-OhioRoad", InsertOhioRoad], ["Insert-Courthouse", InsertCourthouse], ["Insert-PoliceCar", InsertPoliceCar], ["Insert-PrisonFence", InsertPrisonFence], ["Insert-PrisonFloor", InsertPrisonFloor],
+  ["Insert-Arrest", InsertArrest], ["Officer-Check", OfficerCheck]];
 
 const Root: React.FC = () =>
   React.createElement(React.Fragment, null,
