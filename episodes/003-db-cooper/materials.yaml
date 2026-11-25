@@ -60,6 +60,18 @@ items:
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: 連邦の裁判所・検事局の文書（連邦政府の著作物）。画面に出すのは表題の部分。本文の脅しの記述は映さない
+  - id: fbi_v24_indictment_p2
+    title: 起訴状の2ページ目（「PAGE 2 - INDICTMENT (U.S. v. John Doe, a/k/a Dan Cooper)」の見出しの行）Part 24 p.576（同じものが Part 6 p.24 にも）
+    file: fbi/vault_p24_indictment_p2.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: 連邦の起訴状。画面に出すのは見出しの行だけ。本文の脅しの記述（爆弾だと言うものを見せたなど）は映さない
+  - id: fbi_v42_letter_1978
+    title: FBIシアトル支局から保険会社への手紙（1978年12月11日。「1,000人近くを調べた」）Part 42 p.213
+    file: fbi/vault_p42_letter_1978.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: FBIの作成（署名はシアトル支局長）。宛先の担当者の名前は黒塗り。同じページに綴じられた保険会社からの手紙（1979年2月8日）はFBIの著作物ではないので映さない
   - id: fbi_v43_decal_teletype
     title: FBIシアトル支局のテレタイプ（1978年11月9日。キャッスルロックの真東約12マイルで見つかった後部階段の表示）Part 43 p.19、聞き取り記録 Part 42 p.178〜179
     file: fbi/vault_p43_decal.png

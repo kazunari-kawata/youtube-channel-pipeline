@@ -22,7 +22,7 @@ kind
 間隔・強さの基準は config/channel.yaml の sfx。結果は shotlist.md の「効果音」と build/sfx_cues.json。
 
 尺は build/timeline.json（本番の声 or estimate_timeline.py の見積もり）から取る。
-守ること（CLAUDE.md）：イメージ映像は1回10秒まで・同じ場面を続けない、静止画は長く止めすぎない、
+守ること（CLAUDE.md）：イメージ映像は1回10秒まで・同じ場面を続けない、静止画は長く止めすぎない、文字カードは約4秒まで、
 効果音は画面の動きに付け、間を空けすぎず詰めすぎない。
 """
 import argparse
@@ -243,6 +243,11 @@ def main():
     total = tl["totalSeconds"]
     cfg = load_config(a.episode)
     scfg = cfg["sfx"]
+    # 文字カードは約4秒まで（F-023。長く見せると、その間に離脱されやすい）
+    card_max = cfg.get("shots", {}).get("card_max_sec", 5.0)
+    for sh in shots:
+        if sh["v"]["kind"] == "card" and sh["dur"] > card_max:
+            warn.append(f"{sh['id']}：文字カードが {sh['dur']}秒（約4秒まで。{card_max:g}秒を超えたら区間の途中で cut して資料・地図・イメージ映像に替える。F-023）")
     warn += reuse_warnings(shots, cfg)
     lib = load_sfx()
     cues, dropped, gaps = plan_sfx(shots, lib, scfg, segs[-1]["end"])

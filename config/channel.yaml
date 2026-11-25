@@ -49,6 +49,7 @@ shots:
   material_max: 2          # 同じ写真・資料・航空写真・地図（同じ見せ方と点）は1本で2回まで（F-021。使い回しはくどく、テンポも落ちる）
   insert_variant_max: 3    # 同じイメージ映像の同じ種類は3回まで
   person_first_sec: 30     # 本人の姿（episode.yaml の person_photos）を最初の30秒以内に出す（F-022）
+  card_max_sec: 5.0        # 文字カードは約4秒まで。これを超えたら注意（F-023。長く見せると離脱されやすい）
 
 render:
   gl_linux: swangle    # クラウド（GPUなし）
