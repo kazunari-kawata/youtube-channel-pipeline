@@ -138,4 +138,5 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 - 作業解像度は 1280x720、書き出しは1.5倍の 1920x1080。文字の位置は 1280x720 の座標で決める
 - フォントは `remotion/public/fonts/NotoSansJP.ttf` に固定（PCによって見た目が変わらないように）
 - `remotion/public/`（フォント、人物の3Dモデル、回ごとの資料・地図）はGitに入らない。クラウドで作ったものはWindowsの同じ場所へ写す。
+  画像はzipにまとめて写し、向こうで展開する（1枚ずつ写すとJPEGが再圧縮されて中身が変わる）。写したあと sha256 で一致を確かめる
   地形を使わない回でも `stage.py` が `remotion/src/defaults/meta.json` を置く（地形を使う回だけ episode.yaml に `terrain: true`）
