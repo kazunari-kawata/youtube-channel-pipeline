@@ -245,9 +245,16 @@ export const InsertNightWalk: React.FC<SceneProps> = ({ variant = "a" }) => {
     c: [{ pos: [2.0, 1.5, -19.5], target: [1.2, 1.2, 0], fov: 30 }, { pos: [1.9, 1.5, -19.0], target: [1.2, 1.25, -2], fov: 29 }],
     empty: [{ pos: [2.0, 1.4, 5.0], target: [1.0, 1.6, -12] }, { pos: [1.9, 1.45, 2.4], target: [1.0, 1.7, -16] }],
     empty2: [{ pos: [3.4, 3.2, 7.0], target: [0.0, 1.0, -16] }, { pos: [3.0, 3.0, 5.0], target: [0.0, 1.0, -18] }],
+    // 2026-11-25 追加の角度（同じ角度で空いた時間を埋めない：F-029）
+    d: [{ pos: [-3.5, 6.5, 7.5], target: [1.3, 0.9, -3.5], fov: 36 }, { pos: [-3.4, 6.4, 6.8], target: [1.3, 0.9, -4.0], fov: 35 }], // 人物を車道の上の高い所から（止めた車に隠れないように）
+    empty3: [{ pos: [3.6, 0.55, 2.5], target: [1.0, 1.8, -20], fov: 36 }, { pos: [3.5, 0.6, 1.5], target: [1.0, 1.9, -22], fov: 35 }], // 歩道の低い所から通りの奥へ
+    empty4: [{ pos: [-5.5, 1.3, -2.0], target: [4.5, 1.8, -9.0], fov: 38 }, { pos: [-5.3, 1.3, -2.6], target: [4.5, 1.8, -9.5], fov: 37 }], // 車道の向かいから店の並び
+    f: [{ pos: [0.4, 0.7, -15.5], target: [1.3, 1.2, -2.0], fov: 24 }, { pos: [0.4, 0.72, -15.0], target: [1.3, 1.2, -2.5], fov: 23.5 }], // 縁石の低い所から、向こうから来る人物を望遠で（離れているので脚は明滅しない）
+    corner: [{ pos: [0.4, 0.5, -22], target: [1.5, 1.2, 0], fov: 34 }, { pos: [0.4, 0.55, -21.2], target: [1.5, 1.25, 0], fov: 33.5 }], // 縁石の低い所から、手前側を振り返る
+    end: [{ pos: [1.0, 2.0, 8.0], target: [1.0, 2.5, -20], fov: 38 }, { pos: [1.0, 5.5, 9.0], target: [1.0, 1.5, -20], fov: 38 }], // ゆっくり上がって通りを見下ろす（結び）
   };
   const [from, to] = cams[variant] ?? cams.a;
-  const person = !variant.startsWith("empty");
+  const person = ["a", "c", "d", "f"].includes(variant);
   return (
     <Stage fog={0.045} exposure={1.05}>
       <Camera from={from} to={to} />
@@ -308,6 +315,9 @@ export const InsertWindow: React.FC<SceneProps> = ({ variant = "a" }) => {
     c: [{ pos: [5.2, 1.5, 16.5], target: [0.8, winY - 0.6, 0], fov: 34 }, { pos: [4.6, 1.6, 15.0], target: [0.8, winY - 0.4, 0], fov: 33 }],
     d: [{ pos: [0.9, 2.7, 6.6], target: [0.1, winY, 0], fov: 23 }, { pos: [0.6, 2.9, 5.9], target: [0.1, winY + 0.05, 0], fov: 21 }],
     e: [{ pos: [2.2, 1.7, 10.5], target: [0, winY - 0.1, 0], fov: 28 }, { pos: [1.5, 1.8, 9.0], target: [0, winY, 0], fov: 26 }],
+    // 2026-11-25 追加の角度（F-029）
+    f: [{ pos: [-6.5, 1.2, 14], target: [0, winY, 0], fov: 26 }, { pos: [-5.8, 1.3, 12.5], target: [0, winY, 0], fov: 25 }], // 左の低い所から
+    g: [{ pos: [0.3, 1.5, 15.5], target: [0, 4.2, 0], fov: 34 }, { pos: [0.3, 1.6, 14.5], target: [0, 4.3, 0], fov: 33 }], // 正面から壁ごと引いて（窓が並ぶ）
   };
   const [from, to] = cams[variant] ?? cams.a;
   // 部屋の左手にあるテレビの青い光。ゆっくり明るさが変わる
@@ -395,10 +405,18 @@ export const InsertBusStop: React.FC<SceneProps> = ({ variant = "a" }) => {
   car.castShadow = false; // 通り過ぎる光は影を落とさない：止めた車の影が光と一緒に速く動き、チラつきになった
   car.position.set(carX, 0.8, 3.2);
   car.target.position.set(carX + 12, 0.2, 2.0);
+  // a・empty：左の低い所から（同じカメラで、人物のあり・なし）。b・c は 2026-11-25 追加の角度（F-029）
+  const cams: Record<string, [CamKey, CamKey]> = {
+    a: [{ pos: [-3.4, 1.1, 9.5], target: [0.2, 1.2, 0], fov: 32 }, { pos: [-2.4, 1.15, 8.6], target: [0.3, 1.25, 0], fov: 31 }],
+    b: [{ pos: [5.2, 1.2, 7.5], target: [0.2, 1.1, -0.5], fov: 32 }, { pos: [4.6, 1.25, 6.8], target: [0.2, 1.15, -0.5], fov: 31 }], // 右から、待つ人物
+    c: [{ pos: [-6, 4.5, 12], target: [0.5, 1.0, -2], fov: 36 }, { pos: [-5.5, 4.3, 11], target: [0.5, 1.0, -2], fov: 35 }], // 高く引いて、人のいないバス停
+  };
+  const [from, to] = cams[variant] ?? cams.a;
+  const person = variant === "a" || variant === "b";
 
   return (
     <Stage fog={0.05} exposure={1.0}>
-      <Camera from={{ pos: [-3.4, 1.1, 9.5], target: [0.2, 1.2, 0], fov: 32 }} to={{ pos: [-2.4, 1.15, 8.6], target: [0.3, 1.25, 0], fov: 31 }} />
+      <Camera from={from} to={to} />
       <Ground />
       <mesh position={[0, 0.075, -1.5]} receiveShadow>
         <boxGeometry args={[60, 0.15, 3.4]} />
@@ -436,7 +454,7 @@ export const InsertBusStop: React.FC<SceneProps> = ({ variant = "a" }) => {
       <NeonSign text="OPEN" color="#ff3346" position={[4.3, 1.8, -4.88]} height={0.3} board={false} light={0} />
       <Payphone position={[-3.0, 0.15, -2.5]} />
       <NewsBox position={[2.7, 0.15, -2.0]} color="#2d5aa0" />
-      {variant === "empty" ? null : <Figure clip="Idle_Loop" position={[0.6, 0.15, -0.6]} rotationY={-Math.PI / 2 + 0.25} timeOffset={0.7} />}
+      {!person ? null : <Figure clip="Idle_Loop" position={[0.6, 0.15, -0.6]} rotationY={-Math.PI / 2 + 0.25} timeOffset={0.7} />}
       {/* 止めた車は置かない：通り過ぎる車の光が手前の車体とバンパーに強く当たり、チラつきになった（002の仮編集のQA）。
           走る車は画面の外に置き、ヘッドライトの光だけが通り過ぎる */}
       <primitive object={car} />

@@ -6,7 +6,8 @@ import React from "react";
 import { InsertBusStop, InsertNightWalk, InsertWindow, SceneProps } from "./Inserts";
 import { InsertCourthouse, InsertOhioRoad, InsertPoliceCar, InsertPrisonFence } from "./Scenes2";
 import { InsertPrisonFloor } from "./ScenesPrison";
-import { InsertArrest } from "./ScenesArrest";
+import { InsertApartments, InsertArrest } from "./ScenesArrest";
+import { InsertCourtHall, InsertPhone, InsertTvRoom, InsertWindows2022 } from "./ScenesDahmer2";
 
 export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   night_walk: InsertNightWalk,
@@ -18,4 +19,9 @@ export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   prison_fence: InsertPrisonFence,
   prison_floor: InsertPrisonFloor,
   arrest: InsertArrest,
+  apartments: InsertApartments,
+  tv_room: InsertTvRoom,
+  windows_2022: InsertWindows2022,
+  phone: InsertPhone,
+  court_hall: InsertCourtHall,
 };

@@ -39,6 +39,11 @@ const ASSETS: Record<string, DocMeta & { aspect: number }> = {
   army_discharge: { title: "米陸軍 除隊の勧告（1981年3月18日）", source: `${FBI}。米陸軍の書類`, aspect: 1481 / 1342 },
   judgment_1989: { title: "1989年の判決書（事件番号 F-882515）", source: MPD, aspect: 1581 / 336 },
   judgment_probation: { title: "1989年の判決書 主文", source: MPD, aspect: 1581 / 358 },
+  fbi5_teletype: { title: "FBIのテレタイプ（1991年7月24日）", source: FBI, aspect: 1015 / 506 },
+  army_dd214: { title: "米陸軍 除隊証明（DD Form 214）", source: `${FBI}。米陸軍の書類`, aspect: 1528 / 659 },
+  indict_counts12: { title: "修正起訴状 第1・第2訴因（事件番号 F-912542）", source: MPD, aspect: 1564 / 435 },
+  indict_count3: { title: "修正起訴状 第3訴因（事件番号 F-912542）", source: MPD, aspect: 1564 / 227 },
+  statement_header: { title: "逮捕後の供述書（ミルウォーキー警察）", source: MPD, aspect: 1564 / 275 },
   apartment_a: { title: "213号室（警察の記録写真）", source: "出典：ミルウォーキー警察", aspect: 1903 / 1700 },
   yearbook_1978: { title: "1978年 リビア高校の卒業アルバム", source: COMMONS, aspect: 450 / 600 },
   yearbook_cartoon: { title: "1978年 卒業アルバムの漫画（同級生が描いたもの）", source: COMMONS, aspect: 1022 / 636 },
@@ -90,6 +95,15 @@ const JA: Record<string, string[]> = {
   ],
   judgment_1989: ["有罪判決・刑の言い渡しと執行猶予・保護観察の命令", "ウィスコンシン州 対 ジェフリー・L・ダーマー（1960年5月21日生まれ）", "ミルウォーキー郡巡回裁判所、事件番号 F-882515"],
   judgment_probation: ["判決の主文（1989年5月23日）", "1月30日に有罪とされた罪について、州刑務所での刑を言い渡す。", "ただし刑の執行は猶予し、5年間の保護観察とする。"],
+  fbi5_teletype: ["1991年7月24日のテレタイプ（至急）", "発信：FBIミルウォーキー支局（ファイル番号 7-MW-26057）", "あて先：FBI長官、全米のFBI支局"],
+  army_dd214: [
+    "除隊証明（米陸軍）",
+    "ジェフリー・ライオネル・ダーマー。階級は上等兵、職種は衛生兵（91B10）。",
+    "入隊は1979年1月12日、除隊は1981年3月26日。最後の所属は在欧米陸軍の機甲部隊。",
+  ],
+  indict_counts12: ["修正起訴状 第1・第2訴因：第1級殺人", "1988年1月と1988年3月、ウェストアリス市で、", "殺意をもって人を死亡させた。"],
+  indict_count3: ["修正起訴状 第3訴因：第1級故意殺人", "1989年3月26日ごろ、ウェストアリス市で、", "殺意をもって人を死亡させた。"],
+  statement_header: ["逮捕後の供述書（続き）", "ジェフリー・ライオネル・ダーマー、1960年5月21日生まれ。", "本人は「31歳で、ミルウォーキーで生まれた」と述べた。"],
 };
 const NAIP_DATE: Record<string, string> = { naip_oxford: "2022年6月", naip_columbia: "2022年8月" };
 

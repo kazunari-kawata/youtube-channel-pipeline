@@ -9,6 +9,7 @@ import { FigureCheck, InsertBusStop, InsertNightWalk, InsertWindow, PropsCheck }
 import { InsertCourthouse, InsertOhioRoad, InsertPoliceCar, InsertPrisonFence } from "./inserts/Scenes2";
 import { InsertPrisonFloor } from "./inserts/ScenesPrison";
 import { InsertArrest, OfficerCheck } from "./inserts/ScenesArrest";
+import { INSERT_SCENES } from "./inserts/registry";
 
 // どの回を書き出すかは pipeline/stage.py が src/data/current.json に書く
 const Episode = EPISODES[(current as any).episode];
@@ -19,12 +20,19 @@ const INSERTS: [string, React.FC][] = [["Insert-NightWalk", InsertNightWalk], ["
   ["Insert-OhioRoad", InsertOhioRoad], ["Insert-Courthouse", InsertCourthouse], ["Insert-PoliceCar", InsertPoliceCar], ["Insert-PrisonFence", InsertPrisonFence], ["Insert-PrisonFloor", InsertPrisonFloor],
   ["Insert-Arrest", InsertArrest], ["Officer-Check", OfficerCheck]];
 
+// 確認用：場面と角度を入力（inputProps の scene・variant）で選んで描く（node scene_stills.mjs で静止画をまとめて書き出す）
+const SceneCheck: React.FC<{ scene?: string; variant?: string }> = ({ scene = "night_walk", variant = "a" }) => {
+  const C = INSERT_SCENES[scene];
+  return C ? React.createElement(C, { variant }) : null;
+};
+
 const Root: React.FC = () =>
   React.createElement(React.Fragment, null,
     React.createElement(Composition, {
       id: "Main", component: Episode, durationInFrames: TL.totalFrames, fps: TL.fps, width: W, height: H,
     }),
     ...INSERTS.map(([id, c]) => React.createElement(Composition, { key: id, id, component: c, durationInFrames: 180, fps: 30, width: W, height: H })),
+    React.createElement(Composition, { key: "Scene-Check", id: "Scene-Check", component: SceneCheck as React.FC, durationInFrames: 180, fps: 30, width: W, height: H, defaultProps: { scene: "night_walk", variant: "a" } }),
   );
 
 registerRoot(Root);

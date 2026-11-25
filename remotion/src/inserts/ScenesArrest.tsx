@@ -1,5 +1,5 @@
 /**
- * 002 ダーマー：逮捕の場面（1991年7月22日の夜、オックスフォード・アパートの前）。ユーザーが場面を指定した例外（CLAUDE.md「イメージ映像」）。
+ * 002 ダーマー：逮捕の場面（1991年7月22日の夜、オックスフォード・アパートの前）と、同じ通りのアパートの外観。ユーザーが場面を指定した例外（CLAUDE.md「イメージ映像」）。
  * 両手を後ろに回した本人を、後ろの警官が腕に手を添えて、止めたパトカーのほうへ連れていく。もう1人の警官はパトカーの横で待つ。
  * 暴力・もみ合い・武器は描かない。警光灯は消灯（赤い光を地面に落とさない）。建物は実在のアパートに似せない、ありふれたれんがの建物。
  *   arrest  a：通りの向かいから引き（横から、手を後ろに回しているのが分かる角度）、b：歩道の後ろ寄りから、c：車道側の斜め後ろから
@@ -63,6 +63,36 @@ const Entrance: React.FC<{ x: number; z: number }> = ({ x, z }) => {
   );
 };
 
+/** アパートの前の通り（逮捕の場面と、アパートの外観の場面で共通）。dawn：明け方の空、police：止めたパトカー */
+const ApartmentStreet: React.FC<{ from: CamKey; to: CamKey; dawn?: boolean; police?: boolean; children?: React.ReactNode }> = ({ from, to, dawn = false, police = true, children }) => (
+  <Stage fog={dawn ? 0.025 : 0.035} exposure={dawn ? 1.1 : 1.3} bg={dawn ? "#3b4864" : "#0e1422"} hemi={dawn ? ["#8a9cc4", "#1a1814", 0.9] : ["#34436a", "#0a0806", 0.45]}>
+    <Camera from={from} to={to} />
+    <Ground />
+    {/* 歩道 */}
+    <mesh position={[1.6, 0.075, -20]} receiveShadow>
+      <boxGeometry args={[3.2, 0.15, 80]} />
+      <meshStandardMaterial color="#1e1f22" roughness={0.6} />
+    </mesh>
+    {/* アパート（入口のある建物）と、すき間をあけた隣の建物 */}
+    <Building x={6.2} z={-4} w={6} d={12} h={12} seed={91} litRatio={dawn ? 0.08 : 0.16} facing={-1} />
+    <Building x={6.2} z={-17} w={6} d={12} h={9} seed={92} litRatio={dawn ? 0.05 : 0.1} facing={-1} />
+    <Building x={6.2} z={-30} w={6} d={12} h={12} seed={93} litRatio={0.1} facing={-1} />
+    {/* 通りの向かいの建物（引きの角度で見える） */}
+    {[0, 1, 2].map((i) => (
+      <Building key={`o${i}`} x={-16} z={2 - i * 15} w={6} d={14} h={8 + (i % 2) * 4} seed={95 + i} litRatio={0.08} facing={1} />
+    ))}
+    <Entrance x={3.16} z={-3.5} />
+    {/* 隣の建物の入口（2棟が別の建物だと分かるように） */}
+    <Entrance x={3.16} z={-16.5} />
+    {/* 街灯は人物の真上を避け、少し手前と、パトカーの先に置く（真下の細い縁はにじみが揺れてチラつく） */}
+    <StreetLamp x={0.2} z={1.0} armDir={1} intensity={dawn ? 700 : 1200} shadow cone={false} />
+    <StreetLamp x={0.2} z={-12.5} armDir={1} intensity={dawn ? 500 : 900} />
+    {/* 止めたパトカー（警光灯は消灯） */}
+    {police ? <Car80s position={[-1.15, 0, -8.2]} rotationY={Math.PI / 2} color="#121314" police /> : null}
+    {children}
+  </Stage>
+);
+
 export const InsertArrest: React.FC<SceneProps> = ({ variant = "c" }) => {
   const cams: Record<string, [CamKey, CamKey]> = {
     a: [{ pos: [-10.5, 1.6, -0.6], target: [1.0, 1.05, -4.4], fov: 25 }, { pos: [-9.9, 1.6, -0.8], target: [1.0, 1.05, -4.4], fov: 24 }],
@@ -78,30 +108,29 @@ export const InsertArrest: React.FC<SceneProps> = ({ variant = "c" }) => {
   const me: [number, number] = [1.3, -3.0];
   const off: [number, number] = [me[0] - 0.5 * fwd[0] + 0.3 * right[0], me[1] - 0.5 * fwd[1] + 0.3 * right[1]];
   return (
-    <Stage fog={0.035} exposure={1.3}>
-      <Camera from={from} to={to} />
-      <Ground />
-      {/* 歩道 */}
-      <mesh position={[1.6, 0.075, -20]} receiveShadow>
-        <boxGeometry args={[3.2, 0.15, 80]} />
-        <meshStandardMaterial color="#1e1f22" roughness={0.6} />
-      </mesh>
-      {/* アパート（入口のある建物）と、すき間をあけた隣の建物 */}
-      <Building x={6.2} z={-4} w={6} d={12} h={12} seed={91} litRatio={0.16} facing={-1} />
-      <Building x={6.2} z={-17} w={6} d={12} h={9} seed={92} litRatio={0.1} facing={-1} />
-      <Building x={6.2} z={-30} w={6} d={12} h={12} seed={93} litRatio={0.1} facing={-1} />
-      <Entrance x={3.16} z={-3.5} />
-      {/* 街灯は人物の真上を避け、少し手前と、パトカーの先に置く（真下の細い縁はにじみが揺れてチラつく） */}
-      <StreetLamp x={0.2} z={1.0} armDir={1} intensity={1200} shadow cone={false} />
-      <StreetLamp x={0.2} z={-12.5} armDir={1} intensity={900} />
-      {/* 止めたパトカー（警光灯は消灯）。二人はこのほうへ歩く */}
-      <Car80s position={[-1.15, 0, -8.2]} rotationY={Math.PI / 2} color="#121314" police />
+    <ApartmentStreet from={from} to={to}>
       {/* 人物：本人（両手を後ろ）、後ろの警官（腕に手を添える）、パトカーの横の警官 */}
       <Figure clip="Idle_Loop" position={[me[0], 0.15, me[1]]} rotationY={face} pose={HANDS_BEHIND} build={SLIM_90S} glasses />
       <Figure clip="Idle_Loop" position={[off[0], 0.15, off[1]]} rotationY={face} pose={HOLD_ARM} build={OFFICER_90S} hat={OFFICER_90S.jacket} glasses={false} timeOffset={0.8} />
       <Figure clip="Idle_Loop" position={[0.75, 0.15, -5.3]} rotationY={0.35} build={OFFICER_90S} hat={OFFICER_90S.jacket} glasses={false} timeOffset={1.7} />
-    </Stage>
+    </ApartmentStreet>
   );
+};
+
+/**
+ * れんがのアパートの外観（人物なし）。実在の建物には似せない。2026-11-25 追加（文字カードを約4秒にして空いた時間：F-023・F-029）
+ *   apartments  a：通りの向かいから2棟（入口のある建物と、すき間をあけた隣の建物）、b：明け方、止めたパトカー、
+ *               c：夜、歩道の先から入口とパトカー、d：夜、通りの手前から建物を見上げる
+ */
+export const InsertApartments: React.FC<SceneProps> = ({ variant = "a" }) => {
+  const cams: Record<string, [CamKey, CamKey]> = {
+    a: [{ pos: [-11.5, 2.4, -2.0], target: [3.2, 3.0, -11.0], fov: 44 }, { pos: [-11.1, 2.4, -2.5], target: [3.2, 3.0, -11.2], fov: 43 }],
+    b: [{ pos: [-4.0, 1.4, 6.0], target: [3, 2.6, -6], fov: 36 }, { pos: [-3.7, 1.45, 5.2], target: [3, 2.7, -6], fov: 35 }],
+    c: [{ pos: [0.9, 1.3, -11.5], target: [2.6, 1.5, -2.5], fov: 38 }, { pos: [0.95, 1.32, -11.0], target: [2.6, 1.52, -2.5], fov: 37 }],
+    d: [{ pos: [-6.0, 1.6, 16], target: [4, 4.5, -8], fov: 34 }, { pos: [-5.6, 1.7, 14.8], target: [4, 4.7, -8], fov: 33 }],
+  };
+  const [from, to] = cams[variant] ?? cams.a;
+  return <ApartmentStreet from={from} to={to} dawn={variant === "b"} police={variant === "b" || variant === "c"} />;
 };
 
 /** 確認用：警官の人物を明るい場所で一周して見る（本編には使わない。F-008） */

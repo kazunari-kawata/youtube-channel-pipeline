@@ -224,6 +224,17 @@ def reuse_warnings(shots: list[dict], cfg: dict) -> list[str]:
         lim = ins_max if k.startswith("insert:") else mat_max
         if len(u) > lim:
             out.append(f"同じ素材 {k} を {len(u)}回使っている（{lim}回まで）：{'、'.join(u)}")
+    # 2回目からは、ナレーションがその素材の中身を指す理由（visual.reuse）を書く。空いた時間を埋めるためだけの使い回しは不可（F-029）。
+    # イメージ映像も同じ角度（同じ var）なら同じ。別の角度（別の var）は別の素材として数える
+    if r.get("reuse_needs_reason", True):
+        seen: set[str] = set()
+        for sh in shots:
+            k = material_key(sh["v"])
+            if not k:
+                continue
+            if k in seen and not str(sh["v"].get("reuse", "")).strip():
+                out.append(f"{sh['id']}：{k} の2回目以降に理由がない（ナレーションが中身を指すなら visual.reuse に理由を書く。埋めるためだけなら、別の角度・新しい切り出し・次の絵の前倒しにする。F-029）")
+            seen.add(k)
     people = set(cfg.get("person_photos", []))
     if people:
         t = next((sh["start"] for sh in shots if sh["v"].get("src") in people), None)
@@ -265,7 +276,8 @@ def main():
     # 文字カードは約4秒まで（F-023。長く見せると、その間に離脱されやすい）
     card_max = cfg.get("shots", {}).get("card_max_sec", 5.0)
     for sh in shots:
-        if sh["v"]["kind"] == "card" and sh["dur"] > card_max:
+        # 遺族の言葉のように、途中で絵を替えないと決めたカードは visual.keep に理由を書く
+        if sh["v"]["kind"] == "card" and sh["dur"] > card_max and not str(sh["v"].get("keep", "")).strip():
             warn.append(f"{sh['id']}：文字カードが {sh['dur']}秒（約4秒まで。{card_max:g}秒を超えたら区間の途中で cut して資料・地図・イメージ映像に替える。F-023）")
     warn += reuse_warnings(shots, cfg)
     warn += year_warnings(shots)

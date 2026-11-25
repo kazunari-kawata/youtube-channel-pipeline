@@ -11,7 +11,7 @@ import { random, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
 import { Figure } from "../lib/Figure";
 import { Car80s, Storefront } from "./Era80s";
-import { Building, Camera, Ground, SceneProps, Stage, StreetLamp } from "./Inserts";
+import { Building, Camera, CamKey, Ground, SceneProps, Stage, StreetLamp } from "./Inserts";
 
 /** 空のグラデーション（遠くの大きな板）。霧の影響を受けない */
 const Sky: React.FC<{ stops: [number, string][]; z?: number; w?: number; h?: number; y?: number }> = ({ stops, z = -160, w = 700, h = 160, y = 40 }) => {
@@ -51,8 +51,16 @@ const Tree: React.FC<{ x: number; z: number; s: number; color?: string }> = ({ x
 
 /* ---------- 70年代オハイオの郊外の道 ---------- */
 
+// a：夕方・歩く人物、b：日暮れ後・人物なし。c・d は 2026-11-25 追加の角度（F-029）：c 夕方・人物なし・高く引いて、d 日暮れ後・道の右から
+const OHIO_CAMS: Record<string, [CamKey, CamKey]> = {
+  a: [{ pos: [4.6, 1.5, 7.5], target: [3.0, 1.4, -30], fov: 36 }, { pos: [4.4, 1.55, 2.5], target: [3.0, 1.45, -35], fov: 35 }],
+  b: [{ pos: [-1.5, 1.3, 8], target: [2.5, 1.2, -40], fov: 38 }, { pos: [-1.3, 1.35, 6.5], target: [2.5, 1.2, -45], fov: 37 }],
+  c: [{ pos: [-3, 2.5, 10], target: [4, 1.0, -40], fov: 40 }, { pos: [-2.6, 2.4, 8], target: [4, 1.0, -45], fov: 39 }],
+  d: [{ pos: [8.5, 1.1, 4], target: [0, 1.5, -40], fov: 36 }, { pos: [8.2, 1.15, 2.5], target: [0, 1.5, -45], fov: 35 }],
+};
+
 export const InsertOhioRoad: React.FC<SceneProps> = ({ variant = "a" }) => {
-  const night = variant === "b";
+  const night = variant === "b" || variant === "d";
   const walk = useMemo(() => (t: number): [number, number, number] => [3.5, 0, 2.0 - t * 1.1], []);
   const trees = useMemo(() => {
     const out: { x: number; z: number; s: number }[] = [];
@@ -74,10 +82,7 @@ export const InsertOhioRoad: React.FC<SceneProps> = ({ variant = "a" }) => {
     <Stage fog={0.012} exposure={night ? 1.25 : 1.0} bloom={0.4} bg={night ? "#1c2440" : "#4a4060"}
       hemi={night ? ["#5a6a9a", "#141210", 0.85] : ["#9a8ab8", "#3a2a1a", 0.7]}
       grade="sepia(0.3) saturate(0.78) contrast(1.04) brightness(1.02)">
-      <Camera
-        from={night ? { pos: [-1.5, 1.3, 8], target: [2.5, 1.2, -40], fov: 38 } : { pos: [4.6, 1.5, 7.5], target: [3.0, 1.4, -30], fov: 36 }}
-        to={night ? { pos: [-1.3, 1.35, 6.5], target: [2.5, 1.2, -45], fov: 37 } : { pos: [4.4, 1.55, 2.5], target: [3.0, 1.45, -35], fov: 35 }}
-      />
+      <Camera from={OHIO_CAMS[variant]?.[0] ?? OHIO_CAMS.a[0]} to={OHIO_CAMS[variant]?.[1] ?? OHIO_CAMS.a[1]} />
       <Sky stops={night ? [[0, "#4a4060"], [0.2, "#2a3050"], [1, "#0a0e1c"]] : [[0, "#ff9a52"], [0.18, "#d8706a"], [0.45, "#6a5a8a"], [1, "#1c2244"]]} />
       <primitive object={sun} />
       <primitive object={sun.target} />
@@ -122,7 +127,7 @@ export const InsertOhioRoad: React.FC<SceneProps> = ({ variant = "a" }) => {
           <meshStandardMaterial color="#5a5e64" roughness={0.5} metalness={0.4} />
         </mesh>
       </group>
-      {night ? null : <Figure clip="Walk_Loop" path={walk} rotationY={Math.PI} />}
+      {variant === "a" ? <Figure clip="Walk_Loop" path={walk} rotationY={Math.PI} /> : null}
     </Stage>
   );
 };
@@ -200,13 +205,17 @@ export const InsertCourthouse: React.FC<SceneProps> = ({ variant = "a" }) => {
     return new THREE.MeshStandardMaterial({ map: t, roughness: 0.9 });
   }, []);
   const cols = Array.from({ length: 8 }, (_, i) => -10.5 + i * 3);
-  const close = variant === "b";
+  // a：引き、b：寄り。c・d は 2026-11-25 追加の角度（F-029）：c 階段の下から見上げる、d 右の遠くから
+  const cams: Record<string, [CamKey, CamKey]> = {
+    a: [{ pos: [2.5, 1.6, 30], target: [0, 6.0, -4], fov: 38 }, { pos: [2.0, 1.7, 25], target: [0, 6.2, -4], fov: 37 }],
+    b: [{ pos: [-7, 2.0, 9], target: [-2, 6.5, -4], fov: 40 }, { pos: [-5.6, 2.1, 8.2], target: [-0.8, 6.6, -4], fov: 39 }],
+    c: [{ pos: [3.5, 0.6, 7.5], target: [0, 8.0, -4], fov: 42 }, { pos: [3.0, 0.6, 6.8], target: [0, 8.2, -4], fov: 41 }],
+    d: [{ pos: [22, 2.0, 18], target: [-2, 5.5, -4], fov: 34 }, { pos: [20.5, 2.0, 16.5], target: [-2, 5.6, -4], fov: 33 }],
+  };
+  const [from, to] = cams[variant] ?? cams.a;
   return (
     <Stage fog={0.01} exposure={1.0} bloom={0.15} bg="#8e98a3" hemi={["#dfe4ea", "#5d5a56", 1.1]} grade="sepia(0.1) saturate(0.72) contrast(1.05)">
-      <Camera
-        from={close ? { pos: [-7, 2.0, 9], target: [-2, 6.5, -4], fov: 40 } : { pos: [2.5, 1.6, 30], target: [0, 6.0, -4], fov: 38 }}
-        to={close ? { pos: [-5.6, 2.1, 8.2], target: [-0.8, 6.6, -4], fov: 39 } : { pos: [2.0, 1.7, 25], target: [0, 6.2, -4], fov: 37 }}
-      />
+      <Camera from={from} to={to} />
       <directionalLight position={[-10, 20, 15]} intensity={0.9} color="#f4f4f2" castShadow />
       <Sky stops={[[0, "#c2c8cf"], [1, "#7d8893"]]} z={-120} y={30} />
       {/* 雪の残る地面と階段 */}
@@ -265,13 +274,18 @@ export const InsertCourthouse: React.FC<SceneProps> = ({ variant = "a" }) => {
 /* ---------- 夜の通りに止まったパトカー ---------- */
 
 export const InsertPoliceCar: React.FC<SceneProps> = ({ variant = "a" }) => {
-  const behind = variant === "b";
+  // a：横から、b：後ろから。c〜e は 2026-11-25 追加の角度（F-029）：c 前寄りの低い所から、d 高い所から見下ろす、e 通りの向かいから引いて
+  const cams: Record<string, [CamKey, CamKey]> = {
+    a: [{ pos: [3.4, 1.3, -0.8], target: [-1.2, 0.85, -7.2], fov: 36 }, { pos: [3.1, 1.35, -1.8], target: [-1.2, 0.9, -7.6], fov: 35 }],
+    b: [{ pos: [-1.6, 1.35, 4.5], target: [-1.1, 0.9, -12], fov: 34 }, { pos: [-1.5, 1.4, 3.0], target: [-1.1, 0.9, -14], fov: 33 }],
+    c: [{ pos: [1.2, 0.9, -12.5], target: [-1.15, 0.8, -6.6], fov: 34 }, { pos: [1.0, 0.95, -12.0], target: [-1.15, 0.8, -6.6], fov: 33 }],
+    d: [{ pos: [4.0, 6.5, 2.0], target: [-1.15, 0.5, -7.0], fov: 34 }, { pos: [3.8, 6.3, 1.4], target: [-1.15, 0.5, -7.2], fov: 33 }],
+    e: [{ pos: [-9.5, 1.5, -3.0], target: [-1.0, 1.0, -8.0], fov: 32 }, { pos: [-9.1, 1.5, -3.4], target: [-1.0, 1.0, -8.2], fov: 31 }],
+  };
+  const [from, to] = cams[variant] ?? cams.a;
   return (
     <Stage fog={0.045} exposure={1.05}>
-      <Camera
-        from={behind ? { pos: [-1.6, 1.35, 4.5], target: [-1.1, 0.9, -12], fov: 34 } : { pos: [3.4, 1.3, -0.8], target: [-1.2, 0.85, -7.2], fov: 36 }}
-        to={behind ? { pos: [-1.5, 1.4, 3.0], target: [-1.1, 0.9, -14], fov: 33 } : { pos: [3.1, 1.35, -1.8], target: [-1.2, 0.9, -7.6], fov: 35 }}
-      />
+      <Camera from={from} to={to} />
       <Ground />
       <mesh position={[1.5, 0.075, -40]} receiveShadow>
         <boxGeometry args={[3.0, 0.15, 120]} />
@@ -341,7 +355,13 @@ const Fence: React.FC<{ z: number; len: number; h: number }> = ({ z, len, h }) =
   );
 };
 
-export const InsertPrisonFence: React.FC<SceneProps> = () => {
+export const InsertPrisonFence: React.FC<SceneProps> = ({ variant = "a" }) => {
+  // a：左から、b：右から（2026-11-25 追加の角度：F-029）
+  const cams: Record<string, [CamKey, CamKey]> = {
+    a: [{ pos: [-3.5, 1.6, 9], target: [1.5, 2.6, -8], fov: 40 }, { pos: [-2.8, 1.6, 8.4], target: [1.8, 2.6, -8], fov: 39 }],
+    b: [{ pos: [8.5, 1.4, 6], target: [-2, 2.8, -6], fov: 38 }, { pos: [8.0, 1.4, 5.4], target: [-2, 2.8, -6], fov: 37 }],
+  };
+  const [from, to] = cams[variant] ?? cams.a;
   const flood = useMemo(() => {
     const l = new THREE.SpotLight("#ffa24a", 650, 0, 0.9, 0.7, 2);
     l.position.set(4, 11, -4);
@@ -351,7 +371,7 @@ export const InsertPrisonFence: React.FC<SceneProps> = () => {
   }, []);
   return (
     <Stage fog={0.02} exposure={1.0} bloom={0.4} bg="#1e2740" hemi={["#4a5a86", "#1a1612", 0.5]}>
-      <Camera from={{ pos: [-3.5, 1.6, 9], target: [1.5, 2.6, -8], fov: 40 }} to={{ pos: [-2.8, 1.6, 8.4], target: [1.8, 2.6, -8], fov: 39 }} />
+      <Camera from={from} to={to} />
       <Sky stops={[[0, "#c7805a"], [0.15, "#7a5a72"], [0.45, "#33406a"], [1, "#0e1428"]]} z={-150} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[300, 300]} />

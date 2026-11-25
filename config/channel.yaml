@@ -47,9 +47,10 @@ sfx:
 # 香盤表の画面の決まり（pipeline/shotlist.py が注意を出す）
 shots:
   material_max: 2          # 同じ写真・資料・航空写真・地図（同じ見せ方と点）は1本で2回まで（F-021。使い回しはくどく、テンポも落ちる）
-  insert_variant_max: 3    # 同じイメージ映像の同じ種類は3回まで
+  insert_variant_max: 3    # 同じイメージ映像の同じ種類（同じ角度）は3回まで
+  reuse_needs_reason: true # 2回目からは visual.reuse に理由を書く（ナレーションが中身を指すときだけ。埋めるための使い回しは不可：F-029）
   person_first_sec: 30     # 本人の姿（episode.yaml の person_photos）を最初の30秒以内に出す（F-022）
-  card_max_sec: 5.0        # 文字カードは約4秒まで。これを超えたら注意（F-023。長く見せると離脱されやすい）
+  card_max_sec: 5.0        # 文字カードは約4秒まで。これを超えたら注意（F-023。長く見せると離脱されやすい）。遺族の言葉など切らないカードは visual.keep に理由
 
 render:
   gl_linux: swangle    # クラウド（GPUなし）
