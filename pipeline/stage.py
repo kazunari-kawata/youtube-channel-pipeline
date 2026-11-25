@@ -102,7 +102,8 @@ def bgm_bed(tracks: list[Path], seconds: float, lufs: float, xfade: float = 3.0,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
-    ap.add_argument("--draft", action="store_true", help="声とBGMなしの仮編集（estimate_timeline.py の仮の尺）。確認用で、公開には使わない")
+    ap.add_argument("--draft", action="store_true",
+                    help="BGMなしの確認用（Remotion Studio で見る）。声を作ってあれば声あり、まだなら仮の尺で声なし。書き出し・公開には使わない")
     args = ap.parse_args()
     cfg = load_config(args.episode)
     out = build_dir(args.episode)
@@ -111,12 +112,17 @@ def main():
     check_public(args.episode)
     if args.draft:
         tl = stage_timeline(args.episode, out)
+        voice = not tl.get("estimated") and (out / "narration.wav").exists()
+        if voice:
+            PUBLIC.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(out / "narration.wav", PUBLIC / "narration.wav")
         a = cfg["audio"]
         write_json(SRC_DATA / "current.json", {
             "episode": args.episode,
+            "bgm": False,  # 確認用は BGM を鳴らさない（public/ に前の bgm.wav が残っていても）
             "mix": {"bgmSpeech": a["bgm_gain_speech"], "bgmGap": a["bgm_gain_gap"], "duckFrames": a["bgm_duck_frames"]},
         })
-        kind = "仮の尺（声なし）" if tl.get("estimated") else "声の尺（BGMなし）"
+        kind = "仮の尺（声なし）" if tl.get("estimated") else ("声あり・BGMなし" if voice else "声の尺（声のファイルなし）")
         print(f"仮編集の準備完了: {args.episode}（{tl['totalSeconds']:.1f}秒、{kind}）")
         return
 
@@ -139,6 +145,7 @@ def main():
     a = cfg["audio"]
     write_json(SRC_DATA / "current.json", {
         "episode": args.episode,
+        "bgm": True,
         "mix": {"bgmSpeech": a["bgm_gain_speech"], "bgmGap": a["bgm_gain_gap"], "duckFrames": a["bgm_duck_frames"]},
     })
     print(f"準備完了: {args.episode}（{tl['totalSeconds']:.1f}秒, BGM {len(tracks)}曲）")

@@ -103,10 +103,12 @@ const Fade: React.FC<{ children: React.ReactNode; first: boolean }> = ({ childre
   return <AbsoluteFill style={{ opacity: o }}>{children}</AbsoluteFill>;
 };
 
-/** 声とBGM。仮の尺（estimated）のときや、まだ音のファイルがないときは入れない */
+/** 声とBGM。仮の尺（estimated）のときや、まだ声のファイルがないときは入れない。
+ *  BGM は stage.py の本番の準備（current.json の bgm: true）のときだけ。確認用（--draft）は声だけ */
 const Sound: React.FC = () => {
   const files = getStaticFiles().map((f) => f.name);
-  if ((TL as any).estimated || !files.includes("narration.wav") || !files.includes("bgm.wav")) return null;
+  if ((TL as any).estimated || !files.includes("narration.wav")) return null;
+  const withBgm = (current as any).bgm !== false && files.includes("bgm.wav");
   const { bgmSpeech, bgmGap, duckFrames } = (current as any).mix;
   const vol = (f: number) => {
     let d = Infinity;
@@ -120,7 +122,7 @@ const Sound: React.FC = () => {
   return (
     <>
       <Audio src={staticFile("narration.wav")} />
-      <Audio src={staticFile("bgm.wav")} volume={vol} />
+      {withBgm && <Audio src={staticFile("bgm.wav")} volume={vol} />}
     </>
   );
 };
