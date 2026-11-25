@@ -24,9 +24,9 @@ files:
   tv_click_1:   {id: 2579, title: "Light switch sound", max: 0.8}
   low_hit_1:    {id: 2299, title: "Short bass hit", max: 2.0}
   low_hit_2:    {id: 563,  title: "Drum deep impact", max: 2.5}
-  amb_street_1: {id: 2678, title: "Urban city ambience at night", max: 30, bed: true}
+  amb_street_1: {id: 2678, title: "Urban city ambience at night", start: 16, max: 14, bed: true}   # 前半に車のクラクションらしい長い音があるので後半だけ
   amb_room_1:   {id: 3080, title: "Cinematic room tone", max: 30, bed: true}
   amb_road_1:   {id: 2475, title: "Crickets at night in nature", max: 30, bed: true}
-  amb_court_1:  {id: 2658, title: "Wind blowing ambience", max: 30, bed: true}
+  amb_court_1:  {id: 2658, title: "Wind blowing ambience", max: 13, bed: true}   # 後半の風の笛のような音（サイレンに聞こえかねない）を使わない
   amb_idle_1:   {id: 1535, title: "Car ignition", start: 4.0, max: 6, bed: true}
   amb_fence_1:  {id: 1267, title: "Wind in the top of the mountain", max: 30, bed: true}
