@@ -164,10 +164,11 @@ items:
     note: "fbi_famous_case の写真7点のうちの1枚。台本で使う id として分けた"
   - id: fbi_money_1980
     title: "1980年に見つかった紙幣の写真（FBI公式ページ）"
-    file: fbi/money_1980.jpg
+    file: fbi/commons_money_1980.jpg
+    url: https://commons.wikimedia.org/wiki/Special:FilePath/Money_stolen_by_D._B._Cooper.jpg
     original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
     status: pd_federal
-    note: "同上"
+    note: "fbi.gov はクラウドから開けないので、FBI の2007年12月の記事の写真（tiemoney122607.jpg の紙幣の側）を写した Wikimedia Commons のファイル（Money stolen by D. B. Cooper.jpg、1400x921）を使う。Commons の出典欄が fbi.gov の写真を指していることを確かめる。画面の出典は「FBI」"
   - id: fbi_parachute
     title: "機内に残されたパラシュートの写真（FBI公式ページ）"
     file: fbi/parachute.jpg
