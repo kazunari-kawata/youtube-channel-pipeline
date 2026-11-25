@@ -1,0 +1,7 @@
+# 002 ダーマーの設定（config/channel.yaml を上書きしたいキーだけ書く）
+id: 002-dahmer
+
+bgm:
+  # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。上から順につなぐ
+  # 候補8曲は LICENSES.md（2026-11-25、耳で確認待ち）。選んだら assets/bgm/<ファイル名> をここに書く
+  tracks: []

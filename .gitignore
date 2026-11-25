@@ -29,3 +29,9 @@ venv/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# BGM・効果音の音源（ライセンスの記録 LICENSES.md だけを入れる。音源を再配布しない）
+assets/bgm/*
+!assets/bgm/LICENSES.md
+assets/sfx/*
+!assets/sfx/LICENSES.md
