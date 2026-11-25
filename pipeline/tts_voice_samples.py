@@ -9,6 +9,10 @@
   python pipeline/tts_voice_samples.py --sample <voice_id>[,<voice_id>...] [--model eleven_multilingual_v2]
       その回（--episode、既定 002-dahmer）の冒頭（--chars 字、既定60字）を台本の文のまま、その声で読ませる（1声あたり約60〜80文字を消費）
 
+  python pipeline/tts_voice_samples.py --segments 3 --voice <voice_id> --model eleven_multilingual_v2
+      冒頭の N 区間を、本番と同じ作り方（区間ごとに生成、v2 は前後の文を渡すつなぎあり、無音の切りそろえ、間、音量）でつないで聞く。
+      区間の変わり目の音も含めて確かめるため。--joined を付けると N 区間を1回の生成で読ませる
+
 聞き比べて決めたら、config/channel.yaml の tts.voice_id（と model_id）に書く。
 """
 import argparse
@@ -19,8 +23,15 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from common import ROOT, require_env  # noqa: E402
-from tts_elevenlabs import API, request_audio  # noqa: E402
+import subprocess  # noqa: E402
+import tempfile  # noqa: E402
+
+import numpy as np  # noqa: E402
+import pyloudnorm as pyln  # noqa: E402
+import soundfile as sf  # noqa: E402
+
+from common import ROOT, decode_audio, ffmpeg_bin, load_config, require_env  # noqa: E402
+from tts_elevenlabs import API, SR, level_segments, limit_peaks, request_audio, stitching, trim  # noqa: E402
 
 OUT = ROOT / "build" / "voice_samples"
 
@@ -101,6 +112,46 @@ def sample(key, ids, model, episode, chars):
         print(f"{p.name}（{len(text)}文字）")
 
 
+V2_SETTINGS = {"stability": 0.5, "similarity_boost": 0.75, "style": 0.0, "use_speaker_boost": True, "speed": 1.0}
+
+
+def segments_sample(key, vid, model, episode, n, joined):
+    """冒頭の n 区間を本番と同じ作り方でつなぐ（区間の変わり目の音を確かめる）"""
+    cfg = load_config(episode)["tts"]
+    segs = json.loads((ROOT / "episodes" / episode / "narration.json").read_text(encoding="utf-8"))[:n]
+    texts = [s.get("tts") or s["caption"] for s in segs]
+    t = {"voice_id": vid, "model_id": model, "seed": 42, "stitch": True, "output_format": "mp3_44100_128",
+         "voice_settings": None if model.startswith("eleven_v3") else V2_SETTINGS}
+    if model.startswith("eleven_v3"):
+        t["language_code"] = "ja"
+    gap = np.zeros(int(cfg["gap"] * SR), np.float32)
+    with tempfile.TemporaryDirectory() as d:
+        def gen(text, prev, nxt):
+            mp3 = Path(d) / f"{abs(hash((text, prev, nxt)))}.mp3"
+            mp3.write_bytes(request_audio(text, t, key, prev, nxt))
+            return trim(decode_audio(mp3, SR), cfg["trim_silence_db"])
+        if joined:
+            parts = [gen("".join(texts), "", "")]
+        else:
+            parts = [gen(x, texts[i - 1] if i else "", texts[i + 1] if i + 1 < n else "") for i, x in enumerate(texts)]
+            parts = level_segments(parts)
+        pieces = [np.zeros(int(0.5 * SR), np.float32)]
+        for i, a in enumerate(parts):
+            pieces += ([gap] if i else []) + [a]
+        pieces.append(np.zeros(int(1.0 * SR), np.float32))
+        wav = np.concatenate(pieces)
+        meter = pyln.Meter(SR)
+        wav = limit_peaks(wav * 10 ** ((-16 - meter.integrated_loudness(np.concatenate(parts))) / 20))
+        out = OUT / episode
+        out.mkdir(parents=True, exist_ok=True)
+        tag = "joined" if joined else ("stitched" if stitching(t) else "separate")
+        dst = out / f"{vid}_{model}_{n}seg_{tag}.mp3"
+        src = Path(d) / "mix.wav"
+        sf.write(src, wav.astype(np.float32), SR)
+        subprocess.run([ffmpeg_bin(), "-v", "error", "-y", "-i", str(src), "-b:a", "192k", str(dst)], check=True)
+    print(f"{dst.name}（{sum(len(x) for x in texts)}文字、{len(wav) / SR:.1f}秒）")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--models", action="store_true")
@@ -113,6 +164,9 @@ def main():
     ap.add_argument("--model", default="eleven_v3")
     ap.add_argument("--episode", default="002-dahmer", help="--sample で読ませる回")
     ap.add_argument("--chars", type=int, default=60, help="--sample の文字数の目安（60字で約10秒）")
+    ap.add_argument("--segments", type=int, help="冒頭の N 区間を本番と同じ作り方でつなぐ（--voice で声を指定）")
+    ap.add_argument("--voice", help="--segments の声（既定は config の tts.voice_id）")
+    ap.add_argument("--joined", action="store_true", help="--segments の N 区間を1回の生成で読ませる")
     a = ap.parse_args()
     key = require_env("ELEVENLABS_API_KEY")
     if a.models:
@@ -123,6 +177,9 @@ def main():
         add(key, a.add)
     if a.sample:
         sample(key, a.sample.split(","), a.model, a.episode, a.chars)
+    if a.segments:
+        vid = a.voice or load_config(a.episode)["tts"]["voice_id"]
+        segments_sample(key, vid, a.model, a.episode, a.segments, a.joined)
 
 
 if __name__ == "__main__":
