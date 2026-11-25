@@ -1,0 +1,75 @@
+# 素材台帳：ピカリングの「ロスト・ボーイズ」（第5回の候補・1995年3月、カナダ・オンタリオ州ピカリング、未解決の失踪）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status の意味は episodes/002-dahmer/materials.yaml の冒頭と pipeline/fetch_materials.py の STATUS を参照
+#
+# この回の注意（作る前にユーザーの判断がいる。plan はまだ作らない）
+# - 場所はカナダ。チャンネルのジャンルは「アメリカの犯罪・事件」。アメリカとの接点は、燃料タンクがニューヨーク州ウィルソンの近くで見つかったことと、ナイアガラ川
+# - 6人のうち5人が17歳（1人が18歳）。「未成年が関わる部分は事実だけを短く」の決まりが全編にかかる
+# - 6人は行方不明者（被害者）。写真は使わない。画面に出せる「本人の姿」がない（F-022 は加害者のいる回の決まりなので当てはまらない）
+# - 警察の見方は「ボートに乗り、オンタリオ湖で転覆した」。ボートを持ち出したことは確定していない（「警察はそう見ている」と言う）。
+#   別の説（生きている、第三者が関わった）は、特定の人をほのめかさない
+# - カナダの警察・検視官の文書は公開されておらず、公開されてもアメリカ連邦政府の文書のように著作権なしではない（Crown copyright）
+# - 画面に出せる実物資料がほとんどない。地図・水深図・衛星写真・イメージ映像が中心になる
+
+case: The Lost Boys of Pickering（1995年3月17日、カナダ・オンタリオ州ピカリング、フレンチマンズ湾〜オンタリオ湖）
+checked_on: 2026-11-25
+
+items:
+  # ---------- 使用可（自作・米連邦政府のデータ） ----------
+  - id: own_maps
+    title: 自作の地図（Natural Earth、Copernicus DEM）。ピカリング、フレンチマンズ湾、オンタリオ湖、ニューヨーク州ウィルソン、ナイアガラ川の位置関係
+    file: ""
+    status: own
+    note: maps.yaml で作る。マリーナの位置は公表されている範囲（East Shore Marina、Liverpool Road の端）。パーティーのあった個人宅は出さない
+  - id: noaa_bathymetry
+    title: オンタリオ湖の水深データ（NOAA、五大湖の水深図）
+    file: ""
+    original: https://www.ncei.noaa.gov/
+    status: check
+    note: 米連邦政府のデータなら著作権なしだが、オンタリオ湖の版はカナダ水路部との共同作成のはず。作成者と利用条件を確かめてから使う。使えれば3D地図で湖の深さと広さを見せられる
+  - id: landsat_1995
+    title: 1995年春の Landsat 5 の衛星画像（USGS。オンタリオ湖西部、3月の湖岸）
+    file: ""
+    original: https://earthexplorer.usgs.gov/
+    status: pd_federal
+    note: USGSのデータで著作権なし。EarthExplorer から手作業で取得。解像度は30mなので、湖と町の位置関係まで。画面に「1995年3月の衛星画像」と日付を入れる
+  # ---------- 参照のみ（事実確認。画面には出さない） ----------
+  - id: ref_drps
+    title: ダーラム地域警察の公式ページ「The Lost Boys of Pickering (Historic)」
+    url: https://drps.ca/news/the-lost-boys-of-pickering-historic
+    status: reference
+    note: 一次に最も近い資料。1995年3月18日（土）に6人の行方不明の届け出、3月17日（金）の夜のパーティーが最後の目撃、3人がマリーナへ向かう姿が防犯カメラに映る、6人がボートに乗り湖で転覆したと見ている、未解決。6人の写真が載っているが使わない。警察のページは著作権あり
+  - id: ref_ctv_2014
+    title: CTV News Toronto（2014年。捜索の規模、燃料タンク、1998年にナイアガラ川の近くで見つかった身元不明の遺体）
+    url: https://toronto.ctvnews.ca/family-marks-19th-anniversary-of-pickering-s-lost-boys-case-point-to-possible-new-clue-1.1731005
+    status: reference
+    note: 警察の話として、2つのマリーナ、ボストン・ホエーラーに似た型のボートと足こぎボート。トロント・ダーラムの警察、沿岸警備隊、トレントン基地のC-130と救難ヘリ。見つかったのは5ガロンの燃料タンクだけ（ニューヨーク州ウィルソンの近くで釣り人が発見）。報道の文と映像は使えない
+  - id: ref_global_2017
+    title: Global News（2017年。遺族が「行方不明者の日」の制定を求める）
+    url: https://globalnews.ca/news/3691581/national-missing-persons-day-canada
+    status: reference
+    note: 遺族の言葉。遺族を傷つける演出をしない。使うなら事実だけ、場面は音なし
+  - id: ref_durham_2022
+    title: 地元紙（2022年。私立探偵が警察の結論に疑問を示した本と、防犯カメラに映る3人についての情報提供の呼びかけ）
+    url: https://durham.insauga.com/new-book-delves-deeper-into-the-mystery-of-the-lost-boys-of-pickering
+    status: reference
+    note: 探偵の主張は主張として扱う（「証拠がないと主張した」）。警察の結論と分けて書く。探偵が集めた文書と写真の権利は探偵側にある
+  - id: ref_doe
+    title: Doe Network の行方不明者の記録
+    url: https://doenetwork.org/cases/1313dmon.html
+    status: reference
+    note: 二次資料。生年月日などの個人情報は台本に入れない
+  # ---------- 使用不可 ----------
+  - id: no_boys_photos
+    title: 6人の写真、家族の写真
+    status: unusable
+    note: 行方不明者（被害者）の写真は使わない。5人は未成年
+  - id: no_cctv
+    title: マリーナの防犯カメラの映像、当時のテレビの報道映像、探偵が公開した文書の画像
+    status: unusable
+    note: 権利者がいる（マリーナ、警察、放送局、探偵）。カナダの警察の文書は著作権なしではない
+  - id: no_remains
+    title: 1998年にナイアガラ川で見つかった身元不明の遺体の写真・衣類の写真
+    status: unusable
+    note: 遺体・遺体の一部の写真は使わない。6人との関係は確定していない

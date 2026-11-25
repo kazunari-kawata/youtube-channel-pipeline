@@ -1,0 +1,157 @@
+# 素材台帳：テッド・バンディ事件（第4回・1974〜1978年、ワシントン・ユタ・コロラド・フロリダ）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status の意味は episodes/002-dahmer/materials.yaml の冒頭と pipeline/fetch_materials.py の STATUS を参照
+#   pd_federal / pd_no_notice / pd_other / cc_by / fair_use / own → 使用可
+#   check → 要確認（画面に出さない） / reference → 参照のみ / unusable → 使用不可
+# 取得：python pipeline/fetch_materials.py 004-bundy  → episodes/004-bundy/build/materials/
+# url のない項目は手作業で取得する（note に取り方）
+#
+# この回の注意
+# - 被害者の写真・現場写真・歯型（かみ跡）の写真は使わない。被害者の名前は必要な場面だけ
+# - フロリダの3人目の被害者は12歳。事実だけを短く。判決文を画面に出すときは名前と遺体の記述の行を映さない
+# - 加害者を持ち上げない（「ハンサム」「魅力的」を売りにしない）。焦点は捜査・2度の逃走・州をまたぐ見落とし・裁判
+# - 有罪が確定したのは、ユタの誘拐（1976年）とフロリダの3件の殺人。ほかの州の事件は「本人が死刑の直前に認めた」「容疑がかかった」と言い分ける
+# - 台帳の状態は調査の初回（2026-11-25）。ページ番号・撮影者はこれから原本で確かめる
+
+case: Ted Bundy（1974〜1978年、ワシントン州・ユタ州・コロラド州・フロリダ州。1989年1月24日に死刑執行）
+checked_on: 2026-11-25
+
+items:
+  # ---------- FBI（連邦政府の著作物） ----------
+  - id: fbi_file
+    title: FBIの公開ファイル「Theodore Robert Bundy」（257ページ。1977年6月と12月の逃走の手配、10大手配、1978年2月のフロリダでの逮捕と指紋での確認）
+    file: ""
+    original: https://purl.fdlp.gov/GPO/LPS97599
+    status: pd_federal
+    note: 政府刊行物の保存先（FBIの旧FOIAページの保存版）。FBI Vault にも同じファイルがあるはずだが、Vault のURLはまだ自分で開いて確かめていない。FBI職員が書いた文書は著作権なし。綴じ込まれた新聞記事・州や郡の書類はその限りでないので、画面に出すページは1枚ずつ作成者を確かめる。被害者の名前の行は映さない。取得は手作業（ページを決めてから）
+  - id: fbi_file_mirror
+    title: 同じFBIファイルのミラー（The Black Vault、145ページ版）
+    file: fbi/tedbundy_blackvault.pdf
+    url: https://documents.theblackvault.com/documents/fbifiles/tedbundy.pdf
+    status: reference
+    note: ページ数が保存先の説明（257ページ）と違う。中身の確認と文字の検索に使い、画面に出すページは fbi_file の原本から取る
+  - id: fbi_top_ten_360
+    title: FBI「10大重要指名手配」360番 Theodore Robert Bundy の手配書（1978年2月10日に追加、2月15日にペンサコーラで逮捕）
+    file: fbi/top_ten_360.jpg
+    original: https://www.fbi.gov/wanted/topten/topten-history/hires_images/FBI-360-TheodoreRobertBundy.jpg/view
+    status: pd_federal
+    note: FBIの作成。本人の顔写真が載っている → 最初の30秒に出す本人の姿（F-022）の第1候補。手配書の中の写真は地方の警察が撮ったものの可能性があるが、手配書そのものはFBIの刊行物。URL は表示ページなので、画像は手作業で保存する
+  # ---------- フロリダ州立公文書館（Florida Memory） ----------
+  # 権利：Florida Memory のFAQは全画像を Public Domain Mark 1.0 で提供すると書いている。使うときはフロリダ州法 257.35(6) に従い
+  # 「State Archives of Florida, Florida Memory」とクレジットする（概要欄と config/attributions.yaml）。
+  - id: fm_n035655
+    title: 「Theodore Bundy leaving the Leon County court」1979年（画像番号 N035655、General collection、撮影者の記載なし）
+    file: florida/n035655_leon_county_court_1979.jpg
+    original: https://www.floridamemory.com/items/show/144979
+    status: pd_other
+    note: Florida Memory（PDM 1.0、クレジット必須）。手作業で保存
+  - id: fm_144978
+    title: 「Theodore Bundy」1980年（Florida Memory、撮影者の記載なし）
+    file: florida/144978_bundy_1980.jpg
+    original: https://www.floridamemory.com/items/show/144978
+    status: pd_other
+    note: Florida Memory（PDM 1.0、クレジット必須）。画像番号はページで確かめる
+  - id: fm_custody_1978
+    title: 拘束中のバンディ、1978年7月（Florida Memory N035653 と N035656。Wikimedia Commons に転載あり）
+    file: florida/n035653_custody_1978.jpg
+    original: https://www.floridamemory.com/
+    status: check
+    note: Commons の説明では Florida Memory の N035653 / N035656。Florida Memory の元のページを自分で開いて、番号と撮影者を確かめてから pd_other にする。確かめられれば本人の姿（F-022）の第2候補
+  - id: fm_dughi_courtroom
+    title: 「Theodore Bundy in a courtroom」1979年ごろ（撮影 Donn Dughi）
+    file: florida/dughi_courtroom_1979.jpg
+    original: https://www.floridamemory.com/items/show/103267
+    status: check
+    note: Florida Memory は PDM 1.0 としているが、撮影者は報道カメラマンの経歴がある。当時どこの仕事で撮ったか（通信社か州か）を確かめるまで画面に出さない
+  - id: fm_foley_souviron
+    title: 歯科医 Richard Souviron が証拠を示す場面（1987年、撮影 Mark T. Foley）
+    file: ""
+    original: https://www.floridamemory.com/items/show/133904
+    status: unusable
+    note: かみ跡の証拠（被害者の体の写真）が写っている可能性が高い。遺体の一部の写真は使わない決まり。歯型の鑑定は判決文とナレーションで伝える
+  # ---------- 判決文（裁判所の意見は著作権なし） ----------
+  - id: fla_455so2d330
+    title: フロリダ州最高裁 Bundy v. State, 455 So.2d 330（1984年。カイ・オメガ事件：殺人2件・殺人未遂3件・住居侵入2件の有罪と死刑を支持。事件番号 57,772）
+    file: court/fla_57772_opinion.pdf
+    original: https://library.law.fsu.edu/Digital-Collections/flsupct/dockets/
+    status: pd_other
+    note: 裁判官の意見は著作権の対象外。FSU法科大学院のデジタル版は「Not for Commercial Use」と書いてあるので、画面に出す紙面はフロリダ州最高裁から直接もらうか、判決文を自分で組み直した引用にする。1978年1月15日未明の出来事、目撃証言、歯型の鑑定の争点が書いてある。被害者の名前と傷の記述の行は映さない
+  - id: fla_471so2d9
+    title: フロリダ州最高裁 Bundy v. State, 471 So.2d 9（1985年。レイクシティの事件：誘拐と殺人の有罪と死刑を支持。事件番号 59,128。1978年2月9日の失踪、7月21日の起訴、催眠で思い出した証言の争点）
+    file: court/fla_59128_opinion.pdf
+    original: https://library.law.fsu.edu/Digital-Collections/flsupct/dockets/
+    status: pd_other
+    note: 同上。被害者は12歳。画面には手続きの部分（起訴、裁判地の変更、催眠証言の判断）だけを出す
+  - id: fla_538so2d445
+    title: フロリダ州最高裁 Bundy v. State, 538 So.2d 445（1989年1月20日。執行直前の申し立てを退けた。事件番号 73,585）
+    file: court/fla_73585_opinion.pdf
+    original: https://library.law.fsu.edu/Digital-Collections/flsupct/dockets/73501-73750.html
+    status: pd_other
+    note: 同上。執行（1989年1月24日）の4日前の日付が入った書面
+  - id: ca11_850f2d1402
+    title: 第11巡回区連邦控訴裁 Bundy v. Dugger, 850 F.2d 1402（1988年7月7日。人身保護の申し立てを退けた。訴訟能力、催眠証言）
+    file: court/ca11_850f2d1402.html
+    url: https://law.resource.org/pub/us/case/reporter/F2/850/850.F2d.1402.86-3773.html
+    status: pd_federal
+    note: 連邦裁判所の意見。文字だけなので、画面には引用として組む。関連：816 F.2d 564（1987年）、675 F.Supp. 622（M.D. Fla. 1987年、訴訟能力の審理）
+  - id: scotus_479us894
+    title: 連邦最高裁 Bundy v. Florida, 479 U.S. 894（1986年。上告を受理せず。催眠証言についての反対意見つき）
+    file: court/scotus_479us894.html
+    url: https://www.law.cornell.edu/supremecourt/text/479/894
+    status: pd_federal
+    note: 連邦最高裁の文書。文字だけ
+  # ---------- 当時の実物資料（時代とアメリカらしさ） ----------
+  - id: documerica_candidates
+    title: EPA DOCUMERICA（1972〜77年）のシアトル・ユタ・コロラドの街の写真
+    file: ""
+    original: https://catalog.archives.gov/
+    status: check
+    note: 連邦政府の写真で著作権なし。まだ写真を選んでいない（NARAの番号を1枚ずつ確かめてから pd_federal の項目に分ける）。事件と無関係な写真なので「1970年代のワシントン州の街」のような表示をつける
+  - id: usgs_aerials
+    title: USGSの航空写真と当時の地形図（タラハシー1978年前後、アスペン、グレンウッドスプリングス、ペンサコーラ、サマミッシュ湖）
+    file: ""
+    original: https://earthexplorer.usgs.gov/
+    status: pd_federal
+    note: EarthExplorer と topoView から手作業で取得。今も人が住む建物（カイ・オメガの建物は現在も使用中）は建物が特定できない縮尺まで
+  - id: own_maps
+    title: 自作の地図（実データ：Natural Earth、Copernicus DEM）。4つの州の位置関係、2度の逃走の経路、フロリダの3地点（タラハシー、レイクシティ、ペンサコーラ）
+    file: ""
+    status: own
+    note: maps.yaml で作る。逃走の経路（アスペン→…→タラハシー）は出典で確かめた地点だけを点で出し、線は「推定」と注記する
+  # ---------- 参照のみ ----------
+  - id: ref_seattle_pd
+    title: シアトル市警のバンディ関係の公開記録（Internet Archive「Ted Bundy and File 1004 documents from Seattle PD」）
+    url: https://archive.org/stream/Bundy_SeattlePD/74-031075_Redacted%207th%20installment_djvu.txt
+    status: reference
+    note: ワシントン州・市の文書は著作権なしとは限らない。被害者の詳しい記述が多い。事実確認だけに使う
+  - id: ref_fla_briefs
+    title: フロリダ州最高裁の記録と準備書面（FSU法科大学院のデジタル版。事件番号 57,772 / 59,128）
+    url: https://library.law.fsu.edu/Digital-Collections/flsupct/dockets/59128/59128ini.pdf
+    status: reference
+    note: フロリダ法上は公文書だが、弁護人の書面は弁護人の著作物。事実確認だけに使う
+  - id: ref_wikipedia
+    title: Wikipedia「Ted Bundy」
+    url: https://en.wikipedia.org/wiki/Ted_Bundy
+    status: reference
+    note: 時系列の当たりをつけるだけ。台本の事実は判決文とFBIファイルで確かめる
+  # ---------- 要確認 ----------
+  - id: utah_colorado_mugshots
+    title: ユタ州（1975年）・コロラド州（1977年）の逮捕時の写真、ピトキン郡裁判所・ガーフィールド郡の拘置所の写真
+    file: ""
+    status: check
+    note: 州・郡の写真は著作権なしとは限らない（フロリダと違う）。撮影した機関と公表の時期を確かめる。本人の姿はFBIの手配書とFlorida Memoryで足りる
+  - id: trial_tv_footage
+    title: 1979年のマイアミの裁判のテレビ中継の映像
+    file: ""
+    status: check
+    note: 放送局の著作物の可能性が高い。フロリダ州立公文書館が持つ映像があるかは未確認。使えない前提で構成する
+  # ---------- 使用不可 ----------
+  - id: no_victims
+    title: 被害者の写真、現場の写真、歯型・かみ跡の写真、遺体発見現場の写真
+    status: unusable
+    note: CLAUDE.md の決まり。Florida Memory にも被害者の写真があるが使わない
+  - id: no_press
+    title: 通信社・新聞・写真代理店の写真（AP、UPI、Getty など）、テレビ番組、配信ドキュメンタリー、録音テープ、執行前日のインタビュー映像
+    status: unusable
+    note: 権利者がいる。まとめサイトに載っていることは根拠にならない
