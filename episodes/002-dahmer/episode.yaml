@@ -3,5 +3,8 @@ id: 002-dahmer
 
 bgm:
   # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。上から順につなぐ
-  # 候補8曲は LICENSES.md（2026-11-25、耳で確認待ち）。選んだら assets/bgm/<ファイル名> をここに書く
-  tracks: []
+  # 2026-11-25：声と重なりにくい低めのアンビエント2曲（音の重心 約1kHz）。Red Shift（悲しい）で始め、AETHER（暗い）で中盤、
+  # 足りない分は Red Shift に戻って結びで終わる。耳で確かめて合わなければ候補（LICENSES.md）と入れ替える
+  tracks:
+    - assets/bgm/red_shift.mp3
+    - assets/bgm/aether.mp3

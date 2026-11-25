@@ -103,8 +103,32 @@ const Fade: React.FC<{ children: React.ReactNode; first: boolean }> = ({ childre
   return <AbsoluteFill style={{ opacity: o }}>{children}</AbsoluteFill>;
 };
 
-/** 声とBGM。仮の尺（estimated）のときや、まだ声のファイルがないときは入れない。
- *  BGM は stage.py の本番の準備（current.json の bgm: true）のときだけ。確認用（--draft）は声だけ */
+/** 効果音（stage.py が current.json の sfx に置く。香盤表の build/sfx_cues.json から）。
+ *  単発の音はその時刻から鳴らしきる。環境音（bed）はカットの終わりまで、頭0.5秒・終わり0.7秒でフェード */
+type SfxCue = { file: string; frame: number; gain: number; bed: boolean; frames?: number };
+const BedVolume = (gain: number, frames: number) => (f: number) =>
+  gain * interpolate(f, [0, 15, Math.max(16, frames - 21), frames], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+const Sfx: React.FC = () => {
+  const cues = ((current as any).sfx ?? []) as SfxCue[];
+  return (
+    <>
+      {cues.map((c, i) =>
+        c.bed ? (
+          <Sequence key={i} from={c.frame} durationInFrames={Math.max(1, c.frames ?? 120)} layout="none">
+            <Audio src={staticFile(`sfx/${c.file}`)} volume={BedVolume(c.gain, c.frames ?? 120)} loop />
+          </Sequence>
+        ) : (
+          <Sequence key={i} from={c.frame} layout="none">
+            <Audio src={staticFile(`sfx/${c.file}`)} volume={c.gain} />
+          </Sequence>
+        ),
+      )}
+    </>
+  );
+};
+
+/** 声とBGMと効果音。仮の尺（estimated）のときや、まだ声のファイルがないときは入れない。
+ *  BGM は stage.py の本番の準備（current.json の bgm: true）のときだけ。確認用（--draft）は声と効果音 */
 const Sound: React.FC = () => {
   const files = getStaticFiles().map((f) => f.name);
   if ((TL as any).estimated || !files.includes("narration.wav")) return null;
@@ -123,6 +147,7 @@ const Sound: React.FC = () => {
     <>
       <Audio src={staticFile("narration.wav")} />
       {withBgm && <Audio src={staticFile("bgm.wav")} volume={vol} />}
+      <Sfx />
     </>
   );
 };

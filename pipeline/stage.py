@@ -6,6 +6,7 @@
   data/processed/ の地形・夜景テクスチャ → remotion/public/（地形を使う回だけ。episode.yaml の terrain: true）
   episodes/<id>/build/narration.wav, timeline.json → remotion/public/, remotion/src/data/
   episode.yaml の bgm.tracks をつないで動画の長さに合わせ、音量をそろえたBGM → remotion/public/bgm.wav
+  香盤表の効果音（build/sfx_cues.json）と assets/sfx/ の音 → remotion/public/sfx/、鳴らす時刻と音量は current.json の sfx
   どの回を書き出すか・音量の設定 → remotion/src/data/current.json
 """
 import argparse
@@ -74,6 +75,39 @@ def check_public(ep: str) -> None:
                  + "（フォントは fetch_data.py、資料と地図は cut_materials.py と make_maps.py で作る）")
 
 
+SFX_REF_DB = -18.0  # fetch_sfx.py がそろえた効果音の音量（単発：鳴っている部分のRMS、環境音：LUFS）
+
+
+def stage_sfx(ep: str, out: Path, cfg: dict) -> list[dict]:
+    """香盤表の効果音を Remotion に配る。音量は「声のラウドネス − db_below_voice」になるように掛ける"""
+    f = out / "sfx_cues.json"
+    if not f.exists():
+        print("効果音：build/sfx_cues.json がありません（shotlist.py を実行）。効果音なしで準備します")
+        return []
+    cues = json.loads(f.read_text(encoding="utf-8"))["cues"]
+    src = ROOT / "assets" / "sfx"
+    dst = PUBLIC / "sfx"
+    dst.mkdir(parents=True, exist_ok=True)
+    fps = cfg["video"]["fps"]
+    voice = cfg["audio"]["narration_lufs"]
+    res, missing = [], set()
+    for c in cues:
+        if not (src / c["file"]).exists():
+            missing.add(c["file"])
+            continue
+        if not (dst / c["file"]).exists() or (dst / c["file"]).stat().st_mtime < (src / c["file"]).stat().st_mtime:
+            shutil.copy2(src / c["file"], dst / c["file"])
+        gain_db = voice - c["db_below_voice"] - SFX_REF_DB
+        item = {"file": c["file"], "frame": int(round(c["t"] * fps)), "gain": round(10 ** (gain_db / 20), 4), "bed": c["level"] == "bed"}
+        if item["bed"]:
+            item["frames"] = int(round(c.get("dur", 4) * fps))
+        res.append(item)
+    if missing:
+        print(f"効果音：assets/sfx/ に無いファイル {len(missing)}本（fetch_sfx.py で取得）: {', '.join(sorted(missing))}")
+    print(f"効果音：{len(res)}回を配置")
+    return res
+
+
 def bgm_bed(tracks: list[Path], seconds: float, lufs: float, xfade: float = 3.0, fade_out: float = 4.0) -> np.ndarray:
     """曲をクロスフェードでつなぎ、足りなければ繰り返して、動画の長さちょうどにする"""
     clips = [decode_audio(t, SR, 2) for t in tracks]
@@ -120,9 +154,10 @@ def main():
         write_json(SRC_DATA / "current.json", {
             "episode": args.episode,
             "bgm": False,  # 確認用は BGM を鳴らさない（public/ に前の bgm.wav が残っていても）
+            "sfx": stage_sfx(args.episode, out, cfg) if voice else [],
             "mix": {"bgmSpeech": a["bgm_gain_speech"], "bgmGap": a["bgm_gain_gap"], "duckFrames": a["bgm_duck_frames"]},
         })
-        kind = "仮の尺（声なし）" if tl.get("estimated") else ("声あり・BGMなし" if voice else "声の尺（声のファイルなし）")
+        kind = "仮の尺（声なし）" if tl.get("estimated") else ("声と効果音あり・BGMなし" if voice else "声の尺（声のファイルなし）")
         print(f"仮編集の準備完了: {args.episode}（{tl['totalSeconds']:.1f}秒、{kind}）")
         return
 
@@ -146,6 +181,7 @@ def main():
     write_json(SRC_DATA / "current.json", {
         "episode": args.episode,
         "bgm": True,
+        "sfx": stage_sfx(args.episode, out, cfg),
         "mix": {"bgmSpeech": a["bgm_gain_speech"], "bgmGap": a["bgm_gain_gap"], "duckFrames": a["bgm_duck_frames"]},
     })
     print(f"準備完了: {args.episode}（{tl['totalSeconds']:.1f}秒, BGM {len(tracks)}曲）")
