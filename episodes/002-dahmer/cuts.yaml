@@ -14,3 +14,13 @@
 - {name: army_1979, file: commons/army_baumholder_1979.jpg}
 - {name: naip_oxford, file: naip/milwaukee_oxford_site.png, meta: naip/milwaukee_oxford_site.json}
 - {name: naip_columbia, file: naip/columbia_ci_portage.png, meta: naip/columbia_ci_portage.json}
+# 2026-11-25 追加（素材の使い回しを減らす：F-021、本人の姿を冒頭30秒以内に：F-022）
+- {name: booking_front, file: mpd/BOOKING_PHOTOS.pdf, page: 2, dpi: 220, rotate: -90, crop: [0.52, 0.0, 1.0, 1.0]}   # 逮捕時の写真（1991年7月24日、正面）。冒頭0:27で出す
+- {name: booking_0723, file: mpd/BOOKING_PHOTOS.pdf, page: 1, dpi: 220, rotate: -90}                                   # 逮捕時の写真（1991年7月23日、横と正面）
+- {name: fbi1_memo, file: fbi/Dahmer1.pdf, page: 3, dpi: 200, crop: [0.06, 0.02, 0.95, 0.362]}                         # FBIの内部メモ（1991年7月24日、事件を開く）。下の件名欄（被害者の名前）は入れない
+- {name: fbi6_report, file: fbi/Dahmer6.pdf, page: 16, dpi: 200, crop: [0.08, 0.06, 0.93, 0.36]}                       # FBI研究所の報告書の見出し（1992年1月10日、95-299705）
+- {name: mpd_fbi_request, file: fbi/Dahmer6.pdf, page: 3, dpi: 200, crop: [0.08, 0.12, 0.93, 0.445]}                    # ミルウォーキー警察からFBI長官への鑑定依頼（1991年8月12日）。警察が書いた書類（FBIファイルに綴じ込み）。下の RE 欄（住所）と証拠品の一覧は入れない
+- {name: army_adapcp, file: fbi/Dahmer1.pdf, page: 14, dpi: 200, crop: [0.07, 0.025, 0.95, 0.37], redact: [[0.302, 0.227, 0.447, 0.248]]}   # 米陸軍の処理票（1981年2月25日、ADAPCP の失敗）。社会保障番号を黒塗り
+- {name: army_discharge, file: fbi/Dahmer1.pdf, page: 22, dpi: 200, crop: [0.06, 0.09, 0.95, 0.70], redact: [[0.31, 0.348, 0.48, 0.381]]}  # 米陸軍の除隊の勧告（1981年3月18日）。社会保障番号を黒塗り
+- {name: judgment_1989, file: mpd/Documents_text.pdf, page: 169, dpi: 200, crop: [0.06, 0.045, 0.99, 0.198]}            # 1989年の判決書の見出し（有罪判決・刑の執行猶予・保護観察命令、F-882515）。罪名の欄は入れない
+- {name: judgment_probation, file: mpd/Documents_text.pdf, page: 169, dpi: 200, crop: [0.06, 0.385, 0.99, 0.548]}       # 同じ判決書の主文（刑の執行を猶予し、5年間の保護観察）

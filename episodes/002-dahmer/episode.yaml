@@ -8,3 +8,6 @@ bgm:
   tracks:
     - assets/bgm/red_shift.mp3
     - assets/bgm/aether.mp3
+
+# 本人の姿が写った素材（香盤表が「最初の30秒以内に出ているか」を確かめる：F-022）
+person_photos: [booking_front, booking_0723, booking_1991, yearbook_1978, army_1979]

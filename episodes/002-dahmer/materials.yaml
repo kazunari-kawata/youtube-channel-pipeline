@@ -25,6 +25,7 @@ items:
     original: https://vault.fbi.gov/jeffrey-dahmer
     status: pd_federal
     note: FBI職員が書いたメモ・報告は著作権なし。ただし綴じ込まれた新聞記事の切り抜きや他機関の書類はその限りでない。画面に出すページは1枚ずつ作成者を確かめる
+    pages_used: "3ページ：FBIの内部メモ（1991年7月24日、FBIが作成＝著作権なし）。14ページ：米陸軍の処理票（1981年2月25日）、22ページ：米陸軍の除隊の勧告（1981年3月18日）。陸軍の書類も連邦政府の著作物で著作権なし。社会保障番号は黒塗りして使う（2026-11-25 確認）"
   - id: fbi_02
     title: FBIファイル 2/7（60ページ、画像が中心で文字認識できず。中身未確認）
     file: fbi/Dahmer2.pdf
@@ -60,6 +61,7 @@ items:
     original: https://vault.fbi.gov/jeffrey-dahmer
     status: pd_federal
     note: 研究所の報告はFBIの著作物で使用可。ミルウォーキー警察が書いた依頼状は州・市の文書なので check 扱い。証拠品の一覧は生々しい記述を含むので、画面では文書の見た目だけを使い、中身を読ませない
+    pages_used: "16ページ：FBI研究所の報告書（1992年1月10日、FBIが作成＝著作権なし）。3ページ：ミルウォーキー警察からFBI長官への書簡（1991年8月12日）は警察が作成した書類なので mpd_docs と同じ扱い（fair_use）。見出し部分だけで、証拠品の一覧と住所は入れない（2026-11-25 確認）"
   - id: fbi_07
     title: FBIファイル 7/7（95-HQ-2997xx ほか、252ページ。非公開ページの差し替え票を含む）
     file: fbi/Dahmer7.pdf
@@ -83,6 +85,7 @@ items:
     original: https://archive.org/details/dahmer-milwaukee-police-department-documents
     status: fair_use
     note: 事実確認の一次資料。逮捕の経緯（64ページ付近、Tracy Edwards の通報）、1989年の有罪判決（161ページ）、起訴状（221ページ以降）。2026-11-24 ユーザー判断でフェアユース使用。画面には日付・場所・役職の部分だけを切り出し、犯行の記述は映さない
+    pages_used: "64・161・221・222ページ。169ページ：1989年の判決書（有罪判決・刑の執行猶予・保護観察命令、F-882515）の見出しと主文（2026-11-25 追加。罪名の欄は見出しの切り出しに入れない）"
   - id: mpd_booking
     title: 1991年7月の逮捕時の顔写真（ミルウォーキー警察、4枚）
     file: mpd/BOOKING_PHOTOS.pdf

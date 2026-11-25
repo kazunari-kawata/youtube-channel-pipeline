@@ -3,6 +3,8 @@
   python pipeline/cut_materials.py 002-dahmer
 
 切り出し方は episodes/<id>/cuts.yaml。PDFは pdftoppm（poppler）でページを画像にする。
+  redact: [[x0, y0, x1, y1], ...]  ページ（回転後・切り出し前）の割合で黒く塗る（社会保障番号など、画面に出せない個人情報）
+  python pipeline/cut_materials.py 002-dahmer --only booking_front,fbi1_memo   # 一部だけ作り直す
 """
 import argparse
 import shutil
@@ -12,7 +14,7 @@ import tempfile
 from pathlib import Path
 
 import yaml
-from PIL import Image
+from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).parent))
 from common import ROOT, build_dir, episode_dir  # noqa: E402
@@ -21,13 +23,17 @@ from common import ROOT, build_dir, episode_dir  # noqa: E402
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
+    ap.add_argument("--only", help="作る素材の name（カンマ区切り）")
     a = ap.parse_args()
+    only = set(a.only.split(",")) if a.only else None
     src_dir = build_dir(a.episode) / "materials"
     out = ROOT / "remotion" / "public" / a.episode.split("-")[0]
     out.mkdir(parents=True, exist_ok=True)
     ledger = yaml.safe_load((episode_dir(a.episode) / "materials.yaml").read_text(encoding="utf-8"))
     usable = {i["file"] for i in ledger["items"] if i.get("file") and i["status"] in ("pd_federal", "pd_no_notice", "pd_other", "cc_by", "fair_use", "own")}
     for c in yaml.safe_load((episode_dir(a.episode) / "cuts.yaml").read_text(encoding="utf-8")):
+        if only and c["name"] not in only:
+            continue
         f = src_dir / c["file"]
         if c["file"] not in usable:
             sys.exit(f"{c['name']}：{c['file']} は素材台帳で使用可になっていません")
@@ -40,6 +46,9 @@ def main():
             im = Image.open(f).convert("RGB")
         if c.get("rotate"):
             im = im.rotate(c["rotate"], expand=True)
+        for x0, y0, x1, y1 in c.get("redact", []):
+            W, H = im.size
+            ImageDraw.Draw(im).rectangle((int(x0 * W), int(y0 * H), int(x1 * W), int(y1 * H)), fill=(0, 0, 0))
         if c.get("crop"):
             W, H = im.size
             x0, y0, x1, y1 = c["crop"]

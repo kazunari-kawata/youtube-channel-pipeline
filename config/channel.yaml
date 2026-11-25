@@ -44,6 +44,12 @@ sfx:
   same_in_row_max: 1            # 同じファイルを続けて鳴らさない（同じ音は慣れて効かなくなる）
   db_below_voice: {bed: 24, light: 16, mid: 12, hit: 11}  # 声より何dB小さく置くか（短時間ラウドネス）。耳で確かめて直す。hit は 8 だと声の山と重なって音割れした（2026-11-25）
 
+# 香盤表の画面の決まり（pipeline/shotlist.py が注意を出す）
+shots:
+  material_max: 2          # 同じ写真・資料・航空写真・地図（同じ見せ方と点）は1本で2回まで（F-021。使い回しはくどく、テンポも落ちる）
+  insert_variant_max: 3    # 同じイメージ映像の同じ種類は3回まで
+  person_first_sec: 30     # 本人の姿（episode.yaml の person_photos）を最初の30秒以内に出す（F-022）
+
 render:
   gl_linux: swangle    # クラウド（GPUなし）
   gl_windows: angle    # Windows（GPUあり）

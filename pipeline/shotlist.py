@@ -179,6 +179,40 @@ def status(ep: str, v: dict) -> str:
     return "部品で描く"
 
 
+def material_key(v: dict) -> str | None:
+    """同じ見た目かどうかの鍵。写真・資料・航空写真は素材の名前、地図は見せ方と点、イメージ映像は場面と種類"""
+    k = v.get("kind")
+    if k in ("doc", "photo", "aerial"):
+        return f"{k}:{v['src']}"
+    if k == "map":
+        return f"map:{v.get('view')}:{','.join(v.get('points', []))}"
+    if k == "insert":
+        return f"insert:{v.get('scene')}.{v.get('var', '')}"
+    return None
+
+
+def reuse_warnings(shots: list[dict], cfg: dict) -> list[str]:
+    """素材の使い回し（F-021）と、本人の姿が出るまでの時間（F-022）"""
+    r = cfg.get("shots", {})
+    mat_max, ins_max, first = r.get("material_max", 2), r.get("insert_variant_max", 3), r.get("person_first_sec", 30)
+    uses: dict[str, list[str]] = {}
+    for sh in shots:
+        k = material_key(sh["v"])
+        if k:
+            uses.setdefault(k, []).append(f"{sh['id']}（{int(sh['start'] // 60)}:{sh['start'] % 60:04.1f}）")
+    out = []
+    for k, u in uses.items():
+        lim = ins_max if k.startswith("insert:") else mat_max
+        if len(u) > lim:
+            out.append(f"同じ素材 {k} を {len(u)}回使っている（{lim}回まで）：{'、'.join(u)}")
+    people = set(cfg.get("person_photos", []))
+    if people:
+        t = next((sh["start"] for sh in shots if sh["v"].get("src") in people), None)
+        if t is None or t > first:
+            out.append(f"本人の姿（{'、'.join(sorted(people))}）が最初に出るのが {('なし' if t is None else f'{t:.1f}秒')}（{first}秒以内に出す）")
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
@@ -209,6 +243,7 @@ def main():
     total = tl["totalSeconds"]
     cfg = load_config(a.episode)
     scfg = cfg["sfx"]
+    warn += reuse_warnings(shots, cfg)
     lib = load_sfx()
     cues, dropped, gaps = plan_sfx(shots, lib, scfg, segs[-1]["end"])
     for sh in shots:

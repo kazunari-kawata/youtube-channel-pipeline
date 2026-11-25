@@ -30,6 +30,15 @@ const ASSETS: Record<string, DocMeta & { aspect: number }> = {
   fbi1_cover: { title: "FBIファイル ミルウォーキー支局（7-MW-26057）", source: FBI, aspect: 1104 / 1430 },
   fbi6_lab: { title: "FBIファイル 研究所（95-HQ-299705）", source: FBI, aspect: 1086 / 1430 },
   booking_1991: { title: "1991年7月 逮捕時の写真", source: "出典：ミルウォーキー警察", aspect: 2420 / 1870 },
+  booking_front: { title: "1991年7月24日 逮捕時の写真", source: "出典：ミルウォーキー警察", aspect: 1162 / 1870 },
+  booking_0723: { title: "1991年7月23日 逮捕時の写真", source: "出典：ミルウォーキー警察", aspect: 2420 / 1870 },
+  fbi1_memo: { title: "FBI ミルウォーキー支局の内部メモ（1991年7月24日）", source: FBI, aspect: 1483 / 752 },
+  fbi6_report: { title: "FBI研究所の報告書（1992年1月10日）", source: FBI, aspect: 1417 / 660 },
+  mpd_fbi_request: { title: "ミルウォーキー警察からFBIへの書簡（1991年8月12日）", source: `${FBI}。ミルウォーキー警察が作成`, aspect: 1417 / 715 },
+  army_adapcp: { title: "米陸軍の処理票（1981年2月25日）", source: `${FBI}。米陸軍の書類`, aspect: 1467 / 759 },
+  army_discharge: { title: "米陸軍 除隊の勧告（1981年3月18日）", source: `${FBI}。米陸軍の書類`, aspect: 1481 / 1342 },
+  judgment_1989: { title: "1989年の判決書（事件番号 F-882515）", source: MPD, aspect: 1581 / 336 },
+  judgment_probation: { title: "1989年の判決書 主文", source: MPD, aspect: 1581 / 358 },
   apartment_a: { title: "213号室（警察の記録写真）", source: "出典：ミルウォーキー警察", aspect: 1903 / 1700 },
   yearbook_1978: { title: "1978年 リビア高校の卒業アルバム", source: COMMONS, aspect: 450 / 600 },
   yearbook_cartoon: { title: "1978年 卒業アルバムの漫画（同級生が描いたもの）", source: COMMONS, aspect: 1022 / 636 },
@@ -62,6 +71,25 @@ const JA: Record<string, string[]> = {
   ],
   fbi1_cover: ["情報公開法・プライバシー法による公開", "対象：ジェフリー・ダーマー", "ファイル番号：7-MW-26057（ミルウォーキー支局）第1部", "連邦捜査局（FBI）"],
   fbi6_lab: ["情報公開法・プライバシー法による公開", "対象：ジェフリー・ダーマー", "ファイル番号：95-HQ-299705（FBI本部。研究所の記録）", "連邦捜査局（FBI）"],
+  fbi1_memo: [
+    "1991年7月24日 FBIの内部メモ",
+    "あて先：ミルウォーキー支局の責任者（SAC）",
+    "件名：下記の事件の捜査を開始し、担当を割り当てることの許可（分類7、第6班、主管はミルウォーキー）",
+  ],
+  fbi6_report: ["FBI研究所の報告書（1992年1月10日）", "あて先：ミルウォーキー警察本部長", "件名：ジェフリー・L・ダーマー、複数の殺人。FBIファイル番号 95-299705"],
+  mpd_fbi_request: ["1991年8月12日 ミルウォーキー警察の書簡", "あて先：FBI長官（担当：FBI研究所）", "警察の担当者が直接届けた、鑑定の依頼の書類"],
+  army_adapcp: [
+    "米陸軍の処理票（件名：ADAPCP の失敗）",
+    "1981年1月29日、アルコール乱用について診察を受けた。たびたび飲酒の問題を起こし、飲酒を控える意思がない。",
+    "アルコール・薬物乱用防止プログラム（ADAPCP）の失敗と判断する。",
+  ],
+  army_discharge: [
+    "米陸軍 除隊の勧告",
+    "陸軍規則 635-200 第9章（リハビリの失敗）により、除隊を勧告する。",
+    "1980年8月〜12月に、勤務前の酩酊、兵舎での飲酒、酔っての騒ぎなど5回の記録がある。",
+  ],
+  judgment_1989: ["有罪判決・刑の言い渡しと執行猶予・保護観察の命令", "ウィスコンシン州 対 ジェフリー・L・ダーマー（1960年5月21日生まれ）", "ミルウォーキー郡巡回裁判所、事件番号 F-882515"],
+  judgment_probation: ["判決の主文（1989年5月23日）", "1月30日に有罪とされた罪について、州刑務所での刑を言い渡す。", "ただし刑の執行は猶予し、5年間の保護観察とする。"],
 };
 const NAIP_DATE: Record<string, string> = { naip_oxford: "2022年6月", naip_columbia: "2022年8月" };
 
