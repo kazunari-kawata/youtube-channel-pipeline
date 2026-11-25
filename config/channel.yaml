@@ -24,7 +24,7 @@ tts:
 
 # 声を作る前の仮の尺（pipeline/estimate_timeline.py）。読み（read）の文字数／秒。本番の声で作り直すと上書きされる
 estimate:
-  chars_per_sec: 5.4   # Jun の実測 5.38字/秒（002、読み仮名の字数で）。Otani・v3 で全編を作ったら測り直す
+  chars_per_sec: 5.4   # Otani・v3 の実測 5.40字/秒（002、読み仮名の字数で。Jun も 5.38 でほぼ同じ）
 
 audio:
   narration_lufs: -16    # ナレーションの音量（ラウドネス）
