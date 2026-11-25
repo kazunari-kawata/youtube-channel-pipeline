@@ -96,22 +96,27 @@ export const bokehTexture = (key: string, colors: string[], n = 40) =>
     c.globalAlpha = 1;
   });
 
-/** 70年代の床（テラゾー：石の粒が混じった床） */
+/** 70年代の床（テラゾー：石の粒が混じった床）。
+ *  奥の床は斜めから見るので、粒の明暗が強いとカメラが動くたびに画素の境目でちらつく（QAで検出）。
+ *  粒は薄く、ぼかして描き、目地も太く淡くする */
 export const terrazzoTexture = () =>
   canvasTex("terrazzo", 512, 512, (c) => {
-    c.fillStyle = "#b9ad97";
+    c.fillStyle = "#b5aa95";
     c.fillRect(0, 0, 512, 512);
-    for (let i = 0; i < 9000; i++) {
+    c.filter = "blur(1.2px)";
+    for (let i = 0; i < 5000; i++) {
       const v = random(`tz${i}`);
-      c.fillStyle = v < 0.4 ? "rgba(90,80,70,0.5)" : v < 0.7 ? "rgba(240,235,225,0.5)" : "rgba(140,110,80,0.45)";
-      c.fillRect(random(`tx${i}`) * 512, random(`ty${i}`) * 512, 2 + v * 3, 2 + v * 2);
+      c.fillStyle = v < 0.4 ? "rgba(110,100,88,0.22)" : v < 0.7 ? "rgba(225,218,205,0.22)" : "rgba(150,122,92,0.2)";
+      c.fillRect(random(`tx${i}`) * 512, random(`ty${i}`) * 512, 3 + v * 3, 3 + v * 2);
     }
-    c.strokeStyle = "rgba(60,55,50,0.35)";
-    c.lineWidth = 2;
+    c.filter = "blur(2px)";
+    c.strokeStyle = "rgba(80,74,66,0.22)";
+    c.lineWidth = 4;
     for (let k = 0; k <= 512; k += 128) {
       c.beginPath(); c.moveTo(k, 0); c.lineTo(k, 512); c.stroke();
       c.beginPath(); c.moveTo(0, k); c.lineTo(512, k); c.stroke();
     }
+    c.filter = "none";
   }, true, true);
 
 /** 機内の床のじゅうたん（70年代の柄） */

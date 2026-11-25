@@ -27,7 +27,7 @@ type V3 = [number, number, number];
 const Terminal: React.FC<{ plane?: boolean }> = ({ plane = true }) => {
   const floor = useMemo(() => {
     const t = terrazzoTexture().clone();
-    t.repeat.set(12, 4);
+    t.repeat.set(12, 3.2);
     t.needsUpdate = true;
     return new THREE.MeshStandardMaterial({ map: t, roughness: 0.35, metalness: 0.05 });
   }, []);
@@ -35,8 +35,9 @@ const Terminal: React.FC<{ plane?: boolean }> = ({ plane = true }) => {
   const drops = dropsTexture();
   return (
     <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} material={floor} receiveShadow>
-        <planeGeometry args={[60, 20]} />
+      {/* 床は窓の壁（z=-6）で止める。外の駐機場の板と同じ高さで重なると、重なった所がちらつく（QAで検出） */}
+      <mesh position={[0, 0, 2]} rotation={[-Math.PI / 2, 0, 0]} material={floor} receiveShadow>
+        <planeGeometry args={[60, 16]} />
       </mesh>
       {/* 天井と蛍光灯 */}
       <mesh position={[0, 4.2, 0]} rotation={[Math.PI / 2, 0, 0]}>
@@ -64,7 +65,7 @@ const Terminal: React.FC<{ plane?: boolean }> = ({ plane = true }) => {
         <meshStandardMaterial map={drops} transparent opacity={0.55} depthWrite={false} />
       </mesh>
       {/* 外：濡れた駐機場、遠い灯り */}
-      <mesh position={[0, 0, -40]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0, -0.02, -41.2]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[200, 70]} />
         <meshStandardMaterial color="#0b0d10" roughness={0.3} metalness={0.2} />
       </mesh>
@@ -104,7 +105,7 @@ export const InsertAirportWalk003: React.FC<SceneProps> = ({ variant = "a" }) =>
   // 歩く速さは一定（毎秒1.2m）。カメラは横から遠目で、人物はカメラに近づかない
   const walkX = (t0: number, dir: number) => (s: number): V3 => [t0 + dir * 1.2 * s, 0, 0.6];
   const cams: Record<string, [CamKey, CamKey]> = {
-    a: [{ pos: [-2, 1.5, 11], target: [-1, 1.2, -1], fov: 34 }, { pos: [1.5, 1.5, 11], target: [2.5, 1.2, -1], fov: 34 }], // 横から、男と一緒にゆっくり流す
+    a: [{ pos: [-1.6, 1.5, 11], target: [-0.6, 1.2, -1], fov: 34 }, { pos: [0.8, 1.5, 11], target: [1.8, 1.2, -1], fov: 34 }], // 横から、男と一緒にゆっくり流す（速く流すと奥の床がちらつく）
     b: [{ pos: [-9, 1.6, 2.6], target: [4, 1.2, 0.2], fov: 30 }, { pos: [-8.5, 1.6, 2.6], target: [5, 1.2, 0.2], fov: 30 }], // 後ろから、遠ざかる男
     gate: [{ pos: [9, 2.2, 7], target: [-2, 1.1, -1], fov: 36 }, { pos: [8, 2.1, 6.4], target: [-2, 1.1, -1.2], fov: 35 }], // 搭乗口の列と検査の台
   };
