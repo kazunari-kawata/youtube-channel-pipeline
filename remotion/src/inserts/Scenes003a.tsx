@@ -4,6 +4,7 @@
  *   airport_wait：空港の待合（座って待つ男、立ち上がる男、航空券のカウンター、検査の門、人のいない待合）
  *   cabin_seat：727 の機内（座席の列、窓の外の雲、灰皿、テーブル）
  *   field_office：70年代のFBIの支局の事務所（人物なし）
+ *   fbi_lab：2001年の FBI の研究所。白衣の検査官が、台の上のネクタイから DNA の試料を採る（顔なし。後ろ斜めから）
  * 描くのは日常の場面だけ。脅す・メモを渡す・飛び降りる場面は描かない（plan.md）。人物は顔のないシルエット。
  * 実在の航空会社の名前・ロゴ・塗装は入れない。
  */
@@ -12,10 +13,10 @@ import { interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
 import { Build, Figure } from "../lib/Figure";
 import { WoodMaterial } from "./Era80s";
-import { Camera, CamKey, SceneProps, Stage } from "./Inserts";
+import { BrickMaterial, Camera, CamKey, SceneProps, Stage } from "./Inserts";
 import {
   ATTENDANT_71, bokehTexture, calendarTexture, carpetTexture, CeilingLights, ChairRow, CloudLayer, COOPER_71, Desk, DeskPhone, dropsTexture, FileBox, FilingCabinet,
-  Jet727, PaperStack, terrazzoTexture, TRAVELER_A, TRAVELER_B, Typewriter,
+  Jet727, LAB_2001, PaperStack, terrazzoTexture, TRAVELER_A, TRAVELER_B, Typewriter,
 } from "./Props003";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -782,3 +783,182 @@ export const InsertFieldOffice003: React.FC<SceneProps> = ({ variant = "a" }) =>
     </Stage>
   );
 };
+
+/* ---------- 2001年の FBI の研究所：ネクタイから DNA の試料を採る ---------- */
+
+/** 台の上に平らに置いたクリップ式の黒いネクタイ（白い紙の上）。結び目から剣先へ広がり、先がとがる */
+const TieOnPaper: React.FC<{ position: V3; rotY?: number }> = ({ position, rotY = 0 }) => {
+  const shape = useMemo(() => {
+    const sh = new THREE.Shape();
+    // 平面の x が幅、y が長さ（あとで寝かせる）。上が結び目、下が剣先
+    sh.moveTo(-0.022, 0.24);
+    sh.lineTo(0.022, 0.24);
+    sh.lineTo(0.016, 0.2);
+    sh.lineTo(0.036, -0.17);
+    sh.lineTo(0, -0.22);
+    sh.lineTo(-0.036, -0.17);
+    sh.lineTo(-0.016, 0.2);
+    sh.closePath();
+    return sh;
+  }, []);
+  return (
+    <group position={position} rotation={[0, rotY, 0]}>
+      <mesh position={[0, 0.002, 0]} receiveShadow>
+        <boxGeometry args={[0.46, 0.004, 0.62]} />
+        <meshStandardMaterial color="#d6d3ca" roughness={0.95} />
+      </mesh>
+      <mesh position={[0, 0.006, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <shapeGeometry args={[shape]} />
+        <meshStandardMaterial color="#0d0d10" roughness={0.6} side={THREE.DoubleSide} />
+      </mesh>
+      {/* 結び目の上のクリップ（金具は光らせない） */}
+      <mesh position={[0, 0.012, -0.245]}>
+        <boxGeometry args={[0.04, 0.01, 0.03]} />
+        <meshStandardMaterial color="#3a3a3c" roughness={0.7} />
+      </mesh>
+    </group>
+  );
+};
+
+/** 綿棒を入れる細い管の立て（白い管が4本） */
+const SwabRack: React.FC<{ position: V3 }> = ({ position }) => (
+  <group position={position}>
+    <mesh position={[0, 0.03, 0]}>
+      <boxGeometry args={[0.22, 0.06, 0.06]} />
+      <meshStandardMaterial color="#8d949a" roughness={0.6} />
+    </mesh>
+    {[0, 1, 2, 3].map((k) => (
+      <mesh key={k} position={[-0.075 + k * 0.05, 0.1, 0]}>
+        <cylinderGeometry args={[0.009, 0.009, 0.14, 10]} />
+        <meshStandardMaterial color="#e8eaec" roughness={0.5} />
+      </mesh>
+    ))}
+  </group>
+);
+
+/** 実験台（黒い天板と、明るい灰色の引き出し） */
+const LabBench: React.FC<{ position: V3; w?: number }> = ({ position, w = 3.2 }) => (
+  <group position={position}>
+    <mesh position={[0, 0.9, 0]} receiveShadow castShadow>
+      <boxGeometry args={[w, 0.04, 0.8]} />
+      <meshStandardMaterial color="#1c2023" roughness={0.45} />
+    </mesh>
+    <mesh position={[0, 0.44, 0.02]} receiveShadow>
+      <boxGeometry args={[w, 0.88, 0.74]} />
+      <meshStandardMaterial color="#b8bcb9" roughness={0.7} />
+    </mesh>
+    {Array.from({ length: Math.floor(w / 0.8) }, (_, k) => (
+      <mesh key={k} position={[-w / 2 + 0.4 + k * 0.8, 0.72, 0.392]}>
+        <boxGeometry args={[0.7, 0.012, 0.01]} />
+        <meshStandardMaterial color="#7d8280" roughness={0.6} />
+      </mesh>
+    ))}
+  </group>
+);
+
+/** 拡大鏡つきの台の明かり（光はにじまない明るさ） */
+const MagLamp: React.FC<{ position: V3 }> = ({ position }) => (
+  <group position={position}>
+    <mesh position={[0, 0.02, 0]}>
+      <cylinderGeometry args={[0.07, 0.08, 0.04, 16]} />
+      <meshStandardMaterial color="#d6d8d6" roughness={0.6} />
+    </mesh>
+    <mesh position={[0, 0.25, 0]} rotation={[0, 0, 0.25]}>
+      <cylinderGeometry args={[0.012, 0.012, 0.46, 8]} />
+      <meshStandardMaterial color="#cfd2d0" roughness={0.6} />
+    </mesh>
+    <mesh position={[-0.14, 0.44, 0.08]} rotation={[0.25, 0, 0.6]}>
+      <torusGeometry args={[0.09, 0.018, 8, 24]} />
+      <meshStandardMaterial color="#cfd2d0" roughness={0.6} />
+    </mesh>
+  </group>
+);
+
+/** 顕微鏡（形だけ） */
+const Microscope: React.FC<{ position: V3; rotY?: number }> = ({ position, rotY = 0 }) => (
+  <group position={position} rotation={[0, rotY, 0]}>
+    <mesh position={[0, 0.03, 0]}><boxGeometry args={[0.2, 0.05, 0.26]} /><meshStandardMaterial color="#d9dbd8" roughness={0.6} /></mesh>
+    <mesh position={[0, 0.2, -0.08]}><boxGeometry args={[0.06, 0.32, 0.06]} /><meshStandardMaterial color="#d9dbd8" roughness={0.6} /></mesh>
+    <mesh position={[0, 0.33, -0.01]} rotation={[0.5, 0, 0]}><cylinderGeometry args={[0.022, 0.022, 0.2, 12]} /><meshStandardMaterial color="#2a2c2e" roughness={0.5} /></mesh>
+    <mesh position={[0, 0.12, 0.02]}><boxGeometry args={[0.14, 0.012, 0.12]} /><meshStandardMaterial color="#2a2c2e" roughness={0.5} /></mesh>
+  </group>
+);
+
+/** 台に向かって少し前かがみになり、両手を台の上の物へ下ろす姿勢（Idle_Loop の息づかいはそのまま） */
+const BENCH_WORK: Record<string, [number, number, number]> = {
+  "DEF-spine002": [0.22, 0, 0],
+  "DEF-neck": [0.3, 0, 0],
+  "DEF-upper_armL": [0.38, 0, -0.12],
+  "DEF-forearmL": [1.05, 0, 0],
+  "DEF-upper_armR": [0.38, 0, 0.12],
+  "DEF-forearmR": [1.05, 0, 0],
+};
+
+const LabFigureCheck: React.FC<{ deg: number; clip?: string; work?: boolean }> = ({ deg, clip = "Idle_Loop", work }) => {
+  const a = (deg / 180) * Math.PI;
+  const cam: CamKey = { pos: [Math.sin(a) * 3.4, 1.15, Math.cos(a) * 3.4], target: [0, 0.95, 0], fov: 35 };
+  return (
+    <Stage fog={0} exposure={1.0} bloom={0} grade="none" bg="#7a7a7a" hemi={["#ffffff", "#444444", 2.0]}>
+      <Camera from={cam} to={cam} />
+      <directionalLight position={[3, 5, 4]} intensity={2.5} />
+      <Figure clip={clip} position={[0, 0, 0]} glasses={false} build={LAB_2001} pose={work ? BENCH_WORK : undefined} />
+    </Stage>
+  );
+};
+
+export const InsertFbiLab003: React.FC<SceneProps> = ({ variant = "a" }) => {
+  if (variant.startsWith("wfig")) return <LabFigureCheck deg={Number(variant.slice(4)) || 0} work />;
+  if (variant.startsWith("ifig")) return <LabFigureCheck deg={Number(variant.slice(4)) || 0} clip="Interact" />;
+  if (variant.startsWith("pfig")) return <LabFigureCheck deg={Number(variant.slice(4)) || 0} clip="PickUp_Table" />;
+  if (variant.startsWith("fig")) return <LabFigureCheck deg={Number(variant.slice(3)) || 0} />;
+  // a：後ろ斜めの少し高い所から。台に向かってネクタイに両手を下ろす検査官と、明かりの下のネクタイ（顔は見えない）。カメラはゆっくり寄るだけ
+  const cams: Record<string, [CamKey, CamKey]> = {
+    a: [{ pos: [1.55, 1.75, 1.15], target: [-0.05, 1.0, -0.95], fov: 38 }, { pos: [1.4, 1.72, 1.0], target: [-0.05, 1.0, -0.95], fov: 36 }],
+  };
+  const [from, to] = cams[variant] ?? cams.a;
+  return (
+    <Stage fog={0.015} exposure={1.05} bg="#101214" hemi={["#eef2f4", "#3a3e40", 0.55]}>
+      <Camera from={from} to={to} />
+      {/* 床（明るい灰色の床材）と、塗装したブロックの壁（奥と左） */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[14, 10]} />
+        <meshStandardMaterial color="#8f9290" roughness={0.6} />
+      </mesh>
+      <mesh position={[0, 1.6, -1.65]}>
+        <planeGeometry args={[14, 3.2]} />
+        <BrickMaterial w={14} h={3.2} tint="#d7dad6" painted />
+      </mesh>
+      <mesh position={[-3.2, 1.6, 1.5]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[7, 3.2]} />
+        <BrickMaterial w={7} h={3.2} tint="#d7dad6" painted />
+      </mesh>
+      <CeilingLights y={3.05} xs={[-1.6, 1.2]} zs={[-0.4]} glow={0.9} />
+      <pointLight position={[0, 2.8, 0.2]} intensity={10} distance={10} color="#f2f6f8" />
+      {/* 台の手元を照らす明かり */}
+      <pointLight position={[-0.15, 1.45, -0.95]} intensity={1.6} distance={2.2} color="#fff2dc" />
+      {/* 奥の壁の棚（瓶と箱。文字なし） */}
+      <group position={[0.4, 1.75, -1.5]}>
+        <mesh><boxGeometry args={[2.6, 0.03, 0.26]} /><meshStandardMaterial color="#c9ccca" roughness={0.6} /></mesh>
+        {Array.from({ length: 9 }, (_, k) => (
+          <mesh key={k} position={[-1.15 + k * 0.28, 0.1 + (k % 3) * 0.01, 0]}>
+            {k % 3 === 0 ? <boxGeometry args={[0.18, 0.16, 0.16]} /> : <cylinderGeometry args={[0.045, 0.05, 0.18 + (k % 2) * 0.05, 12]} />}
+            <meshStandardMaterial color={k % 3 === 0 ? "#b7a88a" : "#7f8c8a"} roughness={0.5} />
+          </mesh>
+        ))}
+      </group>
+      <LabBench position={[0.2, 0, -1.05]} />
+      <TieOnPaper position={[-0.12, 0.92, -0.95]} rotY={0.35} />
+      <SwabRack position={[0.45, 0.92, -1.2]} />
+      <MagLamp position={[-1.35, 0.92, -1.3]} />
+      <Microscope position={[1.25, 0.92, -1.15]} rotY={-0.3} />
+      {/* 茶色の紙の証拠袋（文字なし） */}
+      <mesh position={[0.75, 0.94, -0.85]} rotation={[0, 0.2, 0]}>
+        <boxGeometry args={[0.26, 0.03, 0.36]} />
+        <meshStandardMaterial color="#8c6c46" roughness={0.9} />
+      </mesh>
+      {/* 検査官：台に向かって少し前かがみになり、ネクタイに両手を下ろす */}
+      <Figure clip="Idle_Loop" position={[-0.05, 0, -0.38]} rotationY={Math.PI} glasses={false} build={LAB_2001} pose={BENCH_WORK} />
+    </Stage>
+  );
+};
+

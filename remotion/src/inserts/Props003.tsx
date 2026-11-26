@@ -19,6 +19,8 @@ export const COOPER_71: Build = { shoulder: 0.9, width: 1.08, jacket: "#232427",
 /** 背景の乗客・旅行者（色だけ替える。顔は描かない） */
 // 客室乗務員（女性、1971年の制服の輪郭：上着とスカート、白いブラウス、まとめ髪）。実在の航空会社の制服の色・記章はまねない
 export const ATTENDANT_71: Build = { shoulder: 0.8, width: 0.9, jacket: "#2f3a4e", trousers: "#5a4a40", shoes: "#141210", skin: "#16110e", hair: "#3b2a1e", suit: { shirt: "#c9c3b6" }, skirt: "#2f3a4e", bun: true };
+/** 2001年の FBI の研究所の検査官（白衣。白衣の下にシャツとネクタイ。顔なし。本人ではない一般の職員） */
+export const LAB_2001: Build = { shoulder: 0.86, width: 1.0, jacket: "#d9d8d2", trousers: "#2b2d32", shoes: "#151515", skin: "#16110e", hair: "#3a2e24", suit: { shirt: "#9fb0c2", tie: "#26304a" } };
 export const TRAVELER_A: Build = { shoulder: 0.88, width: 1.04, jacket: "#5a4a36", trousers: "#3b3a36", shoes: "#1a1512", skin: "#16110e", hair: "#3a2c20" };
 export const TRAVELER_B: Build = { shoulder: 0.84, width: 1.0, jacket: "#3e4a5a", trousers: "#2e3038", shoes: "#141414", skin: "#16110e", hair: "#5c4a36" };
 

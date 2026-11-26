@@ -716,6 +716,9 @@ _f("s030a")["visual"] = doc("fbi_2009_story", None, "FBIの記事（2009年3月1
 _f("s030a").pop("cut", None)
 _f("s030b")["visual"] = ins("airport_wait", "ticket", "航空会社のカウンターに置かれた航空券と紙幣（人物なし。社名・ロゴなし）")
 
+# 10:34「2001年、ネクタイからDNAの試料が採られました」：ネクタイの写真の2回目は不自然なので、試料を採る FBI の検査官のイメージ映像に（ユーザーの指示）
+_f("s062")["visual"] = ins("fbi_lab", "a", "2001年の FBI の研究所。白衣の検査官が台の上のネクタイに両手を下ろし、試料を採る（後ろ斜めから、顔なし）")
+
 
 OUT.write_text(json.dumps(S, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 print(len(S), "segments,", sum(len(s["read"]) for s in S), "read chars")
