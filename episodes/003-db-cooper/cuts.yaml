@@ -48,3 +48,10 @@
 # ---------- FBI の写真（fbi.gov。クラウドから取れないものは Commons の写しから） ----------
 - {name: fbi_money_1980, file: fbi/commons_money_1980.jpg}   # 1980年に見つかった紙幣（FBI の2007年の記事の写真）
 - {name: fbi_ticket, file: fbi/fbi_ticket_2016.jpg, crop: [0.06, 0.14, 0.94, 0.86]}   # 305便の航空券（灰色の台の余白を落とす）
+
+# ---------- FBI のページの見出し（Windows の Chrome で表示を拡大して画面を写したもの。2026-11-26） ----------
+- {name: fbi_2016_update, file: fbi/fbi_2016_update_header.png, crop: [0.0, 0.19, 1.0, 1.0]}   # FBIシアトル支局の発表（2016年7月12日）：日付・見出し・第1段落（右上の共有ボタンは入れない）
+- {name: fbi_2007_story, file: fbi/fbi_2007_story_header.png}   # FBIの記事「D.B. Cooper Redux」（2007年12月31日）：見出し・2016年の追記・日付・第1段落
+- {name: fbi_tie, file: fbi/fbi_tie.jpg}   # 機内に残されたネクタイ（FBI の写真。fbi.gov を Windows の Chrome で保存）
+- {name: fbi_map_2007, file: fbi/fbi_map_2007.jpg}   # 305便の飛行ルートを書き込んだ航空図（FBI 2007年の記事。900x203 しかない）
+- {name: fbi_parachute_bag, file: fbi/fbi_parachute_bag.jpg}   # パラシュートの袋（FBI の写真 parachute-bag.jpg。Windows の Chrome で保存した webp を jpg に）

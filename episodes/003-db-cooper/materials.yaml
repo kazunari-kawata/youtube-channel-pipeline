@@ -158,10 +158,10 @@ items:
     note: FBI の Exhibit Section が作った似顔絵（V77 p.249）。捜査資料として見せる。拡大して不気味に見せる演出や、ほかの人物の写真と並べる見せ方はしない（特定の人をほのめかすことになる）。どの版かと作成年をキャプションで確かめる
   - id: fbi_tie
     title: "残されたクリップ式のネクタイの写真（FBI公式ページ）"
-    file: fbi/tie.jpg
+    file: fbi/fbi_tie.jpg
     original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
     status: pd_federal
-    note: "fbi_famous_case の写真7点のうちの1枚。台本で使う id として分けた"
+    note: "fbi_famous_case の写真7点のうちの1枚。台本で使う id として分けた。2026-11-26：fbi.gov の画像（https://www.fbi.gov/image-repository/black-tie.jpg、1400x1123）をユーザーの Windows の Chrome で保存（クラウドとシェルからは 403）"
   - id: fbi_ticket
     title: "男が「ダン・クーパー」の名で買った305便の航空券（FBI の写真、2016年7月の公開）"
     file: fbi/fbi_ticket_2016.jpg
@@ -184,16 +184,16 @@ items:
     note: "同上"
   - id: fbi_parachute_bag
     title: "パラシュートの袋の写真（FBI公式ページ）"
-    file: fbi/parachute_bag.jpg
-    original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
+    file: fbi/fbi_parachute_bag.jpg
+    original: https://www.fbi.gov/history/cases-and-criminals/db-cooper-hijacking
     status: pd_federal
-    note: "同上"
+    note: "https://www.fbi.gov/image-repository/parachute-bag.jpg/@@images/image/high（1400x668）。FBIの説明は「クーパーに渡されたパラシュートの1つが入っていた布の袋」。2026-11-26 に Windows の Chrome で保存（webp で届いたので jpg に変換。元は fbi_parachute_bag.webp）"
   - id: fbi_map_2007
-    title: "FBIの記事（2007年12月31日）に載った捜索範囲の地図"
-    file: fbi/map_2007.jpg
+    title: "FBIの記事（2007年12月31日）に載った、305便の飛行ルートを書き込んだ航空図"
+    file: fbi/fbi_map_2007.jpg
     original: https://www.fbi.gov/news/stories/2007/december/dbcooper_123107
     status: pd_federal
-    note: "fbi_2007_story の中の地図。台本で使う id として分けた"
+    note: "fbi_2007_story の中の地図。台本で使う id として分けた。2026-11-26：FBI の旧サイトの「Map of Plane Route」（https://archives.fbi.gov/archives/news/stories/2007/december/image/map、900x203）を Windows の Chrome で保存。着地点の地図ではなく、航空図に305便の道筋を書き込んだもの"
   - id: usgs_swwa_1970s
     title: "USGSの航空写真（1970年代、ワシントン州南西部）"
     file: usgs/swwa_1970s.jpg
@@ -221,10 +221,10 @@ items:
     note: 台本 s054 の「目立たない男」の出典
   - id: fbi_2007_story
     title: FBI記事（2007年12月31日）。人物の特徴、パラシュートの技量の見方、着地点の見方、ネクタイのDNA、捜索範囲の地図
-    file: fbi/2007_story/
+    file: fbi/fbi_2007_story_header.png
     original: https://www.fbi.gov/news/stories/2007/december/dbcooper_123107
     status: pd_federal
-    note: 本文は事実確認に使う（FBI-2007）。地図（着地点を絞り込むために作ったもの）とネクタイ・紙幣の写真は手作業で保存。捜査官の見方（「パラシュートは開かなかったと思う」など）はFBIの見解として扱い、事実として言い切らない
+    note: 本文は事実確認に使う（FBI-2007）。地図（着地点を絞り込むために作ったもの）とネクタイ・紙幣の写真は手作業で保存。捜査官の見方（「パラシュートは開かなかったと思う」など）はFBIの見解として扱い、事実として言い切らない 2026-11-26：FBI の旧サイト（https://archives.fbi.gov/archives/news/stories/2007/december/dbcooper_123107）を Windows の Chrome で開き、表示を拡大して見出しの部分を写した。地図と写真は別の項目
   - id: fbi_ticket
     title: 「ダン・クーパー」名義の航空券の写真
     file: fbi/ticket.jpg
@@ -233,10 +233,10 @@ items:
     note: FBIのページに載っているが、同じ券の画像を「ワシントン州歴史協会の提供」とするサイトもある。撮影者（FBIか協会か）が分かるまで画面に出さない
   - id: fbi_2016_update
     title: FBIシアトル支局の発表（2016年7月12日）「捜査の人員を他に回す」
-    file: ""
+    file: fbi/fbi_2016_update_header.png
     original: https://www.fbi.gov/seattle/press-releases/2016/update-on-investigation-of-1971-hijacking-by-d.b.-cooper
     status: pd_federal
-    note: FBIの作成。画面には見出しの部分を出す（台本 s075）。要点はナレーションで言う（FBI-2016）
+    note: FBIの作成。画面には見出しの部分を出す（台本 s075）。要点はナレーションで言う（FBI-2016） 2026-11-26：fbi.gov はクラウドとシェルからは 403 なので、ユーザーの Windows の Chrome でページを開いて画面を写した（https://www.fbi.gov/contact-us/field-offices/seattle/news/press-releases/update-on-investigation-of-1971-hijacking-by-d.b.-cooper）
   - id: fbi_foia_index_2004
     title: FBIのFOIA索引ページ「D.B. Cooper」（2004年の保存版。事件の概要文）
     file: ""
