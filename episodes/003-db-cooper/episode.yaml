@@ -1,3 +1,4 @@
+series: profile   # シリーズ「犯罪者の紹介」（CLAUDE.md の「シリーズ」）
 # 003 D.B.クーパー事件の設定（config/channel.yaml を上書きしたいキーだけ書く）
 id: 003-db-cooper
 
