@@ -220,3 +220,174 @@ items:
     title: 映画『アルカトラズからの脱出』（1979年）の映像・スチール、テレビ番組の再現映像と実験映像
     status: unusable
     note: 権利者がいる。映画に触れるならナレーションだけ
+
+  # ---------- 2026-11-26 台本のために足した項目（ページはすべて画像で確認済み。timeline.md の「構成案と台本のために画像で確かめたページ」） ----------
+  - id: fbi_v06_p115
+    title: "FBIの聞き取りの記録（FD-302、聞き取り1962年6月14日）朝の点検にいた職員"
+    file: fbi/alcatr6.pdf#page=115
+    status: pd_federal
+    note: 画像で確認済み。7時20分「死人か人形か」、150番で頭が床に転がった、152番・138番も人形。右上の日付欄（5/19/62）は誤記なので切り出しに入れない。冒頭と第1章
+  - id: fbi_v10_p027
+    title: "FBIの聞き取りの記録（FD-302、聞き取り1962年8月27日）夜勤の職員の点検の説明"
+    file: fbi/alcatr10.pdf#page=27
+    status: pd_federal
+    note: 画像で確認済み。下の段落（17時半・20時・21時半・23時15分の点検）だけを切り出す。上の黒塗りの段落は入れない。6月11日の当番かは書かれていない
+  - id: fbi_v05_p003
+    title: "FBI支局長から長官への通信（1962年7月20日）看守の停職と「人形を数えた」"
+    file: fbi/alcatr5.pdf#page=3
+    status: pd_federal
+    note: 画像で確認済み。第1段落だけ（所長の話）。第2段落（記者）と第3段落（塗料置き場）は入れない
+  - id: fbi_v07_p044
+    title: "FBIの聞き取りの記録（4人目の受刑者）屋根に出た段落、最後に見た時刻、出発の見立て"
+    file: fbi/alcatr7.pdf#page=44
+    status: pd_federal
+    note: 画像で確認済み。第2段落（屋根）だけ。下の計画の細部・のぞき見の道具の段落は入れない。名前は黒塗りのまま
+  - id: fbi_v02_p037
+    title: "FBI報告（1962年6月19日）3ページ目：計画、訴追と令状、モリスの生年"
+    file: fbi/alcatr2.pdf#page=37
+    status: pd_federal
+    note: 画像で確認済み。台本で映すのはいちばん上の計画の段落だけ
+  - id: fbi_v05_p048
+    title: "FBI報告（1962年7月）「潮と流れ」"
+    file: fbi/alcatr5.pdf#page=48
+    status: pd_federal
+    note: 画像で確認済み。陸軍工兵隊の事務所の説明の2段落を切り出す。下の沿岸警備隊の表は入れない
+  - id: fbi_v07_p021
+    title: "FBIの聞き取りの記録（沿岸警備隊の艇の乗組員）櫂を拾った時刻と場所"
+    file: fbi/alcatr7.pdf#page=21
+    status: pd_federal
+    note: 画像で確認済み。地図の点の出典（台本では資料として映していない）
+  - id: fbi_v05_p043
+    title: "FBI報告（1962年7月18日）捜索の章：艇、ヘリ、空からの捜索、クロンカイトの浜"
+    file: fbi/alcatr5.pdf#page=43
+    status: pd_federal
+    note: 画像で確認済み。捜索の範囲の地図の出典
+  - id: fbi_v01_p078
+    title: "FBI本部のメモ（1962年6月15日）クロンカイト・ビーチの救命胴衣、「まだ結論できない」"
+    file: fbi/alcatr1.pdf#page=78
+    status: pd_federal
+    note: 画像で確認済み。胴衣の状態の段落と、最後の1文（支局長の言葉）を別々に切り出す。見つけた人の名前は黒塗りのまま
+  - id: fbi_v01_p089
+    title: "FBI本部の要約（1962年6月）泳ぎの達人が53分でエンジェル島へ"
+    file: fbi/alcatr1.pdf#page=89
+    status: pd_federal
+    note: 画像で確認済み。右上の要約の枠だけ。記者の名前の文は入れない
+  - id: fbi_v11_p112
+    title: "FBI報告：鑑識の結果（救命胴衣）"
+    file: fbi/alcatr11.pdf#page=112
+    status: pd_federal
+    note: 画像で確認済み。鑑識の段落だけ。下の段落（看守への金、岸で待つ車などの伝聞）は絶対に入れない
+  - id: fbi_v12_p091
+    title: "FBI報告：湾岸の盗難車を逃走手段の候補として調べた"
+    file: fbi/alcatr12.pdf#page=91
+    status: pd_federal
+    note: 画像で確認済み。ナレーションの出典（台本では資料として映していない）
+  - id: fbi_v13_p073
+    title: "FBI本部から支局へ（1964年7月13日）「おそらく湾で溺れた」、1年の保留"
+    file: fbi/alcatr13.pdf#page=73
+    status: pd_federal
+    note: 画像で確認済み。第2段落と下の注記
+  - id: fbi_v15_p041
+    title: "FBIサンフランシスコ支局の報告（1971年10月29日）「間違いなく死亡」「終結する」"
+    file: fbi/alcatr15.pdf#page=41
+    status: pd_federal
+    note: 画像で確認済み。第1段落だけ（上の黒塗りは入れない）。冒頭と第4章の2回（2回目はナレーションが前後の文を読む）
+  - id: fbi_v15_p042
+    title: "同じ報告の結び：手配書は有効のまま、確かな情報が出ればただちに再開"
+    file: fbi/alcatr15.pdf#page=42
+    status: pd_federal
+    note: 画像で確認済み。最後の段落だけ。親族の段落は入れない（家族の主張への反論として使わない）
+  - id: fbi_v15_p049
+    title: "FBI本部から支局へ（1971年11月12日）「手配書の出ている逃亡者だから保留に」"
+    file: fbi/alcatr15.pdf#page=49
+    status: pd_federal
+    note: 画像で確認済み。本文の2段落。第4章と結び（理由の1行）の2回
+  - id: fbi_v15_p059
+    title: "FBI支局から本部へ（1972年11月28日）保留に戻す"
+    file: fbi/alcatr15.pdf#page=59
+    status: pd_federal
+    note: 画像で確認済み。ナレーション「翌年の書類も、結びは同じ」の出典（映していない）
+  - id: fbi_v15_p087
+    title: "FBI本部から全支局へ（1980年1月8日）捜索の打ち切り、司法省の指示、連邦保安官局への移管"
+    file: fbi/alcatr15.pdf#page=87
+    status: pd_federal
+    note: 画像で確認済み。用紙の全体を見せてから DISCONTINUE からの4行に寄る
+  - id: usms_release_2012
+    title: "連邦保安官局の発表（2012年6月7日）「After 50 Years, the U.S. Marshals Remain Diligent in Hunt for Renowned Alcatraz Escapees」"
+    file: usms/release_2012_06_07.html
+    original: https://webarchive.library.unt.edu/web/20121006194401/http:/www.usmarshals.gov/news/chron/2012/060712a.htm
+    status: check
+    note: 連邦政府の発表文で著作権なし。ただし保存ページの本文はまだ開けておらず、検索結果の抜粋で「逮捕、死亡の確認、99歳まで追う」の文を見ただけ。原文を保存し、画面の写しを作ってから pd_federal にする。第5章の柱
+  - id: usms_profile_morris
+    title: 連邦保安官局のサイトのモリスの手配ページの写し（2026年11月26日に保存）
+    file: usms/profile_morris_2026-11-26.png
+    original: https://www.usmarshals.gov/what-we-do/fugitive-apprehension/profiled-fugitives/frank-lee-morris
+    status: pd_federal
+    note: 画面の写しを保存日つきで作る。身体の特徴の行は映さない。冒頭
+  - id: usms_profiles_list
+    title: 連邦保安官局のサイトのカリフォルニア北部地区の手配の一覧（3人）の写し（2026年11月26日に保存）
+    file: usms/profiles_list_2026-11-26.png
+    original: https://www.usmarshals.gov/what-we-do/fugitive-apprehension/profiled-fugitives/1906
+    status: pd_federal
+    note: 公開日にもう一度見て、載っていなければ台本を直す
+  - id: loc_habs_exterior
+    title: 議会図書館 HABS CA-1792-A のうち、閉鎖後の建物の外観（1986年）
+    file: loc/habs_ca1792a/exterior.jpg
+    original: https://www.loc.gov/item/ca1498
+    status: pd_federal
+    note: loc_habs から1枚選ぶ。「1986年撮影（議会図書館）」
+  - id: loc_habs_cellhouse
+    title: 議会図書館 HABS CA-1792-A のうち、房棟の内部（1986年）
+    file: loc/habs_ca1792a/cellhouse.jpg
+    original: https://www.loc.gov/item/ca1498
+    status: pd_federal
+    note: loc_habs から1枚選ぶ。「1986年撮影（議会図書館）」
+  # FBIの写真（fbi_dummy_head と fbi_evidence_photos を1枚ずつに分けた。台本で使う名前。公式ページから保存して、撮影者の表示を確かめる）
+  - id: fbi_dummy_head_side
+    title: 人形の頭（横から。FBI公式ページの写真）
+    file: fbi/dummy_head_side.jpg
+    original: https://www.fbi.gov/history/famous-cases/alcatraz-escape
+    status: pd_federal
+    note: 冒頭の1コマ目とサムネイル、第2章（塗りと髪）の2回。表示は「FBI提供」（撮影者の表示がないため「FBI撮影」とは書かない）
+  - id: fbi_dummy_head_bed
+    title: 房の寝台に置かれた人形の頭（FBI公式ページの写真）
+    file: fbi/dummy_head_bed.jpg
+    original: https://www.fbi.gov/history/famous-cases/alcatraz-escape
+    status: pd_federal
+    note: 第1章。台帳ではクラレンスの房の写真。台本は房の番号を画面に出さない。遺体に見えない寄り方にする
+  - id: fbi_ev_vent_grille
+    title: 房の奥の通気口と格子（FBI公式ページの写真）
+    file: fbi/evidence_set/vent_grille.jpg
+    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    status: pd_federal
+    note: 第1章。表示は「FBI提供」
+  - id: fbi_ev_roof_vent
+    title: 屋根の通気口のふた（FBI公式ページの写真）
+    file: fbi/evidence_set/roof_vent.jpg
+    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    status: pd_federal
+    note: 第1章
+  - id: fbi_ev_shore_aerial
+    title: 島の北東の岸の航空写真（FBI公式ページの写真）
+    file: fbi/evidence_set/shore_aerial.jpg
+    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    status: pd_federal
+    note: 第1章と第2章の終わり（ナレーションが北東の岸を指す）の2回
+  - id: fbi_ev_raft
+    title: いかだの一部（FBI公式ページの写真）
+    file: fbi/evidence_set/raft.jpg
+    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    status: pd_federal
+    note: 第3章（試していない）。作り方が分かる寄り方にしない
+  - id: fbi_ev_paddle
+    title: 手作りの櫂（FBI公式ページの写真）
+    file: fbi/evidence_set/paddle.jpg
+    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    status: pd_federal
+    note: 第3章
+  - id: fbi_ev_lifevest
+    title: 手作りの救命胴衣（FBI公式ページの写真）
+    file: fbi/evidence_set/lifevest.jpg
+    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    status: pd_federal
+    note: 第3章

@@ -1,0 +1,12 @@
+# 006 アルカトラズ脱獄（1962年）の設定（config/channel.yaml を上書きしたいキーだけ書く）
+id: 006-alcatraz
+# シリーズ（CLAUDE.md「シリーズ」）。仮に「犯罪者の紹介」。構成案でユーザーが決める
+series: profile
+
+bgm:
+  # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。
+  # 2026-11-26：台本の段階なので、002 用に記録済みの曲を仮で入れた。1960年代初めに合う曲をユーザーに選んでもらってから差し替える
+  tracks: [assets/bgm/aether.mp3, assets/bgm/red_shift.mp3]
+
+# 本人の姿（F-022）。FBI公式ページに載っている3人の顔写真を、最初の30秒以内に出す（台本では約8秒）
+person_photos: [fbi_mugshots]
