@@ -79,6 +79,7 @@ rules:
   insert/river_bank:   [{key: amb_river, at: 0.0}]
   insert/field_office: [{key: amb_office, at: 0.0}]
   insert/fbi_lab:      [{key: amb_room, at: 0.0}]   # 2001年の FBI の研究所（静かな室内。003 の DNA の試料の場面）
+  insert/exit_diagram: [{key: pin, at: 1.2}]   # 727 の模式図で、赤い部分が出るところに印の音（003）
 
 # 使わない音（台帳に足すときも、ファイル名・検索語に入っていたら香盤表が止める）
 forbidden:

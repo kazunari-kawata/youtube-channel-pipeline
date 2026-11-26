@@ -212,8 +212,8 @@ export const calendarTexture = () =>
 /* ---------- 旅客機（ボーイング727 の形。塗装・ロゴ・文字なし） ---------- */
 
 /** 長さ約46m を 1 とした縮尺ではなく、メートルで作る。原点は胴体の中心、機首は +x */
-export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; lights?: number; stairs?: boolean; cabin?: number; gear?: boolean }> = ({
-  position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, lights = 0.6, stairs = false, cabin = 0.3, gear = false,
+export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; lights?: number; stairs?: boolean; cabin?: number; gear?: boolean; stairsHl?: number }> = ({
+  position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, lights = 0.6, stairs = false, cabin = 0.3, gear = false, stairsHl = 0,
 }) => {
   const skin = useMemo(() => new THREE.MeshStandardMaterial({ color: "#aeb3b8", roughness: 0.45, metalness: 0.35 }), []);
   const dark = useMemo(() => new THREE.MeshStandardMaterial({ color: "#3b3f44", roughness: 0.6, metalness: 0.3 }), []);
@@ -306,8 +306,15 @@ export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; li
           <boxGeometry args={[4.2, 0.18, 0.9]} />
         </mesh>
       ) : (
-        <mesh position={[-20.0, -1.55, 0]} material={dark}>
-          <boxGeometry args={[3.0, 0.05, 0.9]} />
+        <mesh position={[-20.0, stairsHl > 0 ? -1.5 : -1.55, 0]} material={stairsHl > 0 ? undefined : dark}>
+          <boxGeometry args={stairsHl > 0 ? [3.4, 0.22, 1.2] : [3.0, 0.05, 0.9]} />
+          {/* stairsHl：図で示すときだけ赤くする（0〜1。にじみのしきい値より暗く） */}
+          {stairsHl > 0 ? (
+            <meshStandardMaterial
+              color={new THREE.Color("#3b3f44").lerp(new THREE.Color("#d23a2c"), stairsHl)}
+              emissive="#c42a1e" emissiveIntensity={0.55 * stairsHl} roughness={0.5}
+            />
+          ) : null}
         </mesh>
       )}
       {/* 主脚（地上のとき） */}

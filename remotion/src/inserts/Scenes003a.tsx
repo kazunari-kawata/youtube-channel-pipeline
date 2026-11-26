@@ -514,6 +514,8 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
     tray: [{ pos: [row18 - 0.05, 1.18, seatZ - 0.12], target: [row18 + 0.45, 0.75, seatZ], fov: 36 }, { pos: [row18 - 0.02, 1.14, seatZ - 0.1], target: [row18 + 0.45, 0.75, seatZ], fov: 34 }],
     // ask：通路に立つ客室乗務員が、席の男に尋ねる（2026-11-26 ユーザーの指示）。前の列の背の上から見下ろす
     ask: [{ pos: [row18 + 2.3, 1.78, -0.42], target: [row18 + 0.02, 1.0, 0.45], fov: 40 }, { pos: [row18 + 2.15, 1.76, -0.4], target: [row18 + 0.02, 1.0, 0.45], fov: 39 }],
+    // left：男が去ったあとの席（ネクタイ、灰皿の吸い殻8本、テーブルのバーボンのセブンアップ割り）を通路の上から（人物なし）
+    left: [{ pos: [row18 + 0.02, 1.05, 0.32], target: [row18 + 0.3, 0.6, seatZ + 0.1], fov: 50 }, { pos: [row18 + 0.02, 1.03, 0.36], target: [row18 + 0.3, 0.6, seatZ + 0.1], fov: 48 }],
     // empty：誰もいない座席の列を、後ろの戸の方へ
     empty: [{ pos: [5.5, 1.6, -0.2], target: [-8, 1.0, 0.2], fov: 38 }, { pos: [5.0, 1.6, -0.2], target: [-8, 1.0, 0.2], fov: 37 }],
   };
@@ -548,6 +550,17 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
           <boxGeometry args={[0.085, 0.004, 0.045]} />
           <meshStandardMaterial color="#2a2a2a" roughness={0.9} />
         </mesh>
+        {variant === "left" ? (
+          // 灰皿に残った吸い殻8本（火のついたたばこと煙はない）
+          <>
+            {Array.from({ length: 8 }, (_, k) => (
+              <mesh key={k} position={[-0.03 + (k % 4) * 0.02, 0.016 + Math.floor(k / 4) * 0.005, -0.012 + Math.floor(k / 4) * 0.02 + (k % 2) * 0.004]} rotation={[0, 0.5 * k, Math.PI / 2 - 0.15 * (k % 3)]}>
+                <cylinderGeometry args={[0.0035, 0.0035, 0.024, 8]} />
+                <meshStandardMaterial color={k % 3 === 0 ? "#c9a46a" : "#e6e0d2"} roughness={0.9} />
+              </mesh>
+            ))}
+          </>
+        ) : null}
         {variant === "ash" || variant === "ash2" ? (
           <>
             {/* 吸い殻と、ふちに置いた火のついたたばこ。火は暗めの橙（にじまない明るさ） */}
@@ -575,6 +588,40 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
           <cylinderGeometry args={[0.043, 0.048, 0.22, 12]} />
           <meshStandardMaterial color={COOPER_71.jacket} roughness={0.9} />
         </mesh>
+      ) : null}
+      {variant === "left" ? (
+        <>
+          {/* 座面に置いていった黒いクリップ式のネクタイ。頭上の読書灯をうっすら当てて、暗い座面から浮かせる */}
+          <TieShape position={[row18 + 0.03, 0.503, seatZ - 0.02]} rotY={0.9} />
+          <pointLight position={[row18 + 0.15, 1.5, seatZ - 0.05]} intensity={1.4} distance={2.2} color="#ffe6c4" />
+          {/* 前の席の背のテーブル：バーボンのセブンアップ割りのコップと、小さな酒の瓶、ソーダの缶（どれもラベル・文字なし） */}
+          <group position={[row18 + 0.42, 0.74, seatZ]}>
+            <mesh>
+              <boxGeometry args={[0.3, 0.02, 0.42]} />
+              <meshStandardMaterial color="#c9bfa8" roughness={0.6} />
+            </mesh>
+            <mesh position={[-0.05, 0.055, -0.05]}>
+              <cylinderGeometry args={[0.032, 0.026, 0.09, 20, 1, true]} />
+              <meshStandardMaterial color="#ebe7dc" roughness={0.4} transparent opacity={0.55} side={THREE.DoubleSide} />
+            </mesh>
+            <mesh position={[-0.05, 0.04, -0.05]}>
+              <cylinderGeometry args={[0.029, 0.026, 0.05, 20]} />
+              <meshStandardMaterial color="#b98a46" roughness={0.3} transparent opacity={0.8} />
+            </mesh>
+            <mesh position={[0.06, 0.05, -0.1]}>
+              <cylinderGeometry args={[0.016, 0.018, 0.08, 14]} />
+              <meshStandardMaterial color="#5a3216" roughness={0.3} transparent opacity={0.85} />
+            </mesh>
+            <mesh position={[0.06, 0.1, -0.1]}>
+              <cylinderGeometry args={[0.007, 0.007, 0.022, 10]} />
+              <meshStandardMaterial color="#2a2a2a" roughness={0.6} />
+            </mesh>
+            <mesh position={[0.04, 0.05, 0.08]}>
+              <cylinderGeometry args={[0.028, 0.028, 0.08, 18]} />
+              <meshStandardMaterial color="#c4c8cc" roughness={0.45} metalness={0.4} />
+            </mesh>
+          </group>
+        </>
       ) : null}
       {variant === "tray" ? (
         <group position={[row18 + 0.42, 0.74, seatZ]}>
@@ -785,6 +832,28 @@ export const InsertFieldOffice003: React.FC<SceneProps> = ({ variant = "a" }) =>
 };
 
 /* ---------- 2001年の FBI の研究所：ネクタイから DNA の試料を採る ---------- */
+
+/** 平らに置いたクリップ式の黒いネクタイ。結び目から剣先へ広がり、先がとがる */
+const TieShape: React.FC<{ position: V3; rotY?: number }> = ({ position, rotY = 0 }) => {
+  const shape = useMemo(() => {
+    const sh = new THREE.Shape();
+    sh.moveTo(-0.022, 0.24); sh.lineTo(0.022, 0.24); sh.lineTo(0.016, 0.2); sh.lineTo(0.036, -0.17);
+    sh.lineTo(0, -0.22); sh.lineTo(-0.036, -0.17); sh.lineTo(-0.016, 0.2); sh.closePath();
+    return sh;
+  }, []);
+  return (
+    <group position={position} rotation={[0, rotY, 0]}>
+      <mesh position={[0, 0.004, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <shapeGeometry args={[shape]} />
+        <meshStandardMaterial color="#17171b" roughness={0.42} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh position={[0, 0.01, -0.245]}>
+        <boxGeometry args={[0.04, 0.01, 0.03]} />
+        <meshStandardMaterial color="#3a3a3c" roughness={0.7} />
+      </mesh>
+    </group>
+  );
+};
 
 /** 台の上に平らに置いたクリップ式の黒いネクタイ（白い紙の上）。結び目から剣先へ広がり、先がとがる */
 const TieOnPaper: React.FC<{ position: V3; rotY?: number }> = ({ position, rotY = 0 }) => {

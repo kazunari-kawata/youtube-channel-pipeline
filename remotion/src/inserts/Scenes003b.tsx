@@ -4,13 +4,15 @@
  *   rain_window：雨の窓（夜の空港の灯り、駐機場の機体、近づく車の灯り）
  *   rain_forest：ワシントン州南西部のダグラスファーの森（夜の雨、霧の明け方、雨の上がった朝）
  *   river_bank：冬のコロンビア川の岸（砂と流木、川の流れ）
+ *   exit_diagram：727 の模式図。1972年の規則で「飛行中は開かない」作りになった、胴体の下側の後ろの階段を赤く示す
  * 飛び降りる姿や、落ちていく人は描かない（plan.md）。機体に航空会社の塗装・ロゴ・文字は入れない。
  * 動くものはゆっくり（雨は降る筋を描かず、窓の粒と霧と音で出す。速く落ちる細い線はチラつきになる）。
  */
 import React, { useMemo } from "react";
-import { Easing, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Easing, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
 import { Camera, CamKey, SceneProps, Stage } from "./Inserts";
+import { FONT } from "../lib/font";
 import { bokehTexture, CloudLayer, Driftwood, dropsTexture, Forest, Jet727, sandTexture } from "./Props003";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -390,6 +392,8 @@ export const InsertRainWindow003: React.FC<SceneProps> = ({ variant = "d" }) => 
             />
           ) : null}
           {variant === "c" ? <RunwayLights z={-80} x0={-120} x1={120} step={10} color="#7aa8ff" k={1.0} /> : null}
+          {/* c：滑走路の上に止まった 727（滑走路だと分かるように。動かさない） */}
+          {variant === "c" ? <Jet727 position={[12, 2.95, -88]} rotation={[0, 0.08, 0]} lights={0} cabin={0} gear /> : null}
           {variant === "d" || variant === "b" ? <RunwayLights z={-90} x0={-140} x1={140} step={9} color="#ffd9a0" k={1.0} /> : null}
           {day ? <directionalLight position={[-20, 40, 20]} intensity={0.9} color="#d8dee6" /> : null}
           {/* 駐機場の投光器（機体をうっすら照らす） */}
@@ -556,3 +560,34 @@ export const InsertRiverBank003: React.FC<SceneProps> = ({ variant = "a" }) => {
     </Stage>
   );
 };
+
+/* ---------- 5. 727 の模式図：飛行中は開かない出口（1972年の規則） ---------- */
+
+/**
+ * 灰色の背景に浮かべた 727 を、後ろの斜め下からゆっくり回り込んで見せ、胴体の下側の後ろの階段を赤く示す。
+ * 模式図なので右上に「模式図」、左下に赤い部分の説明を出す（文字は動かさない）。塗装・ロゴ・文字は入れない
+ */
+export const InsertExitDiagram003: React.FC<SceneProps> = () => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const t = frame / fps;
+  const hl = interpolate(t, [1.0, 2.2], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const from: CamKey = { pos: [-40, -9, -27], target: [-7, 2.2, 0], fov: 41 };
+  const to: CamKey = { pos: [-36, -8.5, -31], target: [-7, 2.2, 0], fov: 40 };
+  return (
+    <AbsoluteFill>
+      <Stage fog={0} exposure={1.05} bloom={0.3} bg="#1a1d22" hemi={["#dfe5ec", "#2b2b2e", 1.5]}>
+        <Camera from={from} to={to} />
+        <directionalLight position={[-20, -12, -30]} intensity={1.2} color="#e9eef4" />
+        <directionalLight position={[10, 30, 20]} intensity={1.0} color="#ffffff" />
+        <Jet727 position={[0, 0, 0]} lights={0} cabin={0} stairsHl={hl} />
+      </Stage>
+      <div style={{ position: "absolute", right: 56, top: 44, fontFamily: FONT, fontSize: 20, color: "#d9d4c8", letterSpacing: 2, opacity: 0.85 }}>模式図</div>
+      <div style={{ position: "absolute", left: 60, bottom: 66, display: "flex", alignItems: "center", gap: 14, opacity: hl, fontFamily: FONT, fontSize: 24, color: "#efe4d0", background: "rgba(13,14,18,0.72)", padding: "8px 16px" }}>
+        <div style={{ width: 22, height: 22, background: "#d23a2c" }} />
+        胴体の下側の後ろの階段（飛行中は開かない作りに）
+      </div>
+    </AbsoluteFill>
+  );
+};
+
