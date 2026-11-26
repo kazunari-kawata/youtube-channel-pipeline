@@ -1,0 +1,103 @@
+# 素材台帳：「この車は爆発します」クリスマスの朝の避難（第8回・ボディカメラのシリーズ。2020年12月25日、テネシー州ナッシュビル）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status の意味は episodes/002-dahmer/materials.yaml の冒頭と pipeline/fetch_materials.py の STATUS を参照
+#   pd_federal / pd_no_notice / pd_other / cc_by / fair_use / own → 使用可
+#   check → 要確認（画面に出さない） / reference → 参照のみ / unusable → 使用不可
+# 警察の映像の決まりは CLAUDE.md「警察の映像を使う回のルール」
+#
+# この回の注意
+# - シリーズは bodycam。主役はナッシュビル市警の警官1人のボディカメラ（約13分）。爆発より前の映像は約4分しかないので、
+#   その前後は資料・地図・イメージ映像で組む
+# - 捜査の結論は出ている（FBI、2021年3月15日）。実行者は現場で死亡し、ほかに亡くなった人はいない
+# - **テネシー州の市の機関の映像。フロリダと違い、権利の扱いがはっきりしない。** 使うにはユーザーのフェアユースの判断が要る（それまで check）
+# - **広告が制限される可能性が、候補の中で最も高い。** YouTube の基準で、生々しい爆発・爆破の映像や描写は広告なしの区分。
+#   ボディカメラでは爆発は画面の外で音だけ。爆発の瞬間が映る街頭カメラの映像を使うかは、ユーザーが決める
+# - FBI は「自分の命を終えるための意図的な行為」と結論した。自死の扱いになるので、方法を描写しない、タイトルとサムネイルで強調しない
+# - 爆発物の作り方・量・材料には触れない（CLAUDE.md「犯行の手順を描写しない」）
+# - FBI は動機の背景に「風変わりな陰謀論」を挙げたが、中身は発表文に書いていない。報道にある中身を広めない。政治の話にしない
+# - 映像には、店が流していた音楽と、車が流した警告の音声が入っている。車は曲も流していたと報じられている。
+#   曲が聞こえる区間は音を消すか差し替える（曲名は報道で食い違うので、映像で確かめる）。警告の音声は事件の中身なので使う
+# - 避難する住民・通行人は顔をぼかす。警官6人の名前は市警が公表している（綴りは市警の発表で確かめる）
+# - 2019年に市警へ通報があった件（防げたのか）は、市警の検証報告を一次資料で読んでから扱う
+# - 12月25日に合わせるなら、公開は12月20〜25日
+# - 台帳の状態は調査の初回（2026-11-26）。映像はまだ取得していない。取得はユーザーの許可をもらってから
+
+case: 2020 Nashville bombing（2020年12月25日 午前6時30分ごろ、テネシー州ナッシュビルの中心街 2nd Avenue North。実行者 Anthony Quinn Warner は死亡）
+series: bodycam
+checked_on: 2026-11-26
+
+items:
+  # ---------- 警察の映像（ナッシュビル市警＝テネシー州の市の機関） ----------
+  - id: mnpd_bwc_sipos
+    title: "ナッシュビル市警の公式 YouTube「Officer Sipos' Body Camera Footage, 12/25/2020」（12分52秒、2020年12月28日公開）"
+    file: ""
+    original: https://www.youtube.com/watch?v=lBgm62C0q-w
+    status: check
+    note: "2026-11-26 に vidIQ の動画情報で確認：チャンネルは「Metropolitan Nashville Police Department」（UCbQjhc6o-sKhDH2RsUJt7Bw）、公開は 2020-12-28 23:12 UTC、再生約58万回。映像は未視聴。報道では、開始1分57秒ごろに車が映り、警告の音声が最初の数分に入り、爆発は3分51秒ごろ（画面の外、音と煙）。そのあとは壊れた通りに戻って住民を避難させる場面。警官どうしの会話あり。ユーザーがフェアユースで使うと判断したら fair_use（日付を note に）。取得はユーザーの許可のあと"
+  - id: mnpd_street_camera
+    title: 市警が公開した街頭カメラの映像（車と爆発の瞬間）
+    file: ""
+    status: check
+    note: 市警が公開したと報じられている（CBS）。公式の公開先は未確認。爆発の瞬間が映るので、使うかどうかはユーザーが決める（広告の基準）
+  - id: mnpd_rv_image
+    title: 市警が公開した車の画像（12月25日未明、中心街を走る車）
+    file: ""
+    status: check
+    note: 市警が公開したと報じられている（AP）。もとは街頭カメラか民間のカメラか未確認
+  - id: mnpd_press_conf
+    title: 警官6人の会見（2020年12月27日、市警）
+    file: ""
+    status: check
+    note: 市警の公式の公開先を探す。警官本人の説明（到着したとき、車に気づいたとき）の一次資料。ニュース局の写しは使わない
+  # ---------- 連邦政府の文書 ----------
+  - id: fbi_release_2021
+    title: FBI の発表「FBI Releases Report on Nashville Bombing」（メンフィス支局、2021年3月15日、6ページ）
+    file: fbi/fbi_release_2021-03-15.pdf
+    url: https://www.atf.gov/file/154066/download
+    original: https://www.fbi.gov/contact-us/field-offices/memphis/news/press-releases/fbi-releases-report-on-nashville-bombing
+    status: pd_federal
+    note: "2026-11-26 に ATF のサイトの写しで中身を確認（fbi.gov はクラウドから開けない）。爆発は2020年12月25日午前6時30分ごろ（中部時間）、車に積んだ手製の爆発物。Warner が単独で作り爆発させた。テロとは関係しない。自分の命を終えるための意図的な行為。背景は被害妄想、風変わりな陰謀論、支えを失ったこと、人間関係の悪化。場所と時刻は、影響が大きく、けが人が出にくいように選んだとFBIは見ている。現場から3,000ポンドを超える証拠、2,500件を超える情報、250件を超える聞き取り。FBI は277人。市警は爆発のとき警官6人が現場にいた、12月25〜29日に500人以上が対応。州捜査局がDNAで身元を確認。「本当の理由を知るのは本人だけ」とも書いている。けが人の数と建物の被害は書いていない"
+  # ---------- 市の文書（未入手） ----------
+  - id: mnpd_review_2019
+    title: 2019年8月の通報への対応についての市警の検証報告
+    file: ""
+    status: check
+    note: 報道では、2019年8月に知人の女性から「車の中で爆発物を作っている」という通報があり、警官が自宅を訪ねたが、令状を取る根拠がなく捜索できなかった。市警と市議会がそれぞれ検証したと報じられている。報告書の所在は未確認
+  # ---------- 自作 ----------
+  - id: own_maps
+    title: 自作の地図（実データ：Natural Earth、Copernicus DEM、米農務省の航空写真 NAIP）。テネシー州の中のナッシュビル、中心街の 2nd Avenue North
+    file: ""
+    status: own
+    note: maps.yaml で作る。通りの縮尺の航空写真は NAIP（連邦政府、著作権なし）を fetch_materials の naip で取る。爆発の前の年の版を使い、撮影年を画面に出す
+  # ---------- 使わない ----------
+  - id: private_cctv
+    title: 近くの店の防犯カメラの映像（爆風が店に入る瞬間）
+    file: ""
+    status: unusable
+    note: 民間の店の映像。報道各社が店の提供として流した。権利者は店。使わない
+  # ---------- 参照のみ ----------
+  - id: ref_wtvf_2020
+    title: WTVF（NewsChannel 5、2020年12月28日）ボディカメラ映像の公開
+    file: ""
+    original: https://www.newschannel5.com/news/bodycam-video-shows-effort-to-rescue-people-ahead-of-bombing
+    status: reference
+    note: 警官は支給されて数日のカメラを着けていた。車が映るのは1分57秒ごろ、爆発は3分51秒ごろ。6〜7家族に声をかけた
+  - id: ref_cbs_2020
+    title: CBS News（2020年12月29日）映像の中の会話、車の警告の文言
+    file: ""
+    original: https://www.cbsnews.com/news/nashville-bombing-bodycam-footage-released-police
+    status: reference
+    note: 警官どうしの会話と警告の文言。台本に引用するなら、映像そのものを聞いて確かめる
+  - id: ref_policemag_2020
+    title: Police Magazine（2020年12月29日）
+    file: ""
+    original: https://www.policemag.com/patrol/news/15311124/nashville-police-release-video-of-operations-before-after-christmas-bombing
+    status: reference
+    note: 午前6時25分、店の音楽と車の警告が混ざって聞こえる、発砲の通報で出動、という記述
+  - id: ref_ap_2021
+    title: AP通信（2021年3月15日）FBIの結論
+    file: ""
+    original: https://komonews.com/news/nation-world/fbi-nashville-bomber-driven-by-conspiracies-paranoia
+    status: reference
+    note: FBIの発表の報道。市警と市議会の検証が続いているという記述

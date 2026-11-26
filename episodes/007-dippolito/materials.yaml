@@ -1,0 +1,138 @@
+# 素材台帳：夫の殺害を頼んだ相手は警官だった（第7回・ボディカメラのシリーズ。2009年8月、フロリダ州ボイントンビーチ、ダリア・ディポリト事件）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status の意味は episodes/002-dahmer/materials.yaml の冒頭と pipeline/fetch_materials.py の STATUS を参照
+#   pd_federal / pd_no_notice / pd_other / cc_by / fair_use / own → 使用可
+#   check → 要確認（画面に出さない） / reference → 参照のみ / unusable → 使用不可
+# 警察の映像の決まりは CLAUDE.md「警察の映像を使う回のルール」
+#
+# この回の注意
+# - シリーズは bodycam。体に付けるボディカメラの映像はない（2009年）。使うのは警察の隠しカメラ（車内）、警察の広報が撮った偽の現場、取調室の映像
+# - 誰も亡くなっていない。有罪は確定（3回目の裁判で有罪、懲役16年、州の控訴裁判所が支持）。連邦の人身保護の申し立ての結末は一次資料で確かめる
+# - 被害者は夫（存命）。映像に映る所は顔をぼかす。夫の過去（報道にある前歴）は、事件の説明に要る範囲だけ
+# - 本人の職歴の一部を売り文句にしない。焦点は、通報から3日間の捜査、偽の現場という手法、3回の裁判で争われた点（番組の撮影と捜査の関係、おとり捜査）
+# - 弁護側の主張（リアリティ番組のための演技だった、警察が違法に仕向けた）と、裁判所の判断を分けて言う
+# - 本人は自宅拘禁の間に子どもを産んでいる。子どもの名前・姿は出さない
+# - 情報を持ち込んだ知人の名前は、必要な場面だけ
+# - テレビ番組 COPS の撮影班が撮った映像は、警察の映像ではない（制作会社の著作物）。使わない
+# - 依頼の金額は報道で食い違う（銃の代金として1,200ドル、3,000ドル、7,000ドル）。宣誓供述書と判決文で確かめるまで、数字を台本・タイトルに入れない
+# - 英語では2026年10〜11月に、この事件の動画が小さなチャンネルから多数出ている（YouTube の検索で見た15本のうち10本がこの2か月。
+#   その10本の再生は81〜3,427回で、伸びていない。2025年12月の1本は約8.2万回）。
+#   どれも「隠しカメラ→偽の現場→取調室→3回の裁判」の順。同じ切り口の焼き直しにしない（問いは構成案でユーザーが決める）
+# - 台帳の状態は調査の初回（2026-11-26）。映像はまだ1本も取得していない。取得はユーザーの許可をもらってから
+
+case: State of Florida v. Dalia Dippolito（2009年8月5日逮捕、フロリダ州パームビーチ郡ボイントンビーチ。殺人の依頼＝solicitation to commit first-degree murder）
+series: bodycam
+checked_on: 2026-11-26
+
+items:
+  # ---------- 警察の映像（ボイントンビーチ市警＝フロリダ州の市の機関） ----------
+  - id: bbpd_staged_scene
+    title: "ボイントンビーチ市警の公式 YouTube「Boynton Beach Police arrest woman in murder for hire plot」（1分19秒、2009年8月5日公開）"
+    file: ""
+    original: https://www.youtube.com/watch?v=cFhnSej1fQY
+    status: check
+    note: "2026-11-26 に vidIQ の動画情報で確認：チャンネルは「Boynton Beach Police」（UCl9PV8bQ5Qx0COOxmygwx5w）、公開は 2009-08-05 15:50 UTC（逮捕の当日）、再生約54.3万回。概要欄は市警の文で、夫は死んだと告げたこと、依頼の相手が潜入の警官だったこと、殺人の依頼の疑いで立件することが書いてある。映像は未視聴。市警の広報が撮ったものと報じられているが、COPS の撮影班の映像が混じっていないかを見て確かめてから pd_other にする（フロリダの公的記録。Microdecisions v. Skinner、2004年）。取得はユーザーの許可のあと"
+  - id: bbpd_uc_car
+    title: 潜入の警官の車内の隠しカメラ（2009年8月3日、薬局の駐車場。約23分）
+    file: ""
+    status: check
+    note: "原本は未入手。公開記録の請求で取る（records_request.md）。写しはパームビーチ・ポスト紙の YouTube（https://www.youtube.com/watch?v=0t-I6jhQZWE 、23分18秒、2018年公開）にあるが、新聞社の載せた写しは使わない（中身の確認にだけ使う）。「5,000パーセント確かだ」という発言はこの映像（報道）。日付は報道と他の資料からで、宣誓供述書で確かめる"
+  - id: bbpd_informant_car
+    title: 知人（情報提供者）の車内の隠しカメラ（2009年8月1日ごろ。殺し屋を紹介する相談）
+    file: ""
+    status: check
+    note: 原本は未入手。公開記録の請求で取る。警察が知人の車にカメラを付けて録ったと報じられている（ABC）。日付は宣誓供述書で確かめる
+  - id: bbpd_interview_dalia
+    title: 取調室の録画（2009年8月5日、本人。約31分）
+    file: ""
+    status: check
+    note: "原本は未入手。公開記録の請求で取る。写しは Law&Crime Network の YouTube（https://www.youtube.com/watch?v=CGZXTuUrcXQ 、30分53秒）などにあるが使わない。流れ（写しの概要欄による。原本で確かめる）：権利の告知 → COPS の撮影の同意書に署名 → 「殺し屋」役の警官が連れて来られる → 逮捕を告げられる → 夫が現れる。夫が映る所は顔をぼかす。同意書の場面は、3回の裁判で争われた点なので使いどころになる"
+  - id: bbpd_interview_michael
+    title: 取調室の録画（2009年8月5日、夫。約20分）
+    file: ""
+    status: reference
+    note: 被害者の聞き取り。画面には出さない（CLAUDE.md「被害者の写真は使わない」）。事実確認にだけ使う
+  - id: cops_episode
+    title: テレビ番組 COPS の回（偽の現場の場面を含む）
+    file: ""
+    status: unusable
+    note: 制作会社の著作物。警察の映像ではない。使わない
+  # ---------- 警察・裁判所の文書 ----------
+  - id: bbpd_press_release
+    title: ボイントンビーチ市警の発表文（2009年8月5日）
+    file: ""
+    original: http://www.bbpd.org/Press%20Releases/9038937Dippolito.pdf
+    status: check
+    note: 市警の公式 YouTube の概要欄に書いてある場所。古いURLなので残っているかは未確認。なければ公開記録の請求に入れる。ファイル名の 9038937 は市警の事件番号とみられる（請求のときの手がかり。番号そのものは未確認）
+  - id: pc_affidavit
+    title: 逮捕の宣誓供述書（probable cause affidavit、2009年8月）
+    file: ""
+    status: check
+    note: 公開記録の請求で取る。金額（銃の代金1,200ドル、3,000ドル）、会った日付と場所、発言の引用の一次資料。AP通信の2009年8月5日の記事がこの文書を引用している。住所と電話番号は黒塗り
+  - id: dca_2014
+    title: "フロリダ州第4地区控訴裁判所 Dippolito v. State, 143 So. 3d 1080（2014年7月30日、事件番号 4D11-2628。1回目の有罪を取り消し）"
+    file: ""
+    original: https://storage.courtlistener.com/pdf/2014/07/30/dalia_dippolito_v._state.pdf
+    status: pd_other
+    note: 裁判官の意見は著作権の対象外。中身は未確認（この調査では開けなかった）。取り消しの理由を確かめる。画面に出す紙面は裁判所の公式サイトの版にする
+  - id: dca_2019
+    title: "フロリダ州第4地区控訴裁判所 Dippolito v. State（事件番号 4D17-2486。3回目の裁判の有罪と懲役16年を支持）"
+    file: ""
+    original: https://storage.courtlistener.com/pdf/2019/06/05/dalia_a._dippolito_v._state_of_florida.pdf
+    status: pd_other
+    note: 裁判官の意見は著作権の対象外。中身は未確認。報道では2019年3月13日に支持、保存先のファイルの日付は2019年6月5日（差し替えの意見かどうかを確かめる）。争点は、おとり捜査の違法性と証拠の扱い。捜査の経過と金額が書いてあるはず
+  - id: sdfla_2025
+    title: "連邦地裁（フロリダ州南部地区）Dippolito v. Fla. Dep't of Corr., 9:23-cv-81027 の報告と勧告（2025年4月22日）・決定（2025年5月7日）"
+    file: ""
+    original: https://www.govinfo.gov/content/pkg/USCOURTS-flsd-9_23-cv-81027/pdf/USCOURTS-flsd-9_23-cv-81027-0.pdf
+    status: pd_federal
+    note: "連邦裁判所の文書。中身は未確認（他のチャンネルの概要欄にあった場所。決定は同じ場所の -1.pdf）。人身保護の申し立てが退けられたという記載を確かめる。手続きの全経過（各裁判の日付、州最高裁、連邦最高裁）がまとめてあるはず"
+  - id: fdc_record
+    title: フロリダ州矯正局の受刑者の記録（釈放の予定日）
+    file: ""
+    status: check
+    note: 釈放の予定日が 2032年8月24日（2019年の報道）と 2031年2月21日（別の記載）で食い違う。矯正局の検索ページで確かめる。画面に出すなら日付の行だけ
+  # ---------- 同じ型の予備（別の事件。使うなら別の回にする） ----------
+  - id: pcso_2014
+    title: "ポーク郡保安官事務所の公式 YouTube（2014年12月22日公開）：車内 6分29秒、取調室 6分39秒と7分44秒、保安官の会見 17分10秒"
+    file: ""
+    original: https://www.youtube.com/watch?v=elcLsAF9mIs
+    status: reference
+    note: "2026-11-26 に vidIQ の動画情報で確認：チャンネルは「Polk Sheriff」（UC9A_wj7G-zjcyELg32NVntw）。取調室は eFMdxL3kV60 と 0QONXVSeOFE、会見は __DJBiII1MM（概要欄に保安官事務所の発表文）。2014年12月、レイクランドの女性が潜入の刑事に夫の殺害を頼んだ事件。保安官事務所が自分で公開しているので入手は早い。裁判の結果は一次資料で未確認。この回では使わない"
+  # ---------- 自作 ----------
+  - id: own_maps
+    title: 自作の地図（実データ：Natural Earth、Copernicus DEM）。フロリダ州の中のボイントンビーチの位置
+    file: ""
+    status: own
+    note: maps.yaml で作る。自宅は地域が分かる縮尺まで。駐車場やジムの場所は、宣誓供述書で確かめた範囲だけを市の縮尺で
+  # ---------- 参照のみ ----------
+  - id: ref_ap_2009
+    title: AP通信（2009年8月5日）逮捕の記事
+    file: ""
+    status: reference
+    note: 宣誓供述書の引用（妻26歳、夫38歳、結婚して6か月、銃の代金1,200ドル、3,000ドルと家の鍵、月曜の午後の電話、薬局の駐車場、発言）と、市警の広報担当の説明。事実確認だけ
+  - id: ref_ap_2017
+    title: AP通信（2017年7月21日）量刑の記事
+    file: ""
+    original: https://abc13.com/post/former-escort-gets-16-years-in-murder-for-hire-plot/2246587/
+    status: reference
+    note: 懲役16年、23分の映像、7,000ドルという記載。金額は宣誓供述書と食い違うので、どの金額が何のためかを確かめる
+  - id: ref_local10_2019
+    title: WPLG Local 10（2019年3月14日）控訴裁判所が有罪を支持
+    file: ""
+    original: https://local10.com/news/2019/03/14/appellate-court-upholds-dalia-dippolito-conviction
+    status: reference
+    note: 3回目の裁判の有罪は2017年6月16日
+  - id: ref_dbr_2019
+    title: Daily Business Review（2019年9月4日）州最高裁が審理しないと決定
+    file: ""
+    original: https://law.com/dailybusinessreview/2019/09/04/no-appeal-for-woman-caught-hiring-fake-hit-man-on-tv-florida-justices-rule
+    status: reference
+    note: 1回目は有罪で懲役20年、2016年の2回目は評決に至らず。釈放の予定日 2032年8月24日。この記事は取り消しを2011年と書いているが、控訴裁判所の意見は2014年（dca_2014）。年は判決文で確かめる
+  - id: ref_local10_2016
+    title: WPLG Local 10（2016年12月9日）市警の広報担当の証言
+    file: ""
+    original: https://local10.com/news/2016/12/09/attorney-for-dalia-dippolito-calls-boynton-beach-police-predatory
+    status: reference
+    note: 広報担当が、撮った当日に市警の YouTube へ映像を上げたと証言した。bbpd_staged_scene が市警の撮影であることの裏づけ
