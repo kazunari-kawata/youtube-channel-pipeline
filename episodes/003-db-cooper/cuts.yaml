@@ -55,3 +55,4 @@
 - {name: fbi_tie, file: fbi/fbi_tie.jpg}   # 機内に残されたネクタイ（FBI の写真。fbi.gov を Windows の Chrome で保存）
 - {name: fbi_map_2007, file: fbi/fbi_map_2007.jpg}   # 305便の飛行ルートを書き込んだ航空図（FBI 2007年の記事。900x203 しかない）
 - {name: fbi_parachute_bag, file: fbi/fbi_parachute_bag.jpg}   # パラシュートの袋（FBI の写真 parachute-bag.jpg。Windows の Chrome で保存した webp を jpg に）
+- {name: fbi_parachute, file: fbi/fbi_parachute.jpg}   # 機内に残されたパラシュート（FBI の写真 parachute.jpg。Windows の Chrome に原寸 1400x778 で表示して画面を写した）

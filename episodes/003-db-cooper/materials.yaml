@@ -178,10 +178,10 @@ items:
     note: "fbi.gov はクラウドから開けないので、FBI の2007年12月の記事の写真（tiemoney122607.jpg の紙幣の側）を写した Wikimedia Commons のファイル（Money stolen by D. B. Cooper.jpg、1400x921）を使う。Commons の出典欄が fbi.gov の写真を指していることを確かめる。画面の出典は「FBI」"
   - id: fbi_parachute
     title: "機内に残されたパラシュートの写真（FBI公式ページ）"
-    file: fbi/parachute.jpg
-    original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
+    file: fbi/fbi_parachute.jpg
+    original: https://www.fbi.gov/history/cases-and-criminals/db-cooper-hijacking
     status: pd_federal
-    note: "同上"
+    note: "https://www.fbi.gov/image-repository/parachute.jpg/@@images/image/high（1400x778）。FBIの説明は「クーパーが残していったパラシュートの1つ」。2026-11-26 に Windows の Chrome に原寸で表示して画面を写した（保存の画面が進まなかったため。元の画面写しは fbi_parachute_screen.png）"
   - id: fbi_parachute_bag
     title: "パラシュートの袋の写真（FBI公式ページ）"
     file: fbi/fbi_parachute_bag.jpg
