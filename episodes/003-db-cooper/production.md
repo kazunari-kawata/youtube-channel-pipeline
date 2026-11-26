@@ -43,7 +43,7 @@
   - [x] river_bank（a、b、c、d）
   - [x] field_office（a、b、c、d、e、f、g、h、i、j）
 - [ ] 7. 人物：COOPER_71 の体つきはユーザーOK（2026-11-26）。スーツの指摘（F-036）でシャツ・ネクタイ・襟の折り返しを足し、客室乗務員 ATTENDANT_71 を作った。
-  確認用の角度は airport_walk の fig0・fig90・fig180・fig270・figc（クーパー）、afig0・afig90・afig180（乗務員）。**スーツと乗務員の静止画のOK待ち**
+  確認用の角度は airport_walk の fig0・fig90・fig180・fig270・figc（クーパー）、afig0・afig90・afig180（乗務員）。スーツと乗務員の静止画はユーザーのOK（2026-11-26）
 - [x] 8. 登録（registry.ts、episodes/index.ts）と `tsc --noEmit`
 - [x] 9. 効果音：003 の環境音8本を選んで取得（耳で確認待ち）。声なしの仮編集でも効果音とBGMが鳴る準備（`episodes/003-db-cooper/stage_draft.py`。BGM は 002 の曲を仮で）
 - [x] 10. 確認：イメージ映像44角度すべてを、本編の中の位置で2.5秒ずつ書き出してチラつきの検査（QAと同じ数え方。
@@ -91,3 +91,6 @@
   読み間違いチェック（Whisper small、クラウド）：平均一致率 0.981、要確認0区間。本番の尺で香盤表の注意11件 → 画面の切り替えだけで0件に（声は作り直していない）。
   1区間で2回画面を替えられるように、`cut` をリストでも書けるようにした（shotlist.py、script_md.py、check_video.py、ep003）。新しい角度 plane_clouds i（後ろの階段を下ろして飛ぶ機体）。
   声ができたので `stage_draft.py` は使わない（見積もりで timeline.json を上書きしないよう止める）。以後は `python pipeline/stage.py 003-db-cooper --draft`
+- 2026-11-26 17:26 の指摘：0:48・8:00 の夜の雨の窓を事務所（field_office k）と森の床の表示の切れ端（forest_floor）に（F-052）、3:18 座席への食い込み（F-053）、
+  3:31 機内の窓（F-054）、7:19 FBIの範囲を地図に面で（F-055）、s073 の読み「ひらけなかった」でまとまり10だけ作り直し（488字、884.1秒。F-056）
+- 2026-11-26 23:14：ユーザーが読みの4か所、研究所の人物（LAB_2001）とスーツ・乗務員の静止画、書き出しをOK。Windows で本番の準備（stage.py、--draft なし）
