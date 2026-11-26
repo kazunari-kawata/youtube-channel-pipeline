@@ -408,7 +408,12 @@ const makeClothes = (body: THREE.SkinnedMesh, build: Build) => {
       [bi("DEF-hips"), bi(`DEF-thigh.${side}`), bi(`DEF-shin.${side}`), bi(`DEF-shin.${side}`)],
       [0, 0.06, 0.05, 0],
       F,
-      (_d, p) => { const [r] = lerpTable(TROUSER_LEG, p.y); const k = build.skirt ? 0.72 : 1; return [r * W * 0.95 * k, r * W * k]; },
+      (_d, p) => {
+        const [r] = lerpTable(TROUSER_LEG, p.y);
+        // スカートのときは脚を細く。スカートに隠れる上の方（膝より上）はさらに細くして、脚を開いても腰の横から突き抜けないように
+        const k = build.skirt ? THREE.MathUtils.lerp(0.72, 0.3, THREE.MathUtils.smoothstep(p.y, 0.6, 0.7)) : 1;
+        return [r * W * 0.95 * k, r * W * k];
+      },
     );
     out.push(cloth(tubeGeometry(leg), build.trousers, body));
 
