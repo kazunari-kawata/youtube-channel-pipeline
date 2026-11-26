@@ -102,6 +102,12 @@ items:
     original: https://vault.fbi.gov/D-B-Cooper%20
     status: pd_federal
     note: "FBIの作成（1972年2月16日のシアトルの報告を引いている）。ボーイングの試験飛行の数字（125ノット、フラップ25度）は別の話なので映さない"
+  - id: fbi_v95_p257
+    title: "FBIシアトル支局のまとめ（SE 164-81）Part 95 p.257：HABITS（酒とたばこ、吸い殻8本）と CLOTHES（席18Eの黒いクリップ式のネクタイ、J.C.ペニーの品、約1ドル50セントの型、ウェイターやバーテンダーがよく使う品）"
+    file: fbi/vault_p95_p257.png
+    original: https://vault.fbi.gov/D-B-Cooper%20
+    status: pd_federal
+    note: "FBIの作成。2026-11-26 に画像で確認。画面には CLOTHES の段落だけを切り出す（次の行の乗務員の名前は黒塗りだが、その行も入れない）。同じ文は Part 60 p.293・p.301、Part 78 p.239 にもある"
   - id: fbi_v24_p307
     title: "FBIのテレタイプ Part 24 p.307：1万フィートを超えず、フラップ15度、車輪を出し、後ろの階段も下ろす指示。最後は階段を上げることを受け入れた"
     file: fbi/vault_p24_p307.png

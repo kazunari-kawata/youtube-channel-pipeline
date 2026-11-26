@@ -19,6 +19,7 @@
 - {name: fbi_v10_p448, file: fbi/vault_p10_p448.png, crop: [0.1, 0.165, 0.9, 0.305]}   # 子どものようなふるまい、おつり
 - {name: fbi_v95_p293, file: fbi/vault_p95_p293.png, crop: [0.1, 0.4245, 0.9, 0.594]}   # 男が求めた飛び方（捜査官の名前の行は入れない）
 - {name: fbi_v95_p293__reply, file: fbi/vault_p95_p293.png, crop: [0.1, 0.592, 0.96, 0.677]}   # 階段についての返事
+- {name: fbi_v95_p257, file: fbi/vault_p95_p257.png, crop: [0.1, 0.55, 0.92, 0.773]}   # CLOTHES の段落：席18Eのネクタイ、J.C.ペニーの品、約1ドル50セント、ウェイターやバーテンダーがよく使う品（乗務員の名前の黒塗りの行は入れない）
 - {name: fbi_v76_p78, file: fbi/vault_p76_p78.png, crop: [0.1, 0.5935, 0.93, 0.746]}   # 8時5分の最後のやりとり、8時11分
 - {name: fbi_v76_p78__items, file: fbi/vault_p76_p78.png, crop: [0.1, 0.748, 0.93, 0.877]}   # リノで機内に残っていたパラシュート
 - {name: fbi_v10_reno_teletype, file: fbi/vault_p10_reno.png, crop: [0.07, 0.306, 0.93, 0.508]}   # 午後11時1分にリノ着

@@ -44,6 +44,7 @@ const META: Record<string, DocMeta> = {
   fbi_v76_p78: { title: "FBIシアトル支局の事件のまとめ（SE 164-81）", source: FBI },
   fbi_v10_p448: { title: "FBIの聞き取りの記録（客室乗務員）", source: FBI },
   fbi_v95_p293: { title: "FBIの報告：305便の飛び方", source: FBI },
+  fbi_v95_p257: { title: "FBIシアトル支局のまとめ：服装", source: FBI },
   fbi_v10_reno_teletype: { title: "FBIのテレタイプ（1971年11月25日）", source: FBI },
   fbi_v43_decal_teletype: { title: "FBIシアトル支局のテレタイプ（1978年11月）", source: FBI },
   fbi_v77_description: { title: "FBIの事件の概要と人相書き", source: FBI },
