@@ -279,6 +279,11 @@ def main():
         # 遺族の言葉のように、途中で絵を替えないと決めたカードは visual.keep に理由を書く
         if sh["v"]["kind"] == "card" and sh["dur"] > card_max and not str(sh["v"].get("keep", "")).strip():
             warn.append(f"{sh['id']}：文字カードが {sh['dur']}秒（約4秒まで。{card_max:g}秒を超えたら区間の途中で cut して資料・地図・イメージ映像に替える。F-023）")
+    # 資料（日本語の説明つき）は、読み切れる長さだけ出す（F-044：003 で服装の段落が約5秒、直前のネクタイの写真が約11秒と偏っていた）
+    doc_min = cfg.get("shots", {}).get("doc_min_sec", 5.0)
+    for sh in shots:
+        if sh["v"]["kind"] == "doc" and sh["dur"] < doc_min:  # 資料にはどれも説明が付く（F-020。回の定義の JA も）
+            warn.append(f"{sh['id']}：説明つきの資料が {sh['dur']}秒しか出ない（{doc_min:g}秒より短いと読み切れない。前後の絵と長さをそろえる。F-044）")
     # 絵が短い間隔で続けて替わると、せわしない（F-034：文字カードを約4秒で切ったあと、3秒台のイメージ映像とカードを交互に続けた）。
     # 続くカードは1枚にまとめるか、イメージ映像を区間をまたいで長めに出す（次の区間は same）
     run_n, run_sec = cfg.get("shots", {}).get("busy_run", 5), cfg.get("shots", {}).get("busy_sec", 5.0)
