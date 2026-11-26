@@ -63,6 +63,7 @@ const META: Record<string, DocMeta> = {
   fbi_parachute_bag: { title: "パラシュートの袋", source: FBI_WEB },
   fbi_map_2007: { title: "305便の飛行ルートの航空図（2007年公開）", source: FBI_WEB },
   fbi_2007_story: { title: "FBIの記事（2007年12月31日）", source: FBI_WEB },
+  fbi_2009_story: { title: "FBIの記事（2009年3月17日）", source: FBI_WEB },
   fbi_2016_update: { title: "FBIシアトル支局の発表（2016年7月12日）", source: FBI_WEB },
   faa_rule_1972: { title: "連邦航空局の規則改正 25-34・121-99（1972年）", source: "出典：米連邦官報（1972年11月30日）" },
   doc_pdx_airport: { title: "1970年代のポートランド国際空港（事件当日の写真ではない）", source: `${NARA}（DOCUMERICA）` },

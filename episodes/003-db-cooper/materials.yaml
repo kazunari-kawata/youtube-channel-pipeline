@@ -264,8 +264,10 @@ items:
   - id: fbi_2009_story
     title: "FBI記事（2009年3月17日）「In Search of D.B. Cooper: New Developments in the Unsolved Case」。ダン・クーパーという名前の、フランス語の漫画の主人公"
     url: https://www.fbi.gov/news/stories/2009/march/in-search-of-d.b.-cooper/dbcooper_031709
-    status: reference
-    note: "2026-11-25、ページ本文は取得に失敗。検索結果の抜粋で「事件のころ人気だったフランス語の漫画のシリーズに、ダン・クーパーという主人公がいる」ことを確かめた。公開前に本文を読んで言い回しを確かめる。漫画の絵は出版社の著作物（© Le Lombard）なので画面に出さない。台本では、男の出身や国を推し量る言い方はしない"
+    file: fbi/fbi_2009_story.png
+    original: https://archives.fbi.gov/archives/news/stories/2009/march/in-search-of-d.b.-cooper/dbcooper_031709
+    status: pd_federal
+    note: "FBIの作成（本文）。2026-11-26 に Windows の Chrome で本文を確認（fbi.gov から archives.fbi.gov に移っている）：事件のころ人気だったフランス語の漫画のシリーズに、カナダ空軍のテストパイロット、ダン・クーパーという主人公がいる。事件のころに出た号の表紙には、パラシュートで降りる姿が描かれている。担当の捜査官は、名前をそこから取った可能性があると見ている。画面には題・日付・最初の3段落だけを写した（ページの表示を2倍にし、漫画の表紙の絵とその説明、2016年の更新のお知らせを隠して写した）。漫画の表紙の絵は © Dan Cooper – Albert Weinberg – Le Lombard（ページの説明にそう書かれている）で、FBIの著作物ではないので画面に出さない。台本では、男の出身や国を推し量る言い方はしない（記事の「海外で過ごしたのでは」という捜査官の見方も言わない）"
   - id: fbi_video_2009
     title: FBIの動画「Scientists Hunt for D.B. Cooper」（科学者のチームが紙幣の流れ着き方を調べる）
     file: ""
