@@ -93,16 +93,22 @@ const buildShots = (): Shot[] => {
     } else {
       out.push({ v, from: out.length ? Math.max(0, s.startFrame - LEAD) : 0, to: 0, segs: [s] });
     }
-    const c = (s as any).cut;
+    // 区間の途中で画面を替える（cut。1つなら {at, visual}、2つ以上ならリスト）
+    const raw = (s as any).cut;
+    const cuts: { at: number; visual: Visual }[] = (raw ? (Array.isArray(raw) ? raw : [raw]) : []).slice().sort((a: any, b: any) => a.at - b.at);
     const r = (s as any).reveal;
     const ra = (s as any).reveal_at ?? 0;
     const addReveal = () => {
       const sh = out[out.length - 1];
       sh.reveal = { from: r, frame: Math.max(0, at(s, ra) - sh.from) };
     };
-    if (typeof r === "number" && !(c && ra >= c.at)) addReveal();
-    if (c) out.push({ v: c.visual as Visual, from: at(s, c.at), to: 0, segs: [s] });
-    if (typeof r === "number" && c && ra >= c.at) addReveal();
+    // 後出し（reveal）は、その時刻に映っているカットに付く
+    if (typeof r === "number" && (!cuts.length || ra < cuts[0].at)) addReveal();
+    cuts.forEach((c, k) => {
+      out.push({ v: c.visual, from: at(s, c.at), to: 0, segs: [s] });
+      const nxt = k + 1 < cuts.length ? cuts[k + 1].at : 2;
+      if (typeof r === "number" && c.at <= ra && ra < nxt) addReveal();
+    });
   }
   out.forEach((sh, i) => (sh.to = i + 1 < out.length ? out[i + 1].from : TL.totalFrames));
   return out;

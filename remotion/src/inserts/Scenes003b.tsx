@@ -1,6 +1,6 @@
 /**
  * 003 D.B.クーパー（1971年11月24日の夜〜1980年）のイメージ映像：屋外と窓の場面（人物なし）
- *   plane_clouds：雨雲の中を行く旅客機の灯り、雲の上から見下ろす森、夜の滑走路で待つ機体
+ *   plane_clouds：雨雲の中を行く旅客機の灯り、雲の上から見下ろす森、夜の滑走路で待つ機体、後ろの階段を下ろして飛ぶ機体（i）
  *   rain_window：雨の窓（夜の空港の灯り、駐機場の機体、近づく車の灯り）
  *   rain_forest：ワシントン州南西部のダグラスファーの森（夜の雨、霧の明け方、雨の上がった朝）
  *   river_bank：冬のコロンビア川の岸（砂と流木、川の流れ）
@@ -63,6 +63,8 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
     zz: [{ pos: [0, 10, 70], target: [0, 0, 0], fov: 40 }, { pos: [0, 10, 70], target: [0, 0, 0], fov: 40 }], // 確認用：機体を横から（本編では使わない）
     // h：夕方、雲の上で旋回しながら待つ機体（シアトルの上空を回って金を待った時間）。斜め上から
     h: [{ pos: [34, 4, 46], target: [-2, 1, 0], fov: 30 }, { pos: [29, 3.8, 44], target: [-12, 1, 0], fov: 29 }],
+    // i：午後8時11分。後ろの階段を下ろしたまま、夜の雨雲の中を飛ぶ機体を、後ろの斜め下から（人物は描かない。飛び降りる姿も描かない）
+    i: [{ pos: [52, -10, 22], target: [10, -1.5, 0], fov: 33 }, { pos: [46, -9.5, 21], target: [-6, -1.5, 0], fov: 32 }],
   };
   const [from, to] = cams[variant] ?? cams.a;
   // c は機体がないので、雲そのものを見せる：月明かりを強めて、雲を明るく濃くする（暗いままだと何も映らない画面になる）
@@ -76,7 +78,7 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
     <Stage fog={variant === "b" ? 0.006 : variant === "c" ? 0.006 : 0.008} exposure={1.15} bloom={0.5} bg={variant === "c" ? "#151b28" : variant === "h" ? "#3b3a4c" : "#1b2333"} hemi={variant === "h" ? ["#c8a898", "#1a1820", 0.9] : ["#6a7a9a", "#10131a", 0.9]}>
       <Camera from={from} to={to} />
       <directionalLight position={variant === "h" ? [-60, 25, 20] : [40, 60, 30]} intensity={cl.k} color={variant === "h" ? "#e6b894" : "#a8b8d8"} />
-      {variant !== "c" ? <Jet727 position={[planeX, 0, 0]} rotation={[variant === "h" ? 0.2 : 0, Math.PI, 0.02]} lights={0.9} cabin={0.6} /> : null}
+      {variant !== "c" ? <Jet727 position={[planeX, 0, 0]} rotation={[variant === "h" ? 0.2 : 0, Math.PI, 0.02]} lights={0.9} cabin={0.6} stairs={variant === "i"} /> : null}
       {variant === "c" ? (
         // 遠い灯りだけ。だんだん雲に消えていく
         <mesh position={[-14 - t * 3, 3, -40]}>

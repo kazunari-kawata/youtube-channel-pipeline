@@ -19,6 +19,7 @@ kind
   "sfx": [{"key": "pin", "at": 2.0}]    区間の始まりから 2.0 秒後に鳴らす
 区間に "reveal": N を書くと、年表の項目・地図の点の N 番目以降をその区間の頭（"reveal_at": 0〜1 で区間の途中）で出し、印の音（pin）を付ける
 区間に "cut": {"at": 0〜1, "visual": {...}} を書くと、区間の途中で次のカットに替える（声を作り直さずに長い絵を分ける。"sfx" も書ける）
+  1つの区間で2回以上替えるときは、"cut": [{"at": 0.3, "visual": ...}, {"at": 0.65, "visual": ...}] のようにリストで書く
 間隔・強さの基準は config/channel.yaml の sfx。結果は shotlist.md の「効果音」と build/sfx_cues.json。
 
 尺は build/timeline.json（本番の声 or estimate_timeline.py の見積もり）から取る。
@@ -59,14 +60,16 @@ def shots_of(segs: list[dict]) -> list[dict]:
             shots[-1]["segs"].append(s)
         else:
             shots.append({"v": v, "segs": [s], "start": s["start"]})
-        cut, ra = s.get("cut"), s.get("reveal_at", 0)
-        late = cut is not None and s.get("reveal") is not None and ra >= cut["at"]  # cut より後ろの reveal は新しいカットに付く
-        if s.get("reveal") is not None and not late:
+        cuts, ra = cuts_of(s), s.get("reveal_at", 0)
+        rev = s.get("reveal") is not None
+        # 後出し（reveal）は、その時刻に映っているカットに付く
+        if rev and (not cuts or ra < cuts[0]["at"]):
             shots[-1].setdefault("reveals", []).append(seg_at(s, ra))
-        if cut:
-            shots.append({"v": cut["visual"], "segs": [s], "start": seg_at(s, cut["at"]), "mid": True})
-        if late:
-            shots[-1].setdefault("reveals", []).append(seg_at(s, ra))
+        for k, c in enumerate(cuts):
+            shots.append({"v": c["visual"], "segs": [s], "start": seg_at(s, c["at"]), "mid": True, "cut": c})
+            nxt_at = cuts[k + 1]["at"] if k + 1 < len(cuts) else 2.0
+            if rev and c["at"] <= ra < nxt_at:
+                shots[-1].setdefault("reveals", []).append(seg_at(s, ra))
     for i, sh in enumerate(shots):
         sh["id"] = f"K{i + 1:02d}"
         nxt = shots[i + 1]["start"] if i + 1 < len(shots) else sh["segs"][-1]["end"]
@@ -113,10 +116,18 @@ def parse_sfx(x, default_at=0.15):
             for e in items]
 
 
+def cuts_of(s: dict) -> list[dict]:
+    """区間の途中で画面を替える指定（"cut"）を、時刻の順のリストにする（1つなら dict、2つ以上ならリストで書ける）"""
+    c = s.get("cut")
+    if not c:
+        return []
+    return sorted(c if isinstance(c, list) else [c], key=lambda x: x["at"])
+
+
 def own_sfx(sh: dict):
     """カットに指定した効果音（区間の途中で始まるカットは cut の sfx、それ以外は最初の区間の sfx）"""
     if sh.get("mid"):
-        return parse_sfx(sh["segs"][0]["cut"].get("sfx"))
+        return parse_sfx(sh["cut"].get("sfx"))
     return parse_sfx(sh["segs"][0].get("sfx"))
 
 

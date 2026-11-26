@@ -278,7 +278,8 @@ def onscreen_text_checks(episode: str, rep: Report):
     rep.add("画面とナレーションに制作上の配慮を入れていない", not bad, bad or "なし", "なし", "F-016")
     used = []
     for s in json.loads((episode_dir(episode) / "narration.json").read_text(encoding="utf-8")):
-        for v in (s.get("visual"), (s.get("cut") or {}).get("visual")):
+        cs = s.get("cut") or []
+        for v in [s.get("visual")] + [c.get("visual") for c in (cs if isinstance(cs, list) else [cs])]:
             if isinstance(v, dict) and v.get("kind") == "doc":
                 lines = v.get("ja") or ja.get(v.get("src")) or []
                 if not lines:

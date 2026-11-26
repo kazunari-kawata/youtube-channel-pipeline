@@ -32,6 +32,10 @@ def run(*args: str) -> None:
 
 
 def main() -> None:
+    # 本番の声ができたら、この仮編集は使わない（見積もりの尺で build/timeline.json を上書きしてしまう）。声があるときは stage.py --draft
+    b = ROOT / "episodes" / EP / "build"
+    if (b / "narration.wav").exists() or (b / "segments").exists():
+        sys.exit("本番の声（build/narration.wav）があります。仮編集ではなく python pipeline/stage.py 003-db-cooper --draft を使ってください")
     run("pipeline/estimate_timeline.py", EP)
     run("pipeline/shotlist.py", EP)
     # Windows の作業フォルダでは、香盤表を回すと shotlist.md が書き換わって次の pull が止まる（引き継ぎのメモ）

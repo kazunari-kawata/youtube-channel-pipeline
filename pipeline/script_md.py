@@ -66,8 +66,8 @@ def main():
         star = "★ " if s["id"] in mark else ""
         cell = screen(s.get("visual"))
         c = s.get("cut")
-        if c:
-            # 区間の途中で画面を替える（cut）も書く。書かないと、香盤表では直っているのに台本では直っていないように見える
+        # 区間の途中で画面を替える（cut。1つなら dict、2つ以上ならリスト）も書く。書かないと、香盤表では直っているのに台本では直っていないように見える
+        for c in sorted(c if isinstance(c, list) else [c], key=lambda x: x["at"]) if c else []:
             ct = t.get(s["id"], {})
             at = ct.get("start", 0) + c["at"] * (ct.get("end", 0) - ct.get("start", 0))
             cm, cs = divmod(int(at), 60)
