@@ -1,6 +1,6 @@
 # youtube-channel-pipeline
 
-アメリカの犯罪・事件（1本1事件）とフロリダマンの動画を作るパイプライン。権利を確かめた公的資料と、実データの3D地図・航空写真（Remotion + three.js）に、
+アメリカの犯罪・事件（1本1事件）の動画を作るパイプライン。シリーズは「犯罪者の紹介」「ボディカメラ（警察の映像）」「フロリダマン」。権利を確かめた公的資料と、実データの3D地図・航空写真（Remotion + three.js）に、
 ElevenLabs のナレーションとYouTubeオーディオライブラリのBGMを合わせて書き出し、自動の品質チェックを通す。
 
 作業ルールは [CLAUDE.md](CLAUDE.md)、これまでの指摘と対策は [docs/feedback.md](docs/feedback.md)。
