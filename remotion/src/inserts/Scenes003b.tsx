@@ -392,8 +392,8 @@ export const InsertRainWindow003: React.FC<SceneProps> = ({ variant = "d" }) => 
             />
           ) : null}
           {variant === "c" ? <RunwayLights z={-80} x0={-120} x1={120} step={10} color="#7aa8ff" k={1.0} /> : null}
-          {/* c：滑走路の上に止まった 727（滑走路だと分かるように。動かさない） */}
-          {variant === "c" ? <Jet727 position={[12, 2.95, -88]} rotation={[0, 0.08, 0]} lights={0} cabin={0} gear /> : null}
+          {/* c：滑走路の上に止まった 727（滑走路だと分かるように。動かさない）。窓の縦の枠に重ならないよう、左の窓の中に収める */}
+          {variant === "c" ? <Jet727 position={[-6, 2.95, -88]} rotation={[0, 0.08, 0]} lights={0} cabin={0} gear /> : null}
           {variant === "d" || variant === "b" ? <RunwayLights z={-90} x0={-140} x1={140} step={9} color="#ffd9a0" k={1.0} /> : null}
           {day ? <directionalLight position={[-20, 40, 20]} intensity={0.9} color="#d8dee6" /> : null}
           {/* 駐機場の投光器（機体をうっすら照らす） */}
