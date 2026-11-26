@@ -10,6 +10,7 @@
         BGMが聞こえるか：声のない区間の音量、声の下でのBGMの大きさ（F-005）
   コード 字幕・出典カードを入れていないか、チラつき対策が外れていないか（F-002, F-004, F-001）
   効果音 香盤表で効果音を割り当てたか、間隔と強い音の頻度が基準内か（F-012）
+  絵    暗すぎて何の絵か分からないイメージ映像がないか（F-052）
 結果は build/qa_report.json にも保存。不合格が1つでもあれば終了コード1。
 """
 import argparse
@@ -239,6 +240,30 @@ def narration_cut_checks(episode: str, rep: Report):
             "なし（無音に入る直前10msが -45dB 未満）", "F-019")
 
 
+def dark_insert_checks(episode: str, video: Path, q: dict, rep: Report):
+    """暗すぎて何の絵か分からないイメージ映像（F-052。003 の夜の雨の窓は、雨粒と小さな灯りだけで、空港と分からなかった）。
+    カットの真ん中の1コマの明るさ（縮小グレー画像の上位10%の明るさ）が基準より暗いものを数える"""
+    from shotlist import load_shots
+    _, shots = load_shots(episode)
+    lim = q.get("dark_insert_p90", 18)
+    bad = []
+    for sh in shots:
+        v = sh["v"]
+        if not isinstance(v, dict) or v.get("kind") != "insert" or sh["end"] - sh["start"] < 0.6:
+            continue
+        t = (sh["start"] + sh["end"]) / 2
+        raw = subprocess.run([ffmpeg_bin(), "-v", "error", "-ss", f"{t:.3f}", "-i", str(video), "-frames:v", "1", "-vf", f"scale={SW}:{SH},format=gray",
+                              "-f", "rawvideo", "-"], capture_output=True).stdout
+        if len(raw) < SW * SH:
+            continue
+        p90 = float(np.percentile(np.frombuffer(raw[: SW * SH], np.uint8), 90))
+        if p90 < lim:
+            m, sec = divmod(t, 60)
+            bad.append(f"{sh['id']} {int(m)}:{sec:04.1f} {v.get('scene')}（{v.get('var')}）明るさ{p90:.0f}")
+    rep.add("暗すぎるイメージ映像", not bad, f"{len(bad)}カット " + "、".join(bad[:5]) if bad else "なし",
+            f"カットの真ん中の上位10%の明るさが {lim} 以上", "F-052：何の場所か一目で分かる明るさにする")
+
+
 def sfx_checks(episode: str, cfg: dict, rep: Report):
     """効果音の計画（pipeline/shotlist.py が作る build/sfx_cues.json）が基準内か"""
     s = cfg["sfx"]
@@ -356,6 +381,8 @@ def main():
 
     if not args.partial and has_audio:
         audio_checks(video, out / "narration.wav", tl, q, rep)
+    if not args.partial:
+        dark_insert_checks(args.episode, video, q, rep)
     lint(rep)
     sfx_checks(args.episode, cfg, rep)
     narration_cut_checks(args.episode, rep)

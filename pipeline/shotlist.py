@@ -254,13 +254,11 @@ def reuse_warnings(shots: list[dict], cfg: dict) -> list[str]:
     return out
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("episode")
-    a = ap.parse_args()
-    tl = json.loads((build_dir(a.episode) / "timeline.json").read_text(encoding="utf-8"))
+def load_shots(episode: str) -> tuple[dict, list[dict]]:
+    """timeline.json の時刻に台本の画面指定を重ねて、カットの列にする（qa/check_video.py からも使う）"""
+    tl = json.loads((build_dir(episode) / "timeline.json").read_text(encoding="utf-8"))
     # 画面の指定は台本（narration.json）が正本。時刻だけ timeline.json から取る
-    narr = {s["id"]: s for s in load_narration(a.episode)}
+    narr = {s["id"]: s for s in load_narration(episode)}
     ids = [s["id"] for s in tl["segments"]]
     if ids != list(narr):
         sys.exit("timeline.json と narration.json の区間が違います。estimate_timeline.py（または tts_elevenlabs.py）を先に実行してください。")
@@ -268,7 +266,14 @@ def main():
     segs = [{**{k: v for k, v in s.items() if k not in ("sfx", "reveal", "reveal_at", "cut")}, "visual": narr[s["id"]].get("visual"),
              "caption": narr[s["id"]]["caption"],
              **{k: narr[s["id"]][k] for k in ("sfx", "reveal", "reveal_at", "cut") if k in narr[s["id"]]}} for s in tl["segments"]]
-    shots = shots_of(segs)
+    return tl, shots_of(segs)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("episode")
+    a = ap.parse_args()
+    tl, shots = load_shots(a.episode)
 
     warn = []
     for i, sh in enumerate(shots):
@@ -309,7 +314,7 @@ def main():
     warn += reuse_warnings(shots, cfg)
     warn += year_warnings(shots)
     lib = load_sfx()
-    cues, dropped, gaps = plan_sfx(shots, lib, scfg, segs[-1]["end"])
+    cues, dropped, gaps = plan_sfx(shots, lib, scfg, shots[-1]["segs"][-1]["end"])
     for sh in shots:
         sh["sfx"] = [c for c in cues if c["shot"] == sh["id"]]
     n_cue = len(cues)

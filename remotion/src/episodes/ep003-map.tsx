@@ -3,6 +3,7 @@
  * この回は「ルイス川とコロンビア川に囲まれた一帯」が話の中心なので、川の線がないと場所が伝わらない。
  * 川の線は episodes/003-db-cooper/maps_rivers.py が map_<view>.json の rivers に入れる。
  * 共有の MapShot は変えない（002 の画面に影響させないため）。見た目を変えるときは MapShot とそろえる。
+ * area（dropzone の地図だけ）：1980年にFBIが考えていた着地の範囲を、薄い赤の面と赤い線で出す（2026-11-26 ユーザーの指摘）。
  */
 import React, { useEffect, useMemo, useState } from "react";
 import { AbsoluteFill, cancelRender, continueRender, delayRender, interpolate, staticFile, useCurrentFrame } from "remotion";
@@ -17,6 +18,7 @@ type MapData = {
   land: string[]; lakes: string[]; countries: string[]; states: { d: string; hl: boolean }[];
   points: Record<string, { x: number; y: number; label: string }>; labels: { x: number; y: number; text: string; kind: string }[];
   note: string; source: string; rivers?: { d: string; name: string; kind: string }[];
+  area?: { d: string; label: string; bbox: [number, number, number, number] };
 };
 const cache: Record<string, Promise<MapData>> = {};
 
@@ -45,6 +47,8 @@ export const Map003: React.FC<{ file: string; points: string[]; route?: string[]
   if (!data) return null;
   const routeStart = route ? Math.max(...route.map((k) => revealStart(Math.max(0, points.indexOf(k)), 8, 14, reveal))) + 6 : 14;
   const draw = interpolate(frame, [routeStart, routeStart + 46], [0, 1], clamp);
+  // 範囲は点より先に、ゆっくり（なめらかに）出す。動かさない
+  const areaO = interpolate(frame, [2, 26], [0, 1], { ...clamp, easing: (x: number) => x * x * (3 - 2 * x) });
   return (
     <FilmFrame bg="#0f1726">
       {/* 地図は拡大・縮小しない（細い線と地名がピクセルの境目でちらつく） */}
@@ -55,15 +59,24 @@ export const Map003: React.FC<{ file: string; points: string[]; route?: string[]
           {data.states.map((s, i) => <path key={`s${i}`} d={s.d} fill={s.hl ? "#3d3528" : "none"} stroke="rgba(239,228,208,0.28)" strokeWidth={1} />)}
           {data.countries.map((d, i) => <path key={`c${i}`} d={d} fill="none" stroke="rgba(239,228,208,0.25)" strokeWidth={0.8} />)}
           {data.lakes.map((d, i) => <path key={`k${i}`} d={d} fill="#13203a" />)}
+          {data.area ? <path d={data.area.d} fill="rgba(224,80,74,0.20)" stroke="none" opacity={areaO} /> : null}
           {(data.rivers ?? []).map((r, i) => (
             <path key={`r${i}`} d={r.d} fill="none" stroke="#3f6596" strokeWidth={r.kind === "main" ? 5 : 2.4} strokeLinecap="round" strokeLinejoin="round" />
           ))}
+          {data.area ? <path d={data.area.d} fill="none" stroke={HL} strokeWidth={3} strokeLinejoin="round" opacity={areaO * 0.95} /> : null}
           {routeD ? <path d={routeD} fill="none" stroke={C.amber} strokeWidth={3} strokeDasharray="10 8" opacity={draw} /> : null}
         </svg>
         {data.labels.map((l, i) => (
           <div key={i} style={{ position: "absolute", left: l.x, top: l.y, transform: "translate(-50%,-50%)", fontFamily: FONT, fontSize: l.kind === "water" ? 21 : 24,
             color: l.kind === "water" ? "rgba(150,185,230,0.85)" : "rgba(239,228,208,0.6)", letterSpacing: 4, whiteSpace: "nowrap", textShadow: "0 1px 6px rgba(0,0,0,0.8)" }}>{l.text}</div>
         ))}
+        {data.area ? (
+          <div style={{ position: "absolute", left: (data.area.bbox[0] + data.area.bbox[2]) / 2 + 40, top: data.area.bbox[1] + (data.area.bbox[3] - data.area.bbox[1]) * 0.56,
+            transform: "translate(-50%,-50%)", opacity: areaO, fontFamily: FONT, fontSize: 21, fontWeight: 700, color: "#ff9a90", letterSpacing: 2, whiteSpace: "nowrap",
+            textAlign: "center", lineHeight: 1.35, textShadow: "0 2px 8px rgba(0,0,0,0.9)" }}>
+            {data.area.label.replace(/（/, "\n（").split("\n").map((t, i) => <div key={i}>{t}</div>)}
+          </div>
+        ) : null}
         {points.map((k, i) => {
           const p = data.points[k];
           if (!p) return null;

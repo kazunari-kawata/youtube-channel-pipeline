@@ -487,6 +487,180 @@ export const InsertRainForest003: React.FC<SceneProps> = ({ variant = "a" }) => 
   );
 };
 
+/* ---------- 3b. 森の床に落ちた表示の切れ端（1978年11月、キャッスルロックの東の山中） ---------- */
+// 2026-11-26：7:55 の「着地点を絞る手がかりにはならなかった」に置いていた夜の雨の窓が、何の絵か分からなかった（ユーザーの指摘）。
+// 見つかった物を、森の床で見せる。表示の文字は描かない（読める文字・実在の表示のまねはしない）。灰色の線で「何か書かれた板」と分かる程度にする。
+// 落ち葉は茶・黄土・黄色だけ（赤い色を地面に置かない）。カメラはほとんど動かさない（細かい葉がちらつかないように）
+
+/** シダの葉1枚：軸の左右に小葉が並ぶ、のこぎりの歯のような輪郭。付け根から外へ傾けて置く */
+const FernFrond: React.FC<{ len: number; rotY: number; color: string; droop: number }> = ({ len, rotY, color, droop }) => {
+  const geo = useMemo(() => {
+    const sh = new THREE.Shape();
+    const n = 11, wmax = len * 0.2;
+    const width = (u: number) => wmax * Math.sin(Math.PI * Math.min(1, u * 1.15)) * (1 - u * 0.35);
+    sh.moveTo(0.004, 0);
+    for (let i = 0; i < n; i++) {
+      const u0 = i / n, u1 = (i + 0.5) / n;
+      sh.lineTo(0.004, u0 * len);
+      sh.lineTo(width(u1), (u1 + 0.06) * len); // 小葉の先（少し上向き）
+    }
+    sh.lineTo(0, len);
+    for (let i = n - 1; i >= 0; i--) {
+      const u0 = i / n, u1 = (i + 0.5) / n;
+      sh.lineTo(-width(u1), (u1 + 0.06) * len);
+      sh.lineTo(-0.004, u0 * len);
+    }
+    sh.closePath();
+    return new THREE.ShapeGeometry(sh, 2);
+  }, [len]);
+  return (
+    <group rotation={[0, rotY, 0]}>
+      <mesh geometry={geo} rotation={[-droop, 0, 0]}>
+        <meshStandardMaterial color={color} roughness={0.9} side={THREE.DoubleSide} />
+      </mesh>
+    </group>
+  );
+};
+
+const Fern: React.FC<{ position: [number, number, number]; size: number; seed: number }> = ({ position, size, seed }) => {
+  const fronds = useMemo(
+    () => Array.from({ length: 9 }, (_, i) => ({
+      rotY: (i / 9) * Math.PI * 2 + random(`fr${seed}-${i}`) * 0.5,
+      len: size * (0.7 + random(`fl${seed}-${i}`) * 0.5),
+      droop: 0.75 + random(`fd${seed}-${i}`) * 0.4,
+      color: random(`fc${seed}-${i}`) < 0.5 ? "#3b5530" : "#466338",
+    })),
+    [seed, size],
+  );
+  return (
+    <group position={position}>
+      {fronds.map((f, i) => <FernFrond key={i} len={f.len} rotY={f.rotY} color={f.color} droop={f.droop} />)}
+    </group>
+  );
+};
+
+/** 落ち葉：地面に平たく置いた楕円の葉（茶・黄土・黄色） */
+const LeafLitter: React.FC<{ n: number; r: number; seed: number }> = ({ n, r, seed }) => {
+  const leaves = useMemo(
+    () => Array.from({ length: n }, (_, i) => {
+      const a = random(`la${seed}-${i}`) * Math.PI * 2, d = Math.sqrt(random(`ld${seed}-${i}`)) * r;
+      const c = random(`lc${seed}-${i}`);
+      return {
+        x: Math.cos(a) * d, z: Math.sin(a) * d, y: 0.004 + random(`ly${seed}-${i}`) * 0.01,
+        rot: random(`lr${seed}-${i}`) * Math.PI * 2, s: 0.025 + random(`ls${seed}-${i}`) * 0.03,
+        color: c < 0.4 ? "#5e4b31" : c < 0.7 ? "#735c38" : c < 0.9 ? "#86703f" : "#52432d",
+      };
+    }),
+    [n, r, seed],
+  );
+  const leafGeo = useMemo(() => {
+    // 先のとがった葉（長さ2・幅0.9）
+    const sh = new THREE.Shape();
+    sh.moveTo(-1, 0);
+    sh.quadraticCurveTo(-0.2, 0.55, 1, 0);
+    sh.quadraticCurveTo(-0.2, -0.55, -1, 0);
+    return new THREE.ShapeGeometry(sh, 6);
+  }, []);
+  return (
+    <group>
+      {leaves.map((l, i) => (
+        <mesh key={i} geometry={leafGeo} position={[l.x, l.y, l.z]} rotation={[-Math.PI / 2, 0, l.rot]} scale={[l.s, l.s, 1]}>
+          <meshStandardMaterial color={l.color} roughness={0.95} side={THREE.DoubleSide} />
+        </mesh>
+      ))}
+    </group>
+  );
+};
+
+/** 表示の切れ端：角が欠けた白っぽい板。文字の代わりに灰色の細い線（読めない） */
+const PlacardPiece: React.FC<{ position: [number, number, number]; rotY: number }> = ({ position, rotY }) => {
+  const geo = useMemo(() => {
+    const w = 0.3, h = 0.18;
+    const sh = new THREE.Shape();
+    sh.moveTo(-w / 2, -h / 2);
+    sh.lineTo(w / 2, -h / 2);
+    sh.lineTo(w / 2, h * 0.12);
+    // 右上の角が斜めに割れて欠けている
+    sh.lineTo(w * 0.36, h * 0.2); sh.lineTo(w * 0.3, h / 2);
+    sh.lineTo(-w / 2, h / 2);
+    sh.closePath();
+    return new THREE.ExtrudeGeometry(sh, { depth: 0.006, bevelEnabled: false });
+  }, []);
+  const lines = [0.05, 0.02, -0.01, -0.04];
+  return (
+    <group position={position} rotation={[-Math.PI / 2, 0, rotY]}>
+      <mesh geometry={geo}>
+        <meshStandardMaterial color="#d9d2bf" roughness={0.75} />
+      </mesh>
+      {/* 板の縁の黒い帯と、文字の代わりの線（読めない灰色の帯） */}
+      <mesh position={[-0.015, 0.072, 0.0065]}>
+        <planeGeometry args={[0.24, 0.012]} />
+        <meshStandardMaterial color="#3c3a36" roughness={0.8} />
+      </mesh>
+      {lines.map((y, i) => (
+        <mesh key={i} position={[-0.03 + (i % 2) * 0.01, y, 0.0065]}>
+          <planeGeometry args={[0.2 - (i % 3) * 0.03, 0.008]} />
+          <meshStandardMaterial color="#8d8a82" roughness={0.85} />
+        </mesh>
+      ))}
+      {/* 長い年月の汚れ（うすい茶色のしみ） */}
+      <mesh position={[0.06, -0.05, 0.0066]}>
+        <circleGeometry args={[0.05, 16]} />
+        <meshStandardMaterial color="#9b8f74" transparent opacity={0.45} roughness={0.9} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+};
+
+export const InsertForestFloor003: React.FC<SceneProps> = ({ variant = "placard" }) => {
+  const cams: Record<string, [CamKey, CamKey]> = {
+    // 斜め上から、森の床の板を真ん中に（奥に倒木と木の幹、霧）
+    placard: [{ pos: [0.02, 0.44, 0.9], target: [0, 0.03, -0.04], fov: 38 }, { pos: [0.02, 0.42, 0.84], target: [0, 0.03, -0.04], fov: 37 }],
+  };
+  const [from, to] = cams[variant] ?? cams.placard;
+  return (
+    <Stage fog={0.06} exposure={1.25} bloom={0} bg="#8a9498" hemi={["#d0d8dc", "#3a3628", 1.0]}>
+      <Camera from={from} to={to} />
+      <directionalLight position={[-6, 12, 4]} intensity={1.0} color="#efe2c8" />
+      {/* 地面（湿った土） */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[120, 120]} />
+        <meshStandardMaterial color="#4a4130" roughness={1} />
+      </mesh>
+      {/* 苔の広がり */}
+      {[[-0.55, -0.35, 0.35], [0.5, -0.6, 0.45], [-0.2, 0.45, 0.25]].map(([x, z, r], i) => (
+        <mesh key={i} position={[x, 0.002, z]} rotation={[-Math.PI / 2, 0, i]} scale={[1, 0.7, 1]}>
+          <circleGeometry args={[r, 9]} />
+          <meshStandardMaterial color="#45482e" roughness={1} />
+        </mesh>
+      ))}
+      <LeafLitter n={520} r={2.4} seed={7} />
+      <PlacardPiece position={[0, 0.016, -0.04]} rotY={0.18} />
+      {/* 板に半分かかる落ち葉 */}
+      <mesh position={[0.12, 0.024, 0.0]} rotation={[-Math.PI / 2 + 0.08, 0, 0.7]} scale={[0.045, 0.025, 1]}>
+        <circleGeometry args={[1, 10]} />
+        <meshStandardMaterial color="#7d6338" roughness={0.95} side={THREE.DoubleSide} />
+      </mesh>
+      <Fern position={[-0.5, 0, -0.55]} size={0.5} seed={1} />
+      <Fern position={[0.55, 0, -0.75]} size={0.55} seed={2} />
+      <Fern position={[-0.7, 0, 0.1]} size={0.4} seed={3} />
+      <Fern position={[0.68, 0, -0.05]} size={0.38} seed={4} />
+      <Fern position={[-1.3, 0, -1.6]} size={0.6} seed={5} />
+      <Fern position={[1.2, 0, -1.9]} size={0.6} seed={6} />
+      {/* 奥の倒木と、木の幹（霧の中） */}
+      {[[-1.1, -3.2, 0.42], [1.5, -4.2, 0.5], [0.2, -6.5, 0.38]].map(([x, z, r], i) => (
+        <mesh key={i} position={[x, 4, z]}>
+          <cylinderGeometry args={[r * 0.85, r * 1.15, 8, 14]} />
+          <meshStandardMaterial color="#4a4136" roughness={1} />
+        </mesh>
+      ))}
+      <Driftwood position={[-0.9, 0.12, -1.6]} len={1.6} r={0.1} rotY={-0.5} />
+      <Forest seed={53} n={120} x={[-25, 25]} z={[-40, -2.5]} h={[16, 28]} color="#2a3528" />
+      <Mist t={0} y={1.2} z={-6} color="#a8b0b4" opacity={0.35} seed={9} />
+    </Stage>
+  );
+};
+
 /* ---------- 4. 冬のコロンビア川の岸 ---------- */
 
 /** 川の水面：模様をゆっくり流す（1秒に数センチ相当） */

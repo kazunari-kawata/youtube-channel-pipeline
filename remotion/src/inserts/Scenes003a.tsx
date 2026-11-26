@@ -305,33 +305,65 @@ const Seat: React.FC<{ position: V3; color: string; arms?: number[] }> = ({ posi
   </group>
 );
 
-/** 窓に寄る角度の右の壁：窓の穴を残して板で組む（円筒の壁だと外の雲が見えない）。窓は角の丸い縦長 */
+/** 窓に寄る角度の右の壁：窓の穴を残して板で組む（円筒の壁だと外の雲が見えない）。
+ *  一目で旅客機の窓と分かるように（2026-11-26 ユーザーの指摘。窓1つの楕円だと、船の丸窓か何か分からなかった）：
+ *  窓は角の丸い四角（楕円だと船の丸窓に見える）を3つ並べ、窓の周りに縁、両わきの窓は日よけを上から少し下ろす */
+const WIN_PITCH = 0.52;
+/** 角の丸い四角の輪郭（中心が原点） */
+const roundRect = (p: THREE.Path, w: number, h: number, r: number, ox = 0) => {
+  const x0 = ox - w / 2, x1 = ox + w / 2, y0 = -h / 2, y1 = h / 2;
+  p.moveTo(x0 + r, y0);
+  p.lineTo(x1 - r, y0); p.quadraticCurveTo(x1, y0, x1, y0 + r);
+  p.lineTo(x1, y1 - r); p.quadraticCurveTo(x1, y1, x1 - r, y1);
+  p.lineTo(x0 + r, y1); p.quadraticCurveTo(x0, y1, x0, y1 - r);
+  p.lineTo(x0, y0 + r); p.quadraticCurveTo(x0, y0, x0 + r, y0);
+};
 const WindowWall: React.FC<{ x: number }> = ({ x }) => {
   const z = CABIN_R - 0.12;
   const wy = 1.45, ww = 0.26, wh = 0.36;
+  const offs = [-WIN_PITCH, 0, WIN_PITCH];
   const mat = useMemo(() => new THREE.MeshStandardMaterial({ color: "#d8d0bd", roughness: 0.9, side: THREE.DoubleSide }), []);
-  const ring = useMemo(() => {
+  const bezel = useMemo(() => new THREE.MeshStandardMaterial({ color: "#b9b09c", roughness: 0.8, side: THREE.DoubleSide }), []);
+  const wall = useMemo(() => {
+    // 窓の穴を3つ空けた1枚の壁（幅10m・高さ3m）
     const s = new THREE.Shape();
-    s.moveTo(-0.24, -0.29); s.lineTo(0.24, -0.29); s.lineTo(0.24, 0.29); s.lineTo(-0.24, 0.29); s.closePath();
+    s.moveTo(-5, -1.5); s.lineTo(5, -1.5); s.lineTo(5, 1.5); s.lineTo(-5, 1.5); s.closePath();
+    for (const o of offs) {
+      const h = new THREE.Path();
+      roundRect(h, ww, wh, 0.085, o);
+      s.holes.push(h);
+    }
+    return new THREE.ShapeGeometry(s, 32);
+  }, []);
+  const ring = useMemo(() => {
+    // 窓の縁（穴より一回り大きい、角の丸い四角の枠）
+    const s = new THREE.Shape();
+    roundRect(s, ww + 0.09, wh + 0.09, 0.13);
     const h = new THREE.Path();
-    h.absellipse(0, 0, ww / 2, wh / 2, 0, Math.PI * 2, false, 0);
+    roundRect(h, ww, wh, 0.085);
     s.holes.push(h);
     return new THREE.ShapeGeometry(s, 32);
   }, []);
   return (
     <group>
-      {/* 窓の周りの枠（楕円の穴） */}
-      <mesh geometry={ring} material={mat} position={[x, wy, z]} rotation={[0, Math.PI, 0]} />
-      {/* 窓の周りの壁（穴の外側を4枚で埋める） */}
-      <mesh material={mat} position={[x - 0.24 - 5, wy, z]} rotation={[0, Math.PI, 0]}><planeGeometry args={[10, 3]} /></mesh>
-      <mesh material={mat} position={[x + 0.24 + 5, wy, z]} rotation={[0, Math.PI, 0]}><planeGeometry args={[10, 3]} /></mesh>
-      <mesh material={mat} position={[x, wy + 0.29 + 1, z]} rotation={[0, Math.PI, 0]}><planeGeometry args={[0.48, 2]} /></mesh>
-      <mesh material={mat} position={[x, wy - 0.29 - 1, z]} rotation={[0, Math.PI, 0]}><planeGeometry args={[0.48, 2]} /></mesh>
-      {/* 二重の窓ガラス（うっすら） */}
-      <mesh position={[x, wy, z + 0.03]}>
-        <planeGeometry args={[ww, wh]} />
-        <meshStandardMaterial color="#9fb0c0" transparent opacity={0.06} depthWrite={false} />
-      </mesh>
+      <mesh geometry={wall} material={mat} position={[x, wy, z]} rotation={[0, Math.PI, 0]} />
+      {offs.map((o) => (
+        <group key={o}>
+          <mesh geometry={ring} material={bezel} position={[x + o, wy, z - 0.012]} rotation={[0, Math.PI, 0]} />
+          {/* 二重の窓ガラス（うっすら） */}
+          <mesh position={[x + o, wy, z + 0.03]}>
+            <planeGeometry args={[ww, wh]} />
+            <meshStandardMaterial color="#9fb0c0" transparent opacity={0.06} depthWrite={false} />
+          </mesh>
+          {/* 両わきの窓は日よけを上から3分の1ほど下ろす（真ん中の窓は開けたまま） */}
+          {o !== 0 ? (
+            <mesh position={[x + o, wy + wh / 2 - wh * 0.17, z + 0.015]} rotation={[0, Math.PI, 0]}>
+              <planeGeometry args={[ww * 0.98, wh * 0.34]} />
+              <meshStandardMaterial color="#cfc6b2" roughness={0.9} side={THREE.DoubleSide} />
+            </mesh>
+          ) : null}
+        </group>
+      ))}
     </group>
   );
 };
@@ -505,7 +537,8 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
     // c・d：窓に寄って、外を流れる雲（人物なし）
     //   近すぎると窓が画面いっぱいの楕円になって何か分からないので、窓の周りの壁と座席の背が入る所まで離す
     c: [{ pos: [row18 - 0.38, 1.36, 0.5], target: [row18 + 0.04, 1.4, 1.75], fov: 31 }, { pos: [row18 - 0.34, 1.37, 0.6], target: [row18 + 0.04, 1.41, 1.75], fov: 29 }],
-    d: [{ pos: [row18 + 0.46, 1.38, 0.55], target: [row18 + 0.02, 1.42, 1.75], fov: 31 }, { pos: [row18 + 0.42, 1.38, 0.64], target: [row18 + 0.02, 1.42, 1.75], fov: 29 }],
+    // d：窓の並び（3つ）と、手前の座席の背もたれ・頭のカバーが入るように、通路側から少し引いて広く（2026-11-26：窓だけだと何か分からない）
+    d: [{ pos: [row18 - 0.5, 1.4, 0.22], target: [row18 + 0.08, 1.27, 1.75], fov: 43 }, { pos: [row18 - 0.44, 1.39, 0.3], target: [row18 + 0.08, 1.27, 1.75], fov: 41 }],
     // ash：肘掛けの灰皿と、袖口の輪郭
     ash: [{ pos: [row18 + 0.62, 1.02, seatZ - 0.15], target: [row18 + 0.04, 0.64, seatZ + 0.24], fov: 30 }, { pos: [row18 + 0.58, 0.99, seatZ - 0.1], target: [row18 + 0.04, 0.64, seatZ + 0.24], fov: 28 }],
     // ash2：灰皿のふちのたばこ（人物なし）
@@ -536,7 +569,8 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
       {variant === "ask" ? (
         <>
           {/* 席の男は座って答え、通路の乗務員は男の方を向いて話す（顔なし） */}
-          <Figure clip="Sitting_Talking_Loop" position={[row18 - 0.02, 0.08, seatZ]} rotationY={Math.PI / 2} glasses={false} build={COOPER_71} />
+          {/* 座って話す動きは、座って待つ動きより腰が低く、座面と背もたれに食い込んで見えた（2026-11-26 ユーザーの指摘）。背もたれから前へ離す */}
+          <Figure clip="Sitting_Talking_Loop" position={[row18 + 0.1, 0.09, seatZ]} rotationY={Math.PI / 2} glasses={false} build={COOPER_71} />
           <Figure clip="Idle_Talking_Loop" position={[row18 + 0.1, 0, 0.0]} rotationY={-0.15} timeOffset={0.7} glasses={false} build={ATTENDANT_71} />
         </>
       ) : null}
@@ -727,6 +761,7 @@ export const InsertFieldOffice003: React.FC<SceneProps> = ({ variant = "a" }) =>
     g: [{ pos: [-0.6, 1.6, 0.4], target: [-1.2, 1.55, -2.45], fov: 34 }, { pos: [-0.65, 1.58, 0.2], target: [-1.2, 1.55, -2.45], fov: 32 }], // 壁のカレンダー
     i: [{ pos: [3.6, 1.45, 1.5], target: [3.0, 0.8, 0], fov: 36 }, { pos: [3.45, 1.4, 1.35], target: [3.0, 0.8, 0], fov: 34 }], // 新聞の束と電話の机
     j: [{ pos: [-4.0, 1.5, 2.2], target: [-5.2, 1.0, -1.6], fov: 40 }, { pos: [-3.8, 1.45, 2.0], target: [-5.2, 1.0, -1.6], fov: 39 }], // 保管棚
+    k: [{ pos: [0.9, 2.6, 3.6], target: [-2.0, 0.7, -1.5], fov: 48 }, { pos: [0.75, 2.5, 3.3], target: [-2.0, 0.7, -1.5], fov: 47 }], // 事務所を手前の高い所から左奥へ（机、積まれた書類箱、書類棚、保管棚が一度に見える）
   };
   const [from, to] = cams[variant] ?? cams.a;
   const lamp = useMemo(() => {

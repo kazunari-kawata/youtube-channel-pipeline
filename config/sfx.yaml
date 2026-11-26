@@ -76,6 +76,7 @@ rules:
   insert/cabin_seat:   [{key: amb_cabin, at: 0.0}]
   insert/plane_clouds: [{key: amb_wind_high, at: 0.0}]
   insert/rain_forest:  [{key: amb_forest_rain, at: 0.0}]
+  insert/forest_floor: [{key: amb_forest_rain, at: 0.0}]   # 森の床に落ちた表示の切れ端（003。濡れた森の音）
   insert/river_bank:   [{key: amb_river, at: 0.0}]
   insert/field_office: [{key: amb_office, at: 0.0}]
   insert/fbi_lab:      [{key: amb_room, at: 0.0}]   # 2001年の FBI の研究所（静かな室内。003 の DNA の試料の場面）

@@ -347,11 +347,25 @@ def build_chunked(segs, t, fps, key, cache, seg_dir, only, max_new=None):
     return pieces, timeline, billed
 
 
+def ambiguous_hits(segs: list[dict], table: dict) -> list[str]:
+    """読みが2通りある語が、読みの指定（tts）のない区間の文にあるか（F-056）"""
+    out = []
+    for s in segs:
+        if s.get("tts"):
+            continue
+        for w, r in (table or {}).items():
+            if w in s["caption"]:
+                out.append(f"{s['id']}「{w}」（{r}）：{s['caption'][:40]}")
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
     ap.add_argument("--only", help="作り直す区間ID（カンマ区切り）。キャッシュを使わない")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--readings-checked", action="store_true",
+                    help="読みが2通りある語（config の tts.ambiguous_readings）を確かめ、台本どおりでよいと決めた（F-056）")
     ap.add_argument("--max-new", type=int, help="1回の実行で新しく作るまとまりの数の上限（まとめて生成のとき）。超えたら止まり、もう一度回すと続きから")
     args = ap.parse_args()
 
@@ -364,8 +378,16 @@ def main():
         chars += sum(len(tts_text(chunks[k + 1][0])) if k + 1 < len(chunks) else len(TAIL_LAST) for k in range(len(chunks)))
         print(f"まとめて生成：{len(chunks)}まとまり（章ごと、{t.get('max_chunk_chars', 450)}字まで）")
     print(f"{len(segs)}区間 / {chars}文字（全区間を新規生成した場合の概算 ${chars / 1000 * USD_PER_1K:.2f}）")
+    amb = ambiguous_hits(segs, t.get("ambiguous_readings"))
+    if amb:
+        print(f"読みが2通りある語 {len(amb)}か所（読みの指定 tts のない区間。F-056）:")
+        for a in amb:
+            print("  " + a)
     if args.dry_run:
         return
+    if amb and not args.readings_checked and not args.only:
+        sys.exit("読みが2通りある語を確かめてから作ってください。読みを決めたら、その区間の tts にひらがなで書く。"
+                 "台本どおりでよければ --readings-checked を付ける（F-056）")
     if not t.get("voice_id"):
         sys.exit("config/channel.yaml の tts.voice_id が未設定です。tts_voice_samples.py で声を決めてください。")
     key = require_env("ELEVENLABS_API_KEY")

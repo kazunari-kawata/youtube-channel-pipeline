@@ -104,9 +104,9 @@
    "at": 0.62,
    "visual": {
     "kind": "insert",
-    "scene": "rain_window",
-    "var": "d",
-    "note": "雨の窓に映る夜の空港の灯り（人物なし）"
+    "scene": "field_office",
+    "var": "k",
+    "note": "70年代の捜査の事務所を高い所から：積まれた書類の箱、書類棚、タイプライターの机（人物なし、木目の壁板）"
    }
   }
  },
@@ -978,9 +978,9 @@
    "at": 0.25,
    "visual": {
     "kind": "insert",
-    "scene": "rain_window",
-    "var": "b",
-    "note": "雨の窓（夜、室内側から。人物なし）"
+    "scene": "forest_floor",
+    "var": "placard",
+    "note": "森の床の落ち葉とシダの間に落ちた、角の欠けた白い表示の切れ端（文字は読めない。人物なし）"
    }
   }
  },

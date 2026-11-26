@@ -7,6 +7,11 @@ Natural Earth には、ルイス川・ワシューガル川が入っていない
 米地質調査所（USGS）の National Hydrography Dataset（NHD、米連邦政府の著作物で著作権なし）の川の中心線を取り、
 make_maps.py と同じ投影で remotion/public/003/map_<view>.json の rivers に足す。
 川の線を描くのは remotion/src/episodes/ep003-map.tsx（共有の MapShot は変えない）。
+
+dropzone の地図には、1980年にFBIが考えていた着地の範囲（北はルイス川、東はスカマニア郡との境、南と西はコロンビア川。
+FBI V43 p.376）を薄い赤の面と赤い線で入れる（2026-11-26 ユーザーの指摘：範囲が描かれていなかった）。
+この範囲はクラーク郡（ワシントン州）の境界とほぼ同じ（郡の北の境がルイス川、南と西がコロンビア川、東がスカマニア郡）なので、
+米国勢調査局の TIGERweb（米連邦政府の著作物で著作権なし）のクラーク郡の境界を使う。
 """
 import json
 import math
@@ -26,6 +31,9 @@ OUT = ROOT / "remotion" / "public" / "003"
 CACHE = ROOT / "data" / "raw" / "nhd" / "003_flowlines.json"
 NHD = "https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6/query"  # Flowline - Large Scale
 NAMES = {"Columbia River": "main", "Lewis River": "trib", "East Fork Lewis River": "trib", "Washougal River": "trib", "Cowlitz River": "trib", "Kalama River": "trib"}
+TIGER = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query"
+AREA_CACHE = ROOT / "data" / "raw" / "tiger" / "003_clark_county.json"
+AREA_VIEWS = {"dropzone": "FBIが考えていた範囲（1980年）"}
 VIEWS = ["flight", "dropzone", "columbia"]  # 川が見分けられる縮尺の地図だけ（pnw、puget は広すぎる・関係が薄い）
 
 
@@ -45,6 +53,20 @@ def fetch() -> dict:
     CACHE.parent.mkdir(parents=True, exist_ok=True)
     CACHE.write_text(json.dumps(d), encoding="utf-8")
     return d
+
+
+def fetch_area() -> list:
+    """クラーク郡（GEOID 53011）の境界。経度・緯度の点の列"""
+    if not AREA_CACHE.exists():
+        q = urllib.parse.urlencode({"where": "GEOID='53011'", "outFields": "NAME,GEOID", "outSR": 4326, "maxAllowableOffset": 0.003, "f": "json"})
+        with urllib.request.urlopen(f"{TIGER}?{q}", timeout=120) as r:
+            d = json.load(r)
+        if "error" in d or not d.get("features"):
+            sys.exit(f"TIGERweb の取得に失敗：{d.get('error')}")
+        AREA_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        AREA_CACHE.write_text(json.dumps(d), encoding="utf-8")
+    d = json.loads(AREA_CACHE.read_text(encoding="utf-8"))
+    return d["features"][0]["geometry"]["rings"]
 
 
 def main() -> None:
@@ -75,6 +97,14 @@ def main() -> None:
         rivers = [{"d": "".join(ds), "name": n, "kind": k} for (n, k), ds in merged.items()]
         data = json.loads(f.read_text(encoding="utf-8"))
         data["rivers"] = rivers
+        if name in AREA_VIEWS:
+            rings = fetch_area()
+            d = "".join("M" + "L".join(f"{x:.1f},{y:.1f}" for x, y in (p(a, b) for a, b in ring)) + "Z" for ring in rings)
+            xs = [p(a, b)[0] for ring in rings for a, b in ring]
+            ys = [p(a, b)[1] for ring in rings for a, b in ring]
+            data["area"] = {"d": d, "label": AREA_VIEWS[name], "bbox": [min(xs), min(ys), max(xs), max(ys)]}
+            if "TIGER" not in data.get("source", ""):
+                data["source"] = data["source"] + "、範囲：米国勢調査局（TIGER）"
         if "USGS" not in data.get("source", ""):
             data["source"] = (data.get("source") or "地図：Natural Earth") + "、川：米地質調査所（USGS NHD）"
         f.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")

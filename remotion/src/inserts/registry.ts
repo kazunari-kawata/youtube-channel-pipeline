@@ -9,7 +9,7 @@ import { InsertPrisonFloor } from "./ScenesPrison";
 import { InsertApartments, InsertArrest } from "./ScenesArrest";
 import { InsertCourtHall, InsertPhone, InsertTvRoom, InsertWindows2022 } from "./ScenesDahmer2";
 import { InsertAirportWait003, InsertAirportWalk003, InsertCabinSeat003, InsertFbiLab003, InsertFieldOffice003 } from "./Scenes003a";
-import { InsertExitDiagram003, InsertPlaneClouds003, InsertRainForest003, InsertRainWindow003, InsertRiverBank003 } from "./Scenes003b";
+import { InsertExitDiagram003, InsertForestFloor003, InsertPlaneClouds003, InsertRainForest003, InsertRainWindow003, InsertRiverBank003 } from "./Scenes003b";
 
 export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   night_walk: InsertNightWalk,
@@ -35,6 +35,7 @@ export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   plane_clouds: InsertPlaneClouds003,
   rain_window: InsertRainWindow003,
   rain_forest: InsertRainForest003,
+  forest_floor: InsertForestFloor003,
   river_bank: InsertRiverBank003,
   exit_diagram: InsertExitDiagram003,
 };
