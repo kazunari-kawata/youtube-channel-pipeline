@@ -3,6 +3,7 @@
   python pipeline/tts_elevenlabs.py 001-plains            # 生成（同じ文はキャッシュを使い、再課金しない）
   python pipeline/tts_elevenlabs.py 001-plains --only n05 # 1区間だけ作り直す（キャッシュを無視）
   python pipeline/tts_elevenlabs.py 001-plains --dry-run  # 文字数と概算費用だけ表示
+  python pipeline/tts_elevenlabs.py 001-plains --max-new 4 # 新しく作るまとまりを4つまでで止める（作業用シェルの時間の上限対策。もう一度回すと続きから）
 
 narration.json の各区間：
   caption  台本の文（概要欄や確認用。画面には出さない）
@@ -259,14 +260,20 @@ def _offset(env, t0, t1) -> float:
     return min(t1, (on[-1] + 1) / 100 + 0.06) if on else t1
 
 
+def chunk_paths(chunk, tail, t, cache):
+    """まとまりのキャッシュの置き場所（文・足す文・声の設定が同じなら同じ名前）"""
+    texts = [tts_text(s) for s in chunk]
+    sig = json.dumps([texts, tail, t["voice_id"], t["model_id"], t.get("voice_settings"), t.get("seed"),
+                      t.get("language_code"), "chunk-v1"], ensure_ascii=False, sort_keys=True)
+    h = hashlib.sha1(sig.encode("utf-8")).hexdigest()[:16]
+    return cache / f"chunk_{chunk[0]['id']}_{h}.mp3", cache / f"chunk_{chunk[0]['id']}_{h}.json", h
+
+
 def gen_chunk(chunk, tail, t, key, cache, force):
     """まとまり1つを生成（キャッシュあり）。返り値：音声、区間ごとの（声の始まり, 終わり）秒、課金文字数"""
     texts = [tts_text(s) for s in chunk]
     full = "".join(texts) + tail
-    sig = json.dumps([texts, tail, t["voice_id"], t["model_id"], t.get("voice_settings"), t.get("seed"),
-                      t.get("language_code"), "chunk-v1"], ensure_ascii=False, sort_keys=True)
-    h = hashlib.sha1(sig.encode("utf-8")).hexdigest()[:16]
-    mp3, js = cache / f"chunk_{chunk[0]['id']}_{h}.mp3", cache / f"chunk_{chunk[0]['id']}_{h}.json"
+    mp3, js, h = chunk_paths(chunk, tail, t, cache)
     billed = 0
     if force or not (mp3.exists() and js.exists()):
         r = request_with_timestamps(full, t, key)
@@ -292,14 +299,24 @@ def gen_chunk(chunk, tail, t, key, cache, force):
     return a, spans, cuts[-1], billed, h
 
 
-def build_chunked(segs, t, fps, key, cache, seg_dir, only):
+def build_chunked(segs, t, fps, key, cache, seg_dir, only, max_new=None):
     chunks = plan_chunks(segs, int(t.get("max_chunk_chars", 450)))
     pieces = [np.zeros(int(t["lead"] * SR), np.float32)]
     pos = t["lead"]
     timeline, billed, audios, metas = [], 0, [], []
+    new = 0
     for k, ch in enumerate(chunks):
         tail = tts_text(chunks[k + 1][0]) if k + 1 < len(chunks) else TAIL_LAST
         force = any(s["id"] in only for s in ch)
+        mp3, js, _ = chunk_paths(ch, tail, t, cache)
+        if force or not (mp3.exists() and js.exists()):
+            # 1回の実行で新しく作るまとまりの数を区切る（作業用シェルの時間の上限で、生成の途中で止められると、
+            # 課金されたのに音声が残らない。区切って何回かに分けて回し、作ったまとまりはキャッシュから使う）
+            if max_new is not None and new >= max_new:
+                left = sum(1 for j in range(k, len(chunks)))
+                print(f"ここで止めます（新しく作ったまとまり {new}、残り {left}）。もう一度同じコマンドを回すと続きから作ります（作ったまとまりは再課金なし）")
+                sys.exit(3)
+            new += 1
         a, spans, cut, b, h = gen_chunk(ch, tail, t, key, cache, force)
         billed += b
         # 残すのは最初の声の始まりから、最後の声の終わり＋0.12秒（足した文の手前の無音まで）
@@ -335,6 +352,7 @@ def main():
     ap.add_argument("episode")
     ap.add_argument("--only", help="作り直す区間ID（カンマ区切り）。キャッシュを使わない")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--max-new", type=int, help="1回の実行で新しく作るまとまりの数の上限（まとめて生成のとき）。超えたら止まり、もう一度回すと続きから")
     args = ap.parse_args()
 
     cfg = load_config(args.episode)
@@ -362,7 +380,7 @@ def main():
     if stitching(t):
         pieces, timeline, billed = build_segmentwise(segs, t, fps, key, cache, seg_dir, only)
     else:
-        pieces, timeline, billed = build_chunked(segs, t, fps, key, cache, seg_dir, only)
+        pieces, timeline, billed = build_chunked(segs, t, fps, key, cache, seg_dir, only, args.max_new)
     pos = sum(len(x) for x in pieces) / SR
     wav = np.concatenate(pieces)
     meter = pyln.Meter(SR)
