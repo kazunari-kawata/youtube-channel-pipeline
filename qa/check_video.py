@@ -279,9 +279,13 @@ def onscreen_text_checks(episode: str, rep: Report):
     used = []
     for s in json.loads((episode_dir(episode) / "narration.json").read_text(encoding="utf-8")):
         for v in (s.get("visual"), (s.get("cut") or {}).get("visual")):
-            if isinstance(v, dict) and v.get("kind") == "doc" and not v.get("ja") and v.get("src") not in ja:
-                used.append(f"{s['id']} {v.get('src')}")
-    rep.add("資料の画面に日本語の説明がある", not used, used or "すべてあり", "すべてあり", "F-020")
+            if isinstance(v, dict) and v.get("kind") == "doc":
+                lines = v.get("ja") or ja.get(v.get("src")) or []
+                if not lines:
+                    used.append(f"{s['id']} {v.get('src')}")
+                elif len(lines) < 2:  # 見出しだけでは何の資料か分からない（F-041）。見出し＋本文
+                    used.append(f"{s['id']} {v.get('src')}（見出しだけ）")
+    rep.add("資料の画面に日本語の説明（見出しと本文）がある", not used, used or "すべてあり", "すべてあり", "F-020、F-041")
 
 
 def doc_notes(episode: str) -> dict[str, list[str]]:

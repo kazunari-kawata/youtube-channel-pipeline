@@ -57,6 +57,7 @@ const META: Record<string, DocMeta> = {
   fbi_tie: { title: "機内に残されたネクタイ", source: FBI_WEB },
   fbi_money_1980: { title: "1980年に見つかった紙幣", source: FBI_WEB },
   fbi_ticket: { title: "男が「ダン・クーパー」の名で買った航空券", source: FBI_WEB },
+  fbi_sketches_web: { title: "FBIの似顔絵", source: FBI_WEB },
   fbi_parachute: { title: "機内に残されたパラシュート", source: FBI_WEB },
   fbi_parachute_bag: { title: "パラシュートの袋", source: FBI_WEB },
   fbi_map_2007: { title: "305便の飛行ルートの航空図（2007年公開）", source: FBI_WEB },

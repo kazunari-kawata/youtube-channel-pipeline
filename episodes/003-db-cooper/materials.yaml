@@ -155,7 +155,13 @@ items:
     file: fbi/sketch.jpg
     original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
     status: pd_federal
-    note: FBI の Exhibit Section が作った似顔絵（V77 p.249）。捜査資料として見せる。拡大して不気味に見せる演出や、ほかの人物の写真と並べる見せ方はしない（特定の人をほのめかすことになる）。どの版かと作成年をキャプションで確かめる
+    note: FBI の Exhibit Section が作った似顔絵（V77 p.249）。捜査資料として見せる。拡大して不気味に見せる演出や、ほかの人物の写真と並べる見せ方はしない（特定の人をほのめかすことになる）。どの版かと作成年をキャプションで確かめる。2026-11-26：Vault の写しは線だけの2値の画像で見づらい（ユーザー指摘、F-040）。画面には fbi_sketches_web を使う
+  - id: fbi_sketches_web
+    title: "FBI公式ページの似顔絵2枚（左：サングラスをかけた白黒の似顔絵、右：色つきの似顔絵）"
+    file: fbi/fbi_sketches_web.png
+    original: https://www.fbi.gov/history/cases-and-criminals/db-cooper-hijacking
+    status: pd_federal
+    note: "https://www.fbi.gov/image-repository/cooper-sketches.jpeg/@@images/image/high（1037x810）。FBIの説明は「D.B.クーパーと呼ばれる男の、FBIの画家による似顔絵」。2026-11-26 に Windows の Chrome に原寸で表示して写した。版と作成年はページに書かれていないので、画面では言わない（Commons では右の色つきは1973年の版とされるが、FBIの記載では確かめていない）。捜査資料として見せ、ほかの人物の写真と並べない"
   - id: fbi_tie
     title: "残されたクリップ式のネクタイの写真（FBI公式ページ）"
     file: fbi/fbi_tie.jpg

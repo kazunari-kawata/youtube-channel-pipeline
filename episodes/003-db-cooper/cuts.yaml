@@ -32,6 +32,8 @@
 - {name: fbi_v77_p250, file: fbi/vault_p77_p250.png, crop: [0.18, 0.2552, 0.88, 0.3518]}   # 人相書き 2ページ目：服装の行
 - {name: fbi_v77_p250__sunglasses, file: fbi/vault_p77_p250.png, crop: [0.36, 0.089, 0.88, 0.1445]}   # 人相書き 2ページ目：飛行の後半のサングラス
 - {name: fbi_sketch, file: fbi/sketch.jpg}   # 似顔絵（Part 77 p.250 の左の絵。次のページの見出しは ORIGINAL MONTAGE）
+- {name: fbi_sketches_web, file: fbi/fbi_sketches_web.png}   # FBI 公式ページの似顔絵2枚（左：サングラスの白黒、右：色つき）。Windows の Chrome に原寸 1037x810 で表示して写した
+- {name: fbi_sketches_web__color, file: fbi/fbi_sketches_web.png, crop: [0.496, 0.0, 1.0, 1.0]}   # 右の色つきの似顔絵だけ
 
 # ---------- 当時の写真（EPA の DOCUMERICA、国立公文書館。フィルムの黒い縁は落とす） ----------
 - {name: doc_pdx_airport, file: documerica/pdx_airport_548166.jpg, crop: [0.012, 0.235, 0.97, 0.985]}   # 上の機体の航空会社名は入れない（事件の便とは別の会社）

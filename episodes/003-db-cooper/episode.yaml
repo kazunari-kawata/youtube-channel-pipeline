@@ -8,4 +8,4 @@ bgm:
   tracks: [assets/bgm/aether.mp3, assets/bgm/red_shift.mp3]
 
 # 本人の姿（F-022）。写真はないので、FBIの Exhibit Section が作った似顔絵（V77 p.249）を本人の姿として扱う
-person_photos: [fbi_sketch]
+person_photos: [fbi_sketches_web]
