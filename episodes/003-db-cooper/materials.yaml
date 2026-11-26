@@ -162,6 +162,13 @@ items:
     original: https://www.fbi.gov/history/famous-cases/db-cooper-hijacking
     status: pd_federal
     note: "fbi_famous_case の写真7点のうちの1枚。台本で使う id として分けた"
+  - id: fbi_ticket
+    title: "男が「ダン・クーパー」の名で買った305便の航空券（FBI の写真、2016年7月の公開）"
+    file: fbi/fbi_ticket_2016.jpg
+    url: https://upload.wikimedia.org/wikipedia/commons/3/37/July_2016_D.B._Cooper_Plane_Ticket_%2828379315406%29.jpg
+    original: https://www.fbi.gov/history/artifacts/d-b-cooper-plane-ticket
+    status: pd_federal
+    note: "FBI が2016年7月に公開した写真（Flickr 28379315406）を写した Wikimedia Commons のファイル（作者 FBI、Public domain と表示）。fbi.gov はクラウドからもユーザーの PC のシェルからも 403。写っているのは乗客の名前（手書きの DAN COOPER）、PTLND ORE→SEATTLE、305便、11/24/71、運賃18.52ドル＋税1.48ドル＝20.00ドル。航空会社の名前は事件の便そのものなので切らない"
   - id: fbi_money_1980
     title: "1980年に見つかった紙幣の写真（FBI公式ページ）"
     file: fbi/commons_money_1980.jpg

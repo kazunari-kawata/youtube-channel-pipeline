@@ -47,3 +47,4 @@
 
 # ---------- FBI の写真（fbi.gov。クラウドから取れないものは Commons の写しから） ----------
 - {name: fbi_money_1980, file: fbi/commons_money_1980.jpg}   # 1980年に見つかった紙幣（FBI の2007年の記事の写真）
+- {name: fbi_ticket, file: fbi/fbi_ticket_2016.jpg, crop: [0.06, 0.14, 0.94, 0.86]}   # 305便の航空券（灰色の台の余白を落とす）

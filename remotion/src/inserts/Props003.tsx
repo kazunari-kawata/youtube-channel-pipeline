@@ -14,8 +14,11 @@ import { Build } from "../lib/Figure";
 type V3 = [number, number, number];
 
 /** 1971年の男：40代半ば、中肉、濃い色のスーツと黒いレインコート、濃い茶色の髪（FBIの人相書き）。眼鏡なし。顔は描かない */
-export const COOPER_71: Build = { shoulder: 0.9, width: 1.08, jacket: "#232427", trousers: "#202125", shoes: "#14100c", skin: "#16110e", hair: "#241b15" };
+// FBI の人相書き：黒か茶色のスーツ、白いシャツ、細い黒のクリップ式ネクタイ（F-035。スーツの紳士に見えるように）
+export const COOPER_71: Build = { shoulder: 0.9, width: 1.08, jacket: "#232427", trousers: "#202125", shoes: "#14100c", skin: "#16110e", hair: "#241b15", suit: { shirt: "#c4beb2", tie: "#0c0c0e" } };
 /** 背景の乗客・旅行者（色だけ替える。顔は描かない） */
+// 客室乗務員（女性、1971年の制服の輪郭：上着とスカート、白いブラウス、まとめ髪）。実在の航空会社の制服の色・記章はまねない
+export const ATTENDANT_71: Build = { shoulder: 0.8, width: 0.9, jacket: "#2f3a4e", trousers: "#5a4a40", shoes: "#141210", skin: "#16110e", hair: "#3b2a1e", suit: { shirt: "#c9c3b6" }, skirt: "#2f3a4e", bun: true };
 export const TRAVELER_A: Build = { shoulder: 0.88, width: 1.04, jacket: "#5a4a36", trousers: "#3b3a36", shoes: "#1a1512", skin: "#16110e", hair: "#3a2c20" };
 export const TRAVELER_B: Build = { shoulder: 0.84, width: 1.0, jacket: "#3e4a5a", trousers: "#2e3038", shoes: "#141414", skin: "#16110e", hair: "#5c4a36" };
 
@@ -207,8 +210,8 @@ export const calendarTexture = () =>
 /* ---------- 旅客機（ボーイング727 の形。塗装・ロゴ・文字なし） ---------- */
 
 /** 長さ約46m を 1 とした縮尺ではなく、メートルで作る。原点は胴体の中心、機首は +x */
-export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; lights?: number; stairs?: boolean; cabin?: number }> = ({
-  position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, lights = 0.6, stairs = false, cabin = 0.3,
+export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; lights?: number; stairs?: boolean; cabin?: number; gear?: boolean }> = ({
+  position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, lights = 0.6, stairs = false, cabin = 0.3, gear = false,
 }) => {
   const skin = useMemo(() => new THREE.MeshStandardMaterial({ color: "#aeb3b8", roughness: 0.45, metalness: 0.35 }), []);
   const dark = useMemo(() => new THREE.MeshStandardMaterial({ color: "#3b3f44", roughness: 0.6, metalness: 0.3 }), []);
@@ -253,6 +256,22 @@ export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; li
           <planeGeometry args={[28, 0.22]} />
         </mesh>
       ))}
+      {/* 車輪（地上・着陸の場面）。胴体の中心から 2.95m 下が地面。前輪1本、主翼の付け根の下に2本 */}
+      {gear
+        ? ([[14, 0, 0.4, -1.7], [-1.5, -2.6, 0.55, -1.2], [-1.5, 2.6, 0.55, -1.2]] as [number, number, number, number][]).map(([gx, gz, wr, top], i) => (
+            <group key={`g${i}`} position={[gx, 0, gz]}>
+              <mesh position={[0, (top + (-2.95 + wr)) / 2, 0]} material={dark}>
+                <cylinderGeometry args={[0.12, 0.12, top - (-2.95 + wr), 8]} />
+              </mesh>
+              {[-0.26, 0.26].map((dz) => (
+                <mesh key={dz} position={[0, -2.95 + wr, dz]} rotation={[Math.PI / 2, 0, 0]}>
+                  <cylinderGeometry args={[wr, wr, 0.3, 16]} />
+                  <meshStandardMaterial color="#141414" roughness={0.9} />
+                </mesh>
+              ))}
+            </group>
+          ))
+        : null}
       {/* 主翼 */}
       {[-1, 1].map((sd) => (
         <mesh key={`w${sd}`} geometry={wing} material={skin} position={[3, -1.1 + (sd > 0 ? 0 : 0.35), sd * 1.2]} rotation={[sd * Math.PI / 2, 0, 0]} castShadow />

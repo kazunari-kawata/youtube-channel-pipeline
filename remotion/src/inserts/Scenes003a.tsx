@@ -10,11 +10,11 @@
 import React, { useMemo } from "react";
 import { interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
-import { Figure } from "../lib/Figure";
+import { Build, Figure } from "../lib/Figure";
 import { WoodMaterial } from "./Era80s";
 import { Camera, CamKey, SceneProps, Stage } from "./Inserts";
 import {
-  bokehTexture, calendarTexture, carpetTexture, CeilingLights, ChairRow, CloudLayer, COOPER_71, Desk, DeskPhone, dropsTexture, FileBox, FilingCabinet,
+  ATTENDANT_71, bokehTexture, calendarTexture, carpetTexture, CeilingLights, ChairRow, CloudLayer, COOPER_71, Desk, DeskPhone, dropsTexture, FileBox, FilingCabinet,
   Jet727, PaperStack, terrazzoTexture, TRAVELER_A, TRAVELER_B, Typewriter,
 } from "./Props003";
 
@@ -100,19 +100,22 @@ const Briefcase: React.FC<{ position: V3; rotY?: number }> = ({ position, rotY =
 
 /** 確認用（本編では使わない）：人物 COOPER_71 を灰色の背景で前後左右から見る（F-008、F-010。Figure-Check の 003 版）。
  *  共有の Figure-Check は 002 の体つきなので、003 の場面の角度 fig0・fig90・fig180・fig270 で見る */
-const Cooper71Check: React.FC<{ deg: number }> = ({ deg }) => {
+const Cooper71Check: React.FC<{ deg: number; close?: boolean; build?: Build }> = ({ deg, close, build = COOPER_71 }) => {
   const a = (deg / 180) * Math.PI;
-  const cam: CamKey = { pos: [Math.sin(a) * 3.4, 1.15, Math.cos(a) * 3.4], target: [0, 0.95, 0], fov: 35 };
+  const d = close ? 1.25 : 3.4;
+  const cam: CamKey = { pos: [Math.sin(a) * d, close ? 1.5 : 1.15, Math.cos(a) * d], target: [0, close ? 1.42 : 0.95, 0], fov: 35 };
   return (
     <Stage fog={0} exposure={1.0} bloom={0} grade="none" bg="#7a7a7a" hemi={["#ffffff", "#444444", 2.0]}>
       <Camera from={cam} to={cam} />
       <directionalLight position={[3, 5, 4]} intensity={2.5} />
-      <Figure clip="Idle_Loop" position={[0, 0, 0]} glasses={false} build={COOPER_71} />
+      <Figure clip="Idle_Loop" position={[0, 0, 0]} glasses={false} build={build} />
     </Stage>
   );
 };
 
 export const InsertAirportWalk003: React.FC<SceneProps> = ({ variant = "a" }) => {
+  if (variant === "figc") return <Cooper71Check deg={20} close />;
+  if (variant.startsWith("afig")) return <Cooper71Check deg={Number(variant.slice(4)) || 0} build={ATTENDANT_71} />;
   if (variant.startsWith("fig")) return <Cooper71Check deg={Number(variant.slice(3)) || 0} />;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -508,11 +511,13 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
     ash2: [{ pos: [row18 + 0.32, 0.78, seatZ + 0.12], target: [row18, 0.64, seatZ + 0.25], fov: 26 }, { pos: [row18 + 0.3, 0.76, seatZ + 0.1], target: [row18, 0.64, seatZ + 0.25], fov: 24 }],
     // tray：前の席の背のテーブルに、空のコップとたたんだ紙幣（人物なし）
     tray: [{ pos: [row18 - 0.05, 1.18, seatZ - 0.12], target: [row18 + 0.45, 0.75, seatZ], fov: 36 }, { pos: [row18 - 0.02, 1.14, seatZ - 0.1], target: [row18 + 0.45, 0.75, seatZ], fov: 34 }],
+    // ask：通路に立つ客室乗務員が、席の男に尋ねる（2026-11-26 ユーザーの指示）。前の列の背の上から見下ろす
+    ask: [{ pos: [row18 + 2.3, 1.78, -0.42], target: [row18 + 0.02, 1.0, 0.45], fov: 40 }, { pos: [row18 + 2.15, 1.76, -0.4], target: [row18 + 0.02, 1.0, 0.45], fov: 39 }],
     // empty：誰もいない座席の列を、後ろの戸の方へ
     empty: [{ pos: [5.5, 1.6, -0.2], target: [-8, 1.0, 0.2], fov: 38 }, { pos: [5.0, 1.6, -0.2], target: [-8, 1.0, 0.2], fov: 37 }],
   };
   const [from, to] = cams[variant] ?? cams.a;
-  const sky = variant === "d" || variant === "a" || variant === "tray" ? "dusk" : "night";
+  const sky = variant === "d" || variant === "a" || variant === "tray" || variant === "ask" ? "dusk" : "night";
   const person = variant === "a" || variant === "b";
   return (
     <Stage fog={0.02} exposure={1.0} bg="#0a0c12" hemi={["#f0e2c8", "#2a241c", 0.45]}>
@@ -523,6 +528,13 @@ export const InsertCabinSeat003: React.FC<SceneProps> = ({ variant = "a" }) => {
           {/* 座席に座る後ろ姿（顔は見えない）。前の方にほかの乗客の頭 */}
           <Figure clip="Sitting_Idle_Loop" position={[row18 - 0.02, 0.08, seatZ]} rotationY={Math.PI / 2} glasses={false} build={COOPER_71} />
           <Figure clip="Sitting_Idle_Loop" position={[row18 + 3 * SEAT_PITCH - 0.02, 0.08, -0.95]} rotationY={Math.PI / 2} timeOffset={1.1} glasses={false} build={TRAVELER_A} />
+        </>
+      ) : null}
+      {variant === "ask" ? (
+        <>
+          {/* 席の男は座って答え、通路の乗務員は男の方を向いて話す（顔なし） */}
+          <Figure clip="Sitting_Talking_Loop" position={[row18 - 0.02, 0.08, seatZ]} rotationY={Math.PI / 2} glasses={false} build={COOPER_71} />
+          <Figure clip="Idle_Talking_Loop" position={[row18 + 0.1, 0, 0.0]} rotationY={-0.15} timeOffset={0.7} glasses={false} build={ATTENDANT_71} />
         </>
       ) : null}
       {/* 肘掛けの灰皿（70年代の機内には肘掛けに灰皿があった） */}

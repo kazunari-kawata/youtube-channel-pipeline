@@ -8,7 +8,7 @@
  * 動くものはゆっくり（雨は降る筋を描かず、窓の粒と霧と音で出す。速く落ちる細い線はチラつきになる）。
  */
 import React, { useMemo } from "react";
-import { interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
+import { Easing, interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
 import { Camera, CamKey, SceneProps, Stage } from "./Inserts";
 import { bokehTexture, CloudLayer, Driftwood, dropsTexture, Forest, Jet727, sandTexture } from "./Props003";
@@ -48,6 +48,8 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
   const t = frame / fps;
   if (variant === "d") return <ForestFromAbove t={t} />;
   if (variant === "e") return <RunwayNight t={t} />;
+  if (variant === "f") return <TakeoffNight t={t} />;
+  if (variant === "g") return <LandingNight t={t} />;
   // a・b・c：夜の雨雲の中。機体はゆっくり遠ざかる（画面の上で速く動かない距離に置く）
   const planeX = -t * 4; // 機体はゆっくり遠ざかる（カメラも少し追う）
   const fade = variant === "c" ? interpolate(t, [1.5, 6.5], [0.9, 0], clamp) : 0.5;
@@ -57,15 +59,22 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
     // 雲だけ、遠い灯りが消える。雲の板は +z を向いているので、カメラは -z の方を向ける（横から見ると板が細くなって何も映らない）
     c: [{ pos: [10, 2, 62], target: [-6, 1, 0], fov: 34 }, { pos: [8, 2.2, 59], target: [-11, 1, 0], fov: 33 }],
     zz: [{ pos: [0, 10, 70], target: [0, 0, 0], fov: 40 }, { pos: [0, 10, 70], target: [0, 0, 0], fov: 40 }], // 確認用：機体を横から（本編では使わない）
+    // h：夕方、雲の上で旋回しながら待つ機体（シアトルの上空を回って金を待った時間）。斜め上から
+    h: [{ pos: [34, 4, 46], target: [-2, 1, 0], fov: 30 }, { pos: [29, 3.8, 44], target: [-12, 1, 0], fov: 29 }],
   };
   const [from, to] = cams[variant] ?? cams.a;
   // c は機体がないので、雲そのものを見せる：月明かりを強めて、雲を明るく濃くする（暗いままだと何も映らない画面になる）
-  const cl = variant === "c" ? { k: 2.4, lo: "#aab6cc", hi: "#9aa6bc", mid: "#b6c0d4", near: "#c2cadc", op: 1.25 } : { k: 1.5, lo: "#8f9bb4", hi: "#7d89a3", mid: "#9ca8c0", near: "#a8b2c8", op: 1.1 };
+  const cl =
+    variant === "c"
+      ? { k: 2.4, lo: "#aab6cc", hi: "#9aa6bc", mid: "#b6c0d4", near: "#c2cadc", op: 1.25 }
+      : variant === "h"
+        ? { k: 1.8, lo: "#a4929a", hi: "#8a8496", mid: "#b09ea2", near: "#bcaeb0", op: 1.1 } // 夕方：雲の上の面に残る夕日の色
+        : { k: 1.5, lo: "#8f9bb4", hi: "#7d89a3", mid: "#9ca8c0", near: "#a8b2c8", op: 1.1 };
   return (
-    <Stage fog={variant === "b" ? 0.006 : variant === "c" ? 0.006 : 0.008} exposure={1.15} bloom={0.5} bg={variant === "c" ? "#151b28" : "#1b2333"} hemi={["#6a7a9a", "#10131a", 0.9]}>
+    <Stage fog={variant === "b" ? 0.006 : variant === "c" ? 0.006 : 0.008} exposure={1.15} bloom={0.5} bg={variant === "c" ? "#151b28" : variant === "h" ? "#3b3a4c" : "#1b2333"} hemi={variant === "h" ? ["#c8a898", "#1a1820", 0.9] : ["#6a7a9a", "#10131a", 0.9]}>
       <Camera from={from} to={to} />
-      <directionalLight position={[40, 60, 30]} intensity={cl.k} color="#a8b8d8" />
-      {variant !== "c" ? <Jet727 position={[planeX, 0, 0]} rotation={[0, Math.PI, 0.02]} lights={0.9} cabin={0.6} /> : null}
+      <directionalLight position={variant === "h" ? [-60, 25, 20] : [40, 60, 30]} intensity={cl.k} color={variant === "h" ? "#e6b894" : "#a8b8d8"} />
+      {variant !== "c" ? <Jet727 position={[planeX, 0, 0]} rotation={[variant === "h" ? 0.2 : 0, Math.PI, 0.02]} lights={0.9} cabin={0.6} /> : null}
       {variant === "c" ? (
         // 遠い灯りだけ。だんだん雲に消えていく
         <mesh position={[-14 - t * 3, 3, -40]}>
@@ -134,6 +143,76 @@ const RunwayNight: React.FC<{ t: number }> = ({ t }) => {
       <spotLight position={[-40, 30, 25]} angle={0.5} penumbra={1} intensity={2500} distance={0} decay={2} color="#cfd8ea" />
       {/* 雨の夜の空の雲（低く） */}
       <CloudLayer t={t} y={45} count={16} spread={300} drift={1.0} color="#2c3446" opacity={0.6} seed={41} size={90} />
+    </Stage>
+  );
+};
+
+/** f：シアトル・タコマ空港を再び離陸する 305便（2026-11-26 ユーザーの指示。4:28 の「再び離陸します」）。
+ *  滑走の途中から、後ろの斜めから見る。機体は遠ざかりながら機首を上げ、雨の夜へ上っていく。
+ *  画面を横切らせない（灯りが速く横に動くとチラつく）。遠ざかるほど霧に溶ける */
+const TakeoffNight: React.FC<{ t: number }> = ({ t }) => {
+  const from: CamKey = { pos: [-72, 2.6, 22], target: [10, 6, 0], fov: 30 };
+  const to: CamKey = { pos: [-71, 2.7, 21.5], target: [55, 13, 0], fov: 29 };
+  const bokeh = bokehTexture("runway", ["#ffd9a0", "#a8c8ff", "#fff2d8"], 30);
+  const tr = 1.0; // 機首を上げはじめる時刻（区間は5秒ほど）
+  const x = -40 + 30 * t + 1.5 * t * t; // 滑走の途中から加速
+  const pitch = interpolate(t, [tr, tr + 1.6], [0, 0.13], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const climb = Math.max(0, t - tr - 0.6);
+  // 機体の中心で回すと尾部が地面に沈むので、尾部の近くを支点にしたように中心を持ち上げる
+  const y = 2.95 + 17 * Math.sin(pitch) + 2.4 * climb * climb;
+  // 機体を照らす点光源は、濡れた滑走路に白い縦の筋を映すので使わない。空の明るさ（hemi）を上げて機体の形を出す
+  return (
+    <Stage fog={0.0035} exposure={1.2} bloom={0.4} bg="#161d2b" hemi={["#8a9aba", "#0c0e12", 1.9]}>
+      <Camera from={from} to={to} />
+      <Tarmac />
+      <Jet727 position={[x, y, 0]} rotation={[0, 0, pitch]} lights={0.8} cabin={0.45} gear />
+      <RunwayLights z={-24} x0={-140} x1={420} />
+      <RunwayLights z={24} x0={-140} x1={420} />
+      <mesh position={[160, 14, -200]}>
+        <planeGeometry args={[520, 44]} />
+        <meshBasicMaterial map={bokeh} />
+      </mesh>
+      <spotLight position={[-40, 30, 25]} angle={0.5} penumbra={1} intensity={2500} distance={0} decay={2} color="#cfd8ea" />
+      <CloudLayer t={t} y={45} count={16} spread={400} drift={1.0} color="#2c3446" opacity={0.6} seed={41} size={90} />
+    </Stage>
+  );
+};
+
+/** g：シアトル・タコマ空港に着陸して滑走する 305便（2026-11-26 ユーザーの指示。「着陸したのは、午後5時46分です」）。
+ *  滑走路の端の近くから、奥を正面に見る。機体は遠くで降りてきて接地し、こちらへ向かって減速しながら滑走し、手前に来る前に止まる。
+ *  正面から近づくだけで、画面を横切らせない（灯りが速く横に動くとチラつく） */
+const LandingNight: React.FC<{ t: number }> = ({ t }) => {
+  const from: CamKey = { pos: [-80, 3.0, 20], target: [160, 7, 0], fov: 22 };
+  const to: CamKey = { pos: [-80, 3.0, 20], target: [60, 4, 0], fov: 22 };
+  const bokeh = bokehTexture("runway", ["#ffd9a0", "#a8c8ff", "#fff2d8"], 30);
+  const td = 1.8; // 接地の時刻（区間は6秒ほど）
+  const v = 48; // 接地の速さ（m/秒。少し遅めにして画面の動きを抑える）
+  const xTd = 180;
+  // 接地までは一定の速さで降りてくる。接地のあとは減速しながら、カメラの 100m ほど先まで滑走する
+  const x = t < td ? xTd + v * (td - t) : xTd - v * (t - td) + 2.5 * (t - td) * (t - td);
+  const y = t < td ? 2.95 + 2.6 * (td - t) * (td - t) : 2.95;
+  // 着陸の直前に機首を少し上げ、接地のあと下ろす
+  const pitch = t < td ? interpolate(t, [0, td], [0.03, 0.07], clamp) : interpolate(t, [td, td + 1.5], [0.07, 0], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  return (
+    <Stage fog={0.003} exposure={1.2} bloom={0.4} bg="#161d2b" hemi={["#8a9aba", "#0c0e12", 1.9]}>
+      <Camera from={from} to={to} />
+      <Tarmac />
+      <Jet727 position={[x, y, 0]} rotation={[0, Math.PI, pitch]} lights={0.8} cabin={0.45} gear />
+      {/* 着陸灯（主翼の付け根、こちら向き）。にじみのしきい値より暗く */}
+      {[-1, 1].map((sd) => (
+        <mesh key={sd} position={[x - 6, y - 0.6, sd * 3.2]}>
+          <sphereGeometry args={[0.28, 12, 10]} />
+          <meshBasicMaterial color={new THREE.Color("#fff2d8").multiplyScalar(1.2)} toneMapped={false} />
+        </mesh>
+      ))}
+      <RunwayLights z={-24} x0={-140} x1={460} />
+      <RunwayLights z={24} x0={-140} x1={460} />
+      <mesh position={[160, 14, -200]}>
+        <planeGeometry args={[520, 44]} />
+        <meshBasicMaterial map={bokeh} />
+      </mesh>
+      <spotLight position={[-40, 30, 25]} angle={0.5} penumbra={1} intensity={2500} distance={0} decay={2} color="#cfd8ea" />
+      <CloudLayer t={t} y={45} count={16} spread={400} drift={1.0} color="#2c3446" opacity={0.6} seed={42} size={90} />
     </Stage>
   );
 };
@@ -260,13 +339,14 @@ export const InsertRainWindow003: React.FC<SceneProps> = ({ variant = "d" }) => 
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
-  const day = variant === "e" || variant === "c";
+  const day = variant === "e" || variant === "c" || variant === "f";
   const cams: Record<string, [CamKey, CamKey]> = {
     b: [{ pos: [0.3, 1.5, 2.6], target: [0, 1.5, 0], fov: 40 }, { pos: [0.25, 1.5, 2.3], target: [0, 1.5, 0], fov: 39 }], // 夜の雨の窓（室内側から）
     c: [{ pos: [-0.6, 1.45, 2.4], target: [0.4, 2.5, -10], fov: 42 }, { pos: [-0.55, 1.45, 2.2], target: [0.4, 2.5, -10], fov: 41 }], // 雨の上がった窓、遠い滑走路の灯り
     d: [{ pos: [0.8, 1.55, 2.2], target: [-0.3, 1.5, -10], fov: 40 }, { pos: [0.7, 1.55, 2.0], target: [-0.3, 1.5, -10], fov: 39 }], // 雨の窓に映る空港の灯り
     e: [{ pos: [0.2, 1.6, 2.6], target: [0, 3.6, -30], fov: 40 }, { pos: [0.15, 1.6, 2.4], target: [0, 3.6, -30], fov: 39 }], // 窓越しの機体の尾部
     g: [{ pos: [0.5, 1.6, 2.5], target: [0, 1.4, -30], fov: 42 }, { pos: [0.45, 1.6, 2.3], target: [0, 1.4, -30], fov: 41 }], // 雨の駐機場の機体と、近づく車の灯り
+    f: [{ pos: [0.4, 1.55, 2.6], target: [-2, 2.6, -40], fov: 40 }, { pos: [0.35, 1.55, 2.35], target: [-2, 2.6, -40], fov: 39 }], // 昼の雨の窓越しに、搭乗口の 727 を横から（機体の全体）
   };
   const [from, to] = cams[variant] ?? cams.d;
   // g：近づく車の灯り（遠くから、ゆっくり明るくなる。画面を横切らない）
@@ -280,7 +360,7 @@ export const InsertRainWindow003: React.FC<SceneProps> = ({ variant = "d" }) => 
   return (
     <Stage fog={day ? 0.006 : 0.006} exposure={day ? 1.0 : 1.15} bloom={day ? 0 : 0.3} bg={outsideBg} hemi={day ? ["#b6c0cc", "#3a3a3c", 0.8] : ["#4a5a7a", "#0a0c10", 0.7]}>
       <Camera from={from} to={to} />
-      <WetWindow t={t} drops={variant === "c" ? 0.3 : variant === "e" ? 0.45 : 0.8}>
+      <WetWindow t={t} drops={variant === "c" ? 0.3 : variant === "e" || variant === "f" ? 0.45 : 0.8}>
         <group position={[0, 0, -2]}>
           {day ? (
             <>
@@ -300,8 +380,14 @@ export const InsertRainWindow003: React.FC<SceneProps> = ({ variant = "d" }) => 
               <meshBasicMaterial map={bokeh} />
             </mesh>
           )}
-          {variant === "e" || variant === "g" ? (
-            <Jet727 position={variant === "e" ? [16, 2.95, -72] : [-4, 2.95, -60]} rotation={[0, variant === "e" ? Math.PI / 2 + 0.5 : -0.5, 0]} lights={day ? 0 : 0.7} cabin={day ? 0 : 0.35} />
+          {variant === "e" || variant === "g" || variant === "f" ? (
+            <Jet727
+              position={variant === "e" ? [16, 2.95, -72] : variant === "f" ? [-6, 2.95, -62] : [-4, 2.95, -60]}
+              rotation={[0, variant === "e" ? Math.PI / 2 + 0.5 : variant === "f" ? -0.22 : -0.5, 0]}
+              lights={day ? 0 : 0.7}
+              cabin={day ? 0 : 0.35}
+              gear
+            />
           ) : null}
           {variant === "c" ? <RunwayLights z={-80} x0={-120} x1={120} step={10} color="#7aa8ff" k={1.0} /> : null}
           {variant === "d" || variant === "b" ? <RunwayLights z={-90} x0={-140} x1={140} step={9} color="#ffd9a0" k={1.0} /> : null}

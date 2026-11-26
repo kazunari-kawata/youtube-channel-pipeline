@@ -29,6 +29,12 @@ export type Build = {
   shoes: string;
   skin: string;
   hair: string; // "none" で髪を付けない（帽子をかぶる警官など）
+  /** スーツの前（白いシャツの襟と V、細いネクタイ、上着の襟の折り返し）。指定しなければ付けない（F-035。003 のクーパー） */
+  suit?: { shirt: string; tie?: string; lapel?: string };
+  /** スカート（女性の制服。003 の客室乗務員）。指定すると、脚は細くして trousers の色（ストッキング）で描き、腰から膝までスカートをはかせる */
+  skirt?: string;
+  /** 髪を後ろでまとめる（女性。髪の色は hair） */
+  bun?: boolean;
 };
 
 // 痩せ型の成人男性、90年代の私服（ジャケットとジーンズ）
@@ -69,6 +75,13 @@ const TROUSER_SEAT = [
   [0.95, 0.142, 0.11, 0.004],
   [0.9, 0.125, 0.095, 0.0],
   [0.875, 0.09, 0.065, 0.0],
+];
+// スカート：[高さ, 横幅の半分, 奥行きの半分, 前後の中心]。膝のすぐ上まで、少しだけ裾を広げる
+const SKIRT = [
+  [1.0, 0.142, 0.112, 0.006],
+  [0.92, 0.156, 0.118, 0.004],
+  [0.78, 0.163, 0.12, 0.0],
+  [0.6, 0.178, 0.124, 0.0],
 ];
 // ズボンの脚：[高さ, 半径]
 const TROUSER_LEG = [
@@ -244,6 +257,81 @@ const stackRings = (table: number[][], joints: [number, number, number, number][
   return rings;
 };
 
+/* ---------- スーツの前（F-035） ----------
+ * 上着の胴（stackRings の輪）の前の面に沿って、少し浮かせた板を張る。頂点の骨の重みは同じ高さの胴の輪から取るので、上着と一緒に動く。
+ * 胴の襟は首を隠すために立てた筒なので、そのままだとタートルネックに見える。前側をシャツの襟にして、V の中にシャツとネクタイ、両側に襟の折り返しを置く */
+const SUIT = { vBottom: 1.315, vTop: 1.5, collarTop: 1.566, vHalf: 0.056 };
+
+const suitFront = (torso: Ring[], build: Build, body: THREE.SkinnedMesh, e = 2.4) => {
+  const s = build.suit!;
+  const ringAt = (y: number) => {
+    let i = 0;
+    while (i < torso.length - 2 && torso[i + 1].c.y < y) i++;
+    const a = torso[i], b = torso[i + 1];
+    const t = THREE.MathUtils.clamp((y - a.c.y) / (b.c.y - a.c.y), 0, 1);
+    const skin: Influence = [...a.skin.map(([k, w]): [number, number] => [k, w * (1 - t)]), ...b.skin.map(([k, w]): [number, number] => [k, w * t])];
+    return { cz: THREE.MathUtils.lerp(a.c.z, b.c.z, t), ru: THREE.MathUtils.lerp(a.ru, b.ru, t), rv: THREE.MathUtils.lerp(a.rv, b.rv, t), skin };
+  };
+  // 胴の断面は |z/ru|^e + |x/rv|^e = 1（tubeGeometry と同じ形）。x の位置の前の面に lift だけ浮かせる
+  const front = (x: number, y: number, lift: number) => {
+    const r = ringAt(y);
+    const k = Math.min(0.97, Math.abs(x) / r.rv);
+    return { p: new THREE.Vector3(x, y, r.cz + r.ru * Math.pow(1 - Math.pow(k, e), 1 / e) + lift), skin: r.skin, rv: r.rv };
+  };
+  const panel = (y0: number, y1: number, span: (y: number) => [number, number], lift: number, cols = 9, step = 0.006) => {
+    const rows = Math.max(2, Math.ceil((y1 - y0) / step) + 1);
+    const pos: number[] = [], si: number[] = [], sw: number[] = [], idx: number[] = [];
+    for (let i = 0; i < rows; i++) {
+      const y = y0 + ((y1 - y0) * i) / (rows - 1);
+      const [l, r] = span(y);
+      for (let j = 0; j < cols; j++) {
+        const f = front(THREE.MathUtils.lerp(l, r, j / (cols - 1)), y, lift);
+        pos.push(f.p.x, f.p.y, f.p.z);
+        const merged = new Map<number, number>();
+        f.skin.forEach(([b, w]) => merged.set(b, (merged.get(b) ?? 0) + w));
+        const top = [...merged.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4);
+        const sum = top.reduce((a, b) => a + b[1], 0) || 1;
+        for (let k = 0; k < 4; k++) { si.push(top[k]?.[0] ?? 0); sw.push(top[k] ? top[k][1] / sum : 0); }
+      }
+    }
+    for (let i = 0; i < rows - 1; i++) {
+      for (let j = 0; j < cols - 1; j++) {
+        const a = i * cols + j, b = a + 1, c = a + cols, d = c + 1;
+        idx.push(a, b, c, b, d, c);
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute("skinIndex", new THREE.Uint16BufferAttribute(si, 4));
+    g.setAttribute("skinWeight", new THREE.Float32BufferAttribute(sw, 4));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    return g;
+  };
+  // V の半幅（下の合わせ目で 0、V の上で vHalf）。その上はシャツの襟が首の前を回り込む
+  const vHalf = (y: number) => SUIT.vHalf * THREE.MathUtils.clamp((y - SUIT.vBottom) / (SUIT.vTop - SUIT.vBottom), 0, 1);
+  const shirtHalf = (y: number) => {
+    if (y <= SUIT.vTop) return vHalf(y);
+    const collar = 0.86 * ringAt(y).rv;
+    return THREE.MathUtils.lerp(SUIT.vHalf, collar, THREE.MathUtils.smoothstep(y, SUIT.vTop, SUIT.vTop + 0.025));
+  };
+  // 細いネクタイ：結び目は少し太く、下へ広がり、V の中に収める（下は上着の合わせ目に隠れる）
+  const tieHalf = (y: number) => {
+    const w = y > 1.505 ? THREE.MathUtils.lerp(0.012, 0.018, (y - 1.505) / 0.04) : THREE.MathUtils.lerp(0.02, 0.0095, (y - 1.33) / 0.175);
+    return y > SUIT.vTop + 0.004 ? w : Math.min(w, 0.88 * vHalf(y));
+  };
+  // 襟の折り返しは上着よりわずかに明るく。幅は胸（1.46m）で一番広く、下の合わせ目と首元で細くなる
+  const lapel = s.lapel ?? `#${new THREE.Color(build.jacket).lerp(new THREE.Color("#ffffff"), 0.045).getHexString()}`;
+  const lapTop = SUIT.vTop + 0.008;
+  const lapW = (y: number) => (y < 1.46 ? THREE.MathUtils.lerp(0.008, 0.04, (y - SUIT.vBottom) / (1.46 - SUIT.vBottom)) : THREE.MathUtils.lerp(0.04, 0.02, (y - 1.46) / (lapTop - 1.46)));
+  return [
+    cloth(panel(SUIT.vBottom, SUIT.collarTop, (y) => [-shirtHalf(y), shirtHalf(y)], 0.003, 13), s.shirt, body, 0.8),
+    ...(s.tie ? [cloth(panel(1.33, 1.548, (y) => [-tieHalf(y), tieHalf(y)], 0.0065, 5), s.tie, body, 0.55)] : []),
+    cloth(panel(SUIT.vBottom, lapTop, (y) => [vHalf(y), vHalf(y) + lapW(y)], 0.0045, 4), lapel, body, 0.7),
+    cloth(panel(SUIT.vBottom, lapTop, (y) => [-vHalf(y) - lapW(y), -vHalf(y)], 0.0045, 4), lapel, body, 0.7),
+  ];
+};
+
 const cloth = (geo: THREE.BufferGeometry, color: string, body: THREE.SkinnedMesh, roughness = 0.88) => {
   const m = new THREE.SkinnedMesh(geo, new THREE.MeshStandardMaterial({ color, roughness, side: THREE.DoubleSide }));
   m.bind(body.skeleton, body.bindMatrix);
@@ -277,10 +365,25 @@ const makeClothes = (body: THREE.SkinnedMesh, build: Build) => {
     [head("DEF-neck").y + 0.03, 0.03, bi("DEF-spine.003"), bi("DEF-neck")],
   ], W);
   out.push(cloth(tubeGeometry(torso, { exp: 2.4 }), build.jacket, body));
+  if (build.suit) out.push(...suitFront(torso, build, body));
 
-  // ズボンの腰
-  const seat = stackRings(TROUSER_SEAT, [[0, 0, bi("DEF-hips"), bi("DEF-hips")]], W);
-  out.push(cloth(tubeGeometry(seat, { exp: 2.4, capEnd: true }), build.trousers, body));
+  // ズボンの腰（スカートのときはスカートの中に隠れるので描かない）
+  if (!build.skirt) {
+    const seat = stackRings(TROUSER_SEAT, [[0, 0, bi("DEF-hips"), bi("DEF-hips")]], W);
+    out.push(cloth(tubeGeometry(seat, { exp: 2.4, capEnd: true }), build.trousers, body));
+  } else {
+    // スカート：腰は腰の骨。下へ行くほど、左半分は左の太もも、右半分は右の太ももに付ける（脚を開いても裾から脚が突き抜けない）
+    const g = tubeGeometry(stackRings(SKIRT, [[0, 0, bi("DEF-hips"), bi("DEF-hips")]], W), { exp: 2.2 });
+    const gp = g.getAttribute("position"), gi = g.getAttribute("skinIndex"), gw = g.getAttribute("skinWeight");
+    const [hip, tl, tr] = [bi("DEF-hips"), bi("DEF-thigh.L"), bi("DEF-thigh.R")];
+    for (let v = 0; v < gp.count; v++) {
+      const k = THREE.MathUtils.smoothstep(gp.getY(v), 0.62, 0.97);
+      const sd = THREE.MathUtils.smoothstep(gp.getX(v), -0.07, 0.07); // +x が左（L）
+      gi.setXYZW(v, hip, tl, tr, 0);
+      gw.setXYZW(v, k, (1 - k) * sd, (1 - k) * (1 - sd), 0);
+    }
+    out.push(cloth(g, build.skirt, body));
+  }
 
   for (const side of ["L", "R"]) {
     const sx = side === "L" ? 1 : -1;
@@ -305,7 +408,7 @@ const makeClothes = (body: THREE.SkinnedMesh, build: Build) => {
       [bi("DEF-hips"), bi(`DEF-thigh.${side}`), bi(`DEF-shin.${side}`), bi(`DEF-shin.${side}`)],
       [0, 0.06, 0.05, 0],
       F,
-      (_d, p) => { const [r] = lerpTable(TROUSER_LEG, p.y); return [r * W * 0.95, r * W]; },
+      (_d, p) => { const [r] = lerpTable(TROUSER_LEG, p.y); const k = build.skirt ? 0.72 : 1; return [r * W * 0.95 * k, r * W * k]; },
     );
     out.push(cloth(tubeGeometry(leg), build.trousers, body));
 
@@ -558,6 +661,19 @@ export const Figure: React.FC<FigureProps> = ({ clip, position = [0, 0, 0], rota
     for (const c of makeClothes(main, build)) main.parent!.add(c);
     if (hair) main.parent!.add(hair);
     const head = obj.getObjectByName("DEF-head");
+    if (head && build.bun && build.hair !== "none") {
+      // まとめ髪：後頭部の下寄りに小さな丸。頭の骨の子にして一緒に動かす
+      const hi = main.skeleton.bones.findIndex((b) => b.name === "DEF-head");
+      const c = hbox.getCenter(new THREE.Vector3());
+      const size = hbox.getSize(new THREE.Vector3());
+      const local = new THREE.Matrix4().copy(main.skeleton.boneInverses[hi]).multiply(new THREE.Matrix4().makeTranslation(c.x, c.y + size.y * 0.08, hbox.min.z + 0.012));
+      const bun = new THREE.Mesh(new THREE.SphereGeometry(size.x * 0.27, 16, 12), new THREE.MeshStandardMaterial({ color: build.hair, roughness: 0.9 }));
+      bun.scale.set(1.1, 0.9, 0.85);
+      bun.castShadow = true;
+      local.decompose(bun.position, bun.quaternion, bun.scale.clone());
+      bun.scale.set(1.1, 0.9, 0.85);
+      head.add(bun);
+    }
     if (head && glasses) {
       // 眼鏡は静止姿勢の座標で目の高さ・顔の前に置き、頭の骨の子にして一緒に動かす
       const hi = main.skeleton.bones.findIndex((b) => b.name === "DEF-head");
