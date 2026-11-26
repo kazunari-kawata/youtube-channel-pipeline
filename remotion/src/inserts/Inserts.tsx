@@ -238,7 +238,10 @@ export const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure
 
 export const InsertNightWalk: React.FC<SceneProps> = ({ variant = "a" }) => {
   // 歩く速さは一定（毎秒1.15m）。足の動きと進む距離をずらさない
-  const walk = useMemo(() => (t: number): [number, number, number] => [1.3, 0.15, 1.0 - t * 1.15], []);
+  // f（正面の望遠）は4m奥から歩き出す。近くまで来ると、街灯（z=-9）の光が片脚にだけ当たり、
+  // 脚が振れるたびに明るさが反転してチラつきと判定された（002 の 7:06、QA で検出）。8秒歩いても z=-4.3 で止まる
+  const z0 = variant === "f" ? 5.0 : 1.0;
+  const walk = useMemo(() => (t: number): [number, number, number] => [1.3, 0.15, z0 - t * 1.15], [z0]);
   const cams: Record<string, [CamKey, CamKey]> = {
     a: [{ pos: [2.3, 1.25, 6.2], target: [1.3, 1.3, -6] }, { pos: [2.1, 1.3, 1.6], target: [1.2, 1.35, -10] }],
     // 正面から。人物が近づきすぎると、脚の速い動きが明滅と判定されるので、カメラは離しておく
@@ -249,7 +252,8 @@ export const InsertNightWalk: React.FC<SceneProps> = ({ variant = "a" }) => {
     d: [{ pos: [-3.5, 6.5, 7.5], target: [1.3, 0.9, -3.5], fov: 36 }, { pos: [-3.4, 6.4, 6.8], target: [1.3, 0.9, -4.0], fov: 35 }], // 人物を車道の上の高い所から（止めた車に隠れないように）
     empty3: [{ pos: [3.6, 0.55, 2.5], target: [1.0, 1.8, -20], fov: 36 }, { pos: [3.5, 0.6, 1.5], target: [1.0, 1.9, -22], fov: 35 }], // 歩道の低い所から通りの奥へ
     empty4: [{ pos: [-5.5, 1.3, -2.0], target: [4.5, 1.8, -9.0], fov: 38 }, { pos: [-5.3, 1.3, -2.6], target: [4.5, 1.8, -9.5], fov: 37 }], // 車道の向かいから店の並び
-    f: [{ pos: [0.4, 0.7, -15.5], target: [1.3, 1.2, -2.0], fov: 24 }, { pos: [0.4, 0.72, -15.0], target: [1.3, 1.2, -2.5], fov: 23.5 }], // 縁石の低い所から、向こうから来る人物を望遠で（離れているので脚は明滅しない）
+    // 縁石の低い所から、向こうから来る人物を望遠で。人物は街灯 z=-9 の下まで来ない（上の z0）
+    f: [{ pos: [0.4, 0.7, -15.5], target: [1.3, 1.2, -2.0], fov: 24 }, { pos: [0.4, 0.72, -15.0], target: [1.3, 1.2, -2.5], fov: 23.5 }],
     corner: [{ pos: [0.4, 0.5, -22], target: [1.5, 1.2, 0], fov: 34 }, { pos: [0.4, 0.55, -21.2], target: [1.5, 1.25, 0], fov: 33.5 }], // 縁石の低い所から、手前側を振り返る
     end: [{ pos: [1.0, 2.0, 8.0], target: [1.0, 2.5, -20], fov: 38 }, { pos: [1.0, 5.5, 9.0], target: [1.0, 1.5, -20], fov: 38 }], // ゆっくり上がって通りを見下ろす（結び）
   };

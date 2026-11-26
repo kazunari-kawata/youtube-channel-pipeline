@@ -32,7 +32,7 @@ const Root: React.FC = () =>
       id: "Main", component: Episode, durationInFrames: TL.totalFrames, fps: TL.fps, width: W, height: H,
     }),
     ...INSERTS.map(([id, c]) => React.createElement(Composition, { key: id, id, component: c, durationInFrames: 180, fps: 30, width: W, height: H })),
-    React.createElement(Composition, { key: "Scene-Check", id: "Scene-Check", component: SceneCheck as React.FC, durationInFrames: 180, fps: 30, width: W, height: H, defaultProps: { scene: "night_walk", variant: "a" } }),
+    React.createElement(Composition, { key: "Scene-Check", id: "Scene-Check", component: SceneCheck as React.FC, durationInFrames: 300, fps: 30, width: W, height: H, defaultProps: { scene: "night_walk", variant: "a" } }),
   );
 
 registerRoot(Root);
