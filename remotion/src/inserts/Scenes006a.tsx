@@ -8,31 +8,47 @@
  * 建物：房棟（島のいちばん高い所）、灯台と所長の家（房棟の南東の端）、船着き場の大きな建物（東の岸）、給水塔（北）、工場（北西の低い所）
  */
 import { useThree } from "@react-three/fiber";
-import React, { useLayoutEffect, useMemo } from "react";
+import React, { useContext, useLayoutEffect, useMemo } from "react";
 import { interpolate, random, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
-import { CamKey, SceneProps, Stage, useInsertDur } from "./Inserts";
+import { CamKey, PortraitAim, PortraitZoom, SceneProps, Stage, useInsertDur } from "./Inserts";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 type V3 = [number, number, number];
 
 /* ---------- カメラ（実寸の屋外なので、奥の限りを遠くに。近い面は距離に合わせる：F-001） ---------- */
 
+/** 横の画面用の画角を、縦の画面（ショート）で左右の幅が zoom 倍になる画角に直す（Inserts.tsx の Camera と同じ） */
+const portraitFov = (fov: number, aspect: number, zoom: number) => {
+  const half = THREE.MathUtils.degToRad(fov / 2);
+  const hHalf = Math.atan(Math.tan(half) * (16 / 9)) * zoom;
+  return THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(hHalf) / aspect));
+};
+
+/** Inserts.tsx の Camera と同じ動き（縦の画面にも対応）で、近い面と奥の限りだけを場面に合わせて変えられる */
 export const Cam006: React.FC<{ from: CamKey; to: CamKey; near?: number; far?: number }> = ({ from, to, near = 1, far = 9000 }) => {
   const { camera } = useThree();
   const frame = useCurrentFrame();
   const dur = useInsertDur();
+  const { width, height } = useVideoConfig();
+  const zoom = useContext(PortraitZoom);
+  const aim = useContext(PortraitAim);
   useLayoutEffect(() => {
     const t = THREE.MathUtils.smootherstep(frame / (dur - 1), 0, 1);
     const c = camera as THREE.PerspectiveCamera;
     c.position.lerpVectors(new THREE.Vector3(...from.pos), new THREE.Vector3(...to.pos), t);
     const tg = new THREE.Vector3(...from.target).lerp(new THREE.Vector3(...to.target), t);
-    c.fov = THREE.MathUtils.lerp(from.fov ?? 35, to.fov ?? 35, t);
+    const fov = THREE.MathUtils.lerp(from.fov ?? 35, to.fov ?? 35, t);
+    c.fov = height > width ? portraitFov(fov, width / height, zoom) : fov;
     c.near = near;
     c.far = far;
     c.lookAt(tg);
+    if (height > width && (aim[0] || aim[1])) {
+      c.rotateY(THREE.MathUtils.degToRad(aim[0]));
+      c.rotateX(THREE.MathUtils.degToRad(aim[1]));
+    }
     c.updateProjectionMatrix();
-  }, [frame, camera, dur, from, to, near, far]);
+  }, [frame, camera, dur, from, to, near, far, width, height, zoom, aim]);
   return null;
 };
 
