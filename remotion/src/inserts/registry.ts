@@ -9,6 +9,10 @@ import { InsertPrisonFloor } from "./ScenesPrison";
 import { InsertApartments, InsertArrest } from "./ScenesArrest";
 import { InsertCourtHall, InsertPhone, InsertTvRoom, InsertWindows2022 } from "./ScenesDahmer2";
 import { InsertAirportWait003, InsertAirportWalk003, InsertCabinSeat003, InsertFbiLab003, InsertFieldOffice003 } from "./Scenes003a";
+import { InsertIslandBoat006, InsertIslandFar006 } from "./Scenes006a";
+import { InsertCellEvening006, InsertCellFront006, InsertCellhouse006, InsertCellVent006, InsertFigures006, InsertPipeCorridor006, InsertTierCount006 } from "./Scenes006c";
+import { InsertSfOffice006 } from "./Scenes006d";
+import { InsertAngelSearch006, InsertBayNight006, InsertBeachDay006, InsertPatrolBoat006, InsertShoreNight006 } from "./Scenes006b";
 import { InsertExitDiagram003, InsertForestFloor003, InsertPlaneClouds003, InsertRainForest003, InsertRainWindow003, InsertRiverBank003 } from "./Scenes003b";
 
 export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
@@ -38,4 +42,20 @@ export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   forest_floor: InsertForestFloor003,
   river_bank: InsertRiverBank003,
   exit_diagram: InsertExitDiagram003,
+  // 006 アルカトラズ脱獄（1962年）
+  island_far: InsertIslandFar006,
+  island_boat: InsertIslandBoat006,
+  shore_night: InsertShoreNight006,
+  bay_night: InsertBayNight006,
+  beach_day: InsertBeachDay006,
+  patrol_boat: InsertPatrolBoat006,
+  angel_search: InsertAngelSearch006,
+  cellhouse: InsertCellhouse006,
+  cell_front: InsertCellFront006,
+  cell_evening: InsertCellEvening006,
+  cell_vent: InsertCellVent006,
+  pipe_corridor: InsertPipeCorridor006,
+  tier_count: InsertTierCount006,
+  sf_office: InsertSfOffice006,
+  figures_006: InsertFigures006, // 確認用（看守・兵士・艇の乗員）。台本では使わない
 };
