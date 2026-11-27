@@ -349,7 +349,7 @@ export const InsertBeachDay006: React.FC<SceneProps> = ({ variant = "a" }) => {
 
 /* ---------- 4. 巡視艇（灰色の小型艇。標章・文字なし） ---------- */
 
-const PatrolBoat: React.FC<{ beam: number; sweep: number }> = ({ beam, sweep }) => {
+const PatrolBoat: React.FC<{ beam: number; sweep: number; deck?: boolean }> = ({ beam, sweep, deck = false }) => {
   const gray = "#959aa0", dark = "#2a2d31";
   const spot = useMemo(() => {
     const l = new THREE.SpotLight("#f2efe4", 0, 220, 0.12, 0.6, 1.4);
@@ -413,6 +413,16 @@ const PatrolBoat: React.FC<{ beam: number; sweep: number }> = ({ beam, sweep }) 
         <cylinderGeometry args={[0.3, 6.5, 60, 24, 1, true]} />
         <meshBasicMaterial color="#f2eee2" transparent opacity={0.075 * beam} depthWrite={false} side={THREE.DoubleSide} blending={THREE.AdditiveBlending} />
       </mesh>
+      {/* 甲板の細部（戸・手すり・甲板の灯り）は、船尾から見る b だけ。遠景では1画素より細くなってちらつく */}
+      {deck ? <DeckDetail /> : null}
+      <primitive object={spot} />
+      <primitive object={spot.target} />
+    </group>
+  );
+};
+
+const DeckDetail: React.FC = () => (
+    <group>
       {/* 船室の中の灯りが甲板を照らす */}
       <pointLight position={[0, 3.6, 2.6]} intensity={5} distance={8} decay={1.6} color="#f0dcb8" />
       {/* 船室の後ろの戸（暗い板） */}
@@ -435,11 +445,8 @@ const PatrolBoat: React.FC<{ beam: number; sweep: number }> = ({ beam, sweep }) 
           ))}
         </group>
       ))}
-      <primitive object={spot} />
-      <primitive object={spot.target} />
     </group>
-  );
-};
+);
 
 let wakeCache: THREE.CanvasTexture | null = null;
 /** 航跡の絵：艇に近いほど白く、離れるほど薄れて消える */
@@ -489,7 +496,7 @@ export const InsertPatrolBoat006: React.FC<SceneProps> = ({ variant = "a" }) => 
     return (
       <NightWorld look="night" from={from} to={to} fog={0.0008} near={0.2} hemi={1.3}>
         <group rotation={[pitch, 0, roll]}>
-          <PatrolBoat beam={1} sweep={sweep * 0.6} />
+          <PatrolBoat beam={1} sweep={sweep * 0.6} deck />
           {/* 甲板（乗員が立つ所） */}
           <mesh position={[0, 1.52, 3.4]}>
             <boxGeometry args={[3.2, 0.06, 4.2]} />
