@@ -1,4 +1,7 @@
-"""006 の仮の尺・香盤表・読みやすい台本を作る（実写映像の kind: video を足してから、共有の pipeline を呼ぶ）
+"""006 の仮の尺・香盤表・読みやすい台本を作る（この回の環境音を足してから、共有の pipeline を呼ぶ）
+
+2026-11-27：ユーザーが撮った映像は本編に使わないと決めた（F-057）。台本に video はもうない。
+video を扱う部分は、ほかの回で実写を使うときのために残してある
 
   python episodes/006-alcatraz/make_narration.py episodes/006-alcatraz/narration.json
   python episodes/006-alcatraz/shotlist_006.py        # 見積もり → 香盤表（注意0件にする）→ script.md
@@ -42,6 +45,7 @@ SOUNDS = {
     "amb_boat":      {"ja": "小型艇のエンジンの低い音と波（無線の声は入れない）", "level": "bed", "variants": 1, "search": "small patrol boat engine idle water"},
     "amb_hill":      {"ja": "草の斜面の風と、遠い波（人の声・号令は入れない）", "level": "bed", "variants": 1, "search": "grassy hillside wind distant surf"},
     "amb_office62":  {"ja": "1960年代の事務所の環境音（遠いタイプライター、時計）", "level": "bed", "variants": 1, "search": "1960s office ambience distant typewriter"},
+    "amb_corridor":  {"ja": "配管の通路の環境音（管の低いうなり、遠いしずく）", "level": "bed", "variants": 1, "search": "utility corridor pipes hum drip"},
 }
 # イメージ映像の場面は、構成案（2026-11-26）で決めた8場面。remotion/src/inserts/registry.ts にはまだない（香盤表の状態は「作る」）
 RULES = {
@@ -55,6 +59,12 @@ RULES = {
     "insert/beach_day":    [{"key": "amb_beach", "at": 0.0}],
     "insert/angel_search": [{"key": "amb_hill", "at": 0.0}],
     "insert/sf_office"   : [{"key": "amb_office62", "at": 0.0}],
+    "insert/island_far":    [{"key": "amb_bay", "at": 0.0}],
+    "insert/island_boat":   [{"key": "amb_bay", "at": 0.0}],
+    "insert/cell_front":    [{"key": "amb_cellhouse", "at": 0.0}],
+    "insert/cell_vent":     [{"key": "amb_cell", "at": 0.0}],
+    "insert/pipe_corridor": [{"key": "amb_corridor", "at": 0.0}],
+    "insert/cellhouse":     [{"key": "amb_cellhouse", "at": 0.0}],
 }
 
 _load_sfx, _rule_key, _material_key, _status = shotlist.load_sfx, shotlist.rule_key, shotlist.material_key, shotlist.status
