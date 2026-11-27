@@ -1,0 +1,226 @@
+{
+ "note": "ショートA：冒頭（s002〜s008の1文目）。案と根拠は episodes/002-dahmer/shorts_plan.md、決まりは CLAUDE.md の「ショート動画」",
+ "title": "13年、誰も止められなかった",
+ "gap_sec": 0.18,
+ "lead_sec": 0.2,
+ "thumb": {
+  "sec": 0.8,
+  "photo": "booking_front",
+  "doc": "fbi1_cover",
+  "tag": "FBIファイル",
+  "name": "ジェフリー・ダーマー",
+  "name_en": "Jeffrey Dahmer",
+  "big": "13年",
+  "line": "誰も止められなかった"
+ },
+ "end": {
+  "sec": 1.6,
+  "text": "本編はこの下のリンクから"
+ },
+ "bgm": "assets/bgm/red_shift.mp3",
+ "segments": [
+  {
+   "id": "s002",
+   "visual": {
+    "kind": "insert",
+    "scene": "police_car",
+    "var": "c",
+    "zoom": 0.8,
+    "aim": [
+     3.5,
+     0
+    ],
+    "label": "1991年7月22日 午後11時25分ごろ",
+    "sub": "ウィスコンシン州ミルウォーキー"
+   },
+   "sfx": [
+    {
+     "file": "amb_idle_1.wav",
+     "level": "bed"
+    }
+   ],
+   "captions": [
+    "午後11時25分ごろ",
+    "片方の手首に",
+    "手錠をかけられた男性が",
+    "通りかかったパトカーを",
+    "止めました"
+   ],
+   "hl": [
+    "手錠",
+    "パトカー"
+   ]
+  },
+  {
+   "id": "s003",
+   "visual": {
+    "kind": "doc",
+    "src": "mpd_p064"
+   },
+   "sfx": [
+    {
+     "file": "paper_1.wav",
+     "level": "light",
+     "at": 0.15
+    }
+   ],
+   "captions": [
+    "男性の話を聞いた",
+    "警官2人は",
+    "近くのアパートの",
+    "213号室へ向かいます"
+   ],
+   "hl": [
+    "213号室"
+   ]
+  },
+  {
+   "id": "s004",
+   "visual": {
+    "kind": "photo",
+    "src": "booking_front",
+    "caption": "1991年7月24日 ミルウォーキー警察が撮影"
+   },
+   "sfx": [
+    {
+     "file": "photo_1.wav",
+     "level": "light",
+     "at": 0.15
+    }
+   ],
+   "captions": [
+    "部屋の住人は",
+    "31歳の",
+    "ジェフリー・ダーマー",
+    "この夜",
+    "彼は逮捕されました"
+   ],
+   "hl": [
+    "ジェフリー・ダーマー",
+    "逮捕"
+   ]
+  },
+  {
+   "id": "s005",
+   "visual": {
+    "kind": "card",
+    "style": "fact",
+    "text": "17人",
+    "sub": "1978年〜1991年に命を奪われた人の数",
+    "source": "出典：FBI研究所ファイル"
+   },
+   "sfx": [
+    {
+     "file": "stamp_1.wav",
+     "level": "mid",
+     "at": 0.2
+    }
+   ],
+   "cut": {
+    "at": 0.552,
+    "visual": {
+     "kind": "doc",
+     "src": "fbi5_teletype"
+    }
+   },
+   "captions": [
+    "翌日以降の捜査で",
+    "彼が17人の命を",
+    "奪っていたことが",
+    "明らかになります"
+   ],
+   "hl": [
+    "17人"
+   ]
+  },
+  {
+   "id": "s006",
+   "visual": {
+    "kind": "card",
+    "style": "span",
+    "text": "1978 → 1991",
+    "sub": "13年"
+   },
+   "sfx": [
+    {
+     "file": "typewriter_1.wav",
+     "level": "mid",
+     "at": 0.2
+    }
+   ],
+   "cut": {
+    "at": 0.543,
+    "visual": {
+     "kind": "insert",
+     "scene": "ohio_road",
+     "var": "c",
+     "zoom": 0.65
+    },
+    "sfx": [
+     {
+      "file": "amb_road_1.wav",
+      "level": "bed"
+     }
+    ]
+   },
+   "captions": [
+    "最初の事件は1978年",
+    "逮捕まで",
+    "13年かかった",
+    "ことになります"
+   ],
+   "hl": [
+    "1978年",
+    "13年"
+   ]
+  },
+  {
+   "id": "s007",
+   "visual": {
+    "kind": "insert",
+    "scene": "window",
+    "var": "a",
+    "zoom": 0.7
+   },
+   "sfx": [
+    {
+     "file": "amb_room_1.wav",
+     "level": "bed"
+    }
+   ],
+   "captions": [
+    "その間 彼は一度",
+    "別の事件で",
+    "有罪判決を受け",
+    "警察とも何度か",
+    "顔を合わせていました"
+   ],
+   "hl": [
+    "有罪判決",
+    "警察"
+   ]
+  },
+  {
+   "id": "s008",
+   "sentences": 1,
+   "visual": {
+    "kind": "card",
+    "style": "question",
+    "text": "なぜ13年間\n誰も止められなかったのか"
+   },
+   "sfx": [
+    {
+     "file": "low_hit_1.wav",
+     "level": "hit",
+     "at": 0.0
+    }
+   ],
+   "captions_off": true,
+   "captions": [
+    "なぜ13年間",
+    "誰も彼を",
+    "止められなかったのか"
+   ]
+  }
+ ]
+}

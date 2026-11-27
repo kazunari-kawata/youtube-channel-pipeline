@@ -10,6 +10,7 @@ import { InsertCourthouse, InsertOhioRoad, InsertPoliceCar, InsertPrisonFence } 
 import { InsertPrisonFloor } from "./inserts/ScenesPrison";
 import { InsertArrest, OfficerCheck } from "./inserts/ScenesArrest";
 import { INSERT_SCENES } from "./inserts/registry";
+import { calcShort, Short } from "./shorts/Short";
 
 // どの回を書き出すかは pipeline/stage.py が src/data/current.json に書く
 const Episode = EPISODES[(current as any).episode];
@@ -33,6 +34,8 @@ const Root: React.FC = () =>
     }),
     ...INSERTS.map(([id, c]) => React.createElement(Composition, { key: id, id, component: c, durationInFrames: 180, fps: 30, width: W, height: H })),
     React.createElement(Composition, { key: "Scene-Check", id: "Scene-Check", component: SceneCheck as React.FC, durationInFrames: 300, fps: 30, width: W, height: H, defaultProps: { scene: "night_walk", variant: "a" } }),
+    // ショート（縦）。中身は public/shorts/<id>/data.json（pipeline/short_build.py）。--props='{"id":"002a"}'
+    React.createElement(Composition, { key: "Short", id: "Short", component: Short as React.FC<any>, durationInFrames: 300, fps: 30, width: 720, height: 1280, defaultProps: { id: "002a" }, calculateMetadata: calcShort as any }),
   );
 
 registerRoot(Root);

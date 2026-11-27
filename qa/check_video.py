@@ -53,7 +53,7 @@ def probe(video: Path) -> dict:
     return json.loads(out)
 
 
-def scan_frames(video: Path, cfg_qa: dict, start: int | None = None, count: int | None = None, fps: float = 30.0):
+def scan_frames(video: Path, cfg_qa: dict, start: int | None = None, count: int | None = None, fps: float = 30.0, size: tuple[int, int] | None = None):
     """縮小グレー画像で全フレームを読み、チラつきと真っ黒を数える。
     start・count を渡すと、そのフレームの範囲だけ読む（前の2フレームから読み始め、つなぎ目の明滅も数える）。
     1回のコマンドに時間の上限がある所（Windows の作業用シェル）で、区間に分けて検査するため"""
@@ -63,17 +63,18 @@ def scan_frames(video: Path, cfg_qa: dict, start: int | None = None, count: int 
         skip = min(2, start)
         seek = ["-ss", f"{(start - skip - 0.5) / fps:.4f}"] if start - skip > 0 else []
     lim = ["-frames:v", str(count + skip)] if count is not None else []
-    proc = subprocess.Popen([ffmpeg_bin(), "-v", "error", *seek, "-i", str(video), *lim, "-vf", f"scale={SW}:{SH},format=gray",
+    sw, sh = size or (SW, SH)  # 縦のショートは (180, 320)
+    proc = subprocess.Popen([ffmpeg_bin(), "-v", "error", *seek, "-i", str(video), *lim, "-vf", f"scale={sw}:{sh},format=gray",
                              "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
-    size = SW * SH
+    npx = sw * sh
     prev2 = prev1 = None
     base = (start - skip) if start is not None else 0
     flicker, black, idx = [], [], base
     while True:
-        buf = proc.stdout.read(size * 120)
+        buf = proc.stdout.read(npx * 120)
         if not buf:
             break
-        frames = np.frombuffer(buf, np.uint8).reshape(-1, SH, SW).astype(np.int16)
+        frames = np.frombuffer(buf, np.uint8).reshape(-1, sh, sw).astype(np.int16)
         for f in frames:
             warm = start is not None and idx < start  # 前の区間の最後の2フレーム（明滅の比較にだけ使う）
             if f.max() < cfg_qa["black_max_luma"] and not warm:

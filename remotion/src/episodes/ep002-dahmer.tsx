@@ -22,7 +22,7 @@ const FBI = "出典：FBI（情報公開法による公開）";
 const COMMONS = "出典：Wikimedia Commons（著作権表示なしで公表）";
 
 /** 画面に出す素材の見出し・出典・縦横比（cut_materials.py の出力に合わせる） */
-const ASSETS: Record<string, DocMeta & { aspect: number }> = {
+export const ASSETS: Record<string, DocMeta & { aspect: number }> = {
   mpd_p064: { title: "ミルウォーキー警察 補充報告書（1991年7月23日）", source: MPD, aspect: 1632 / 216 },
   mpd_p161: { title: "起訴状の記載：1989年1月30日の有罪判決（F-882515）", source: MPD, aspect: 1632 / 169 },
   mpd_p221: { title: "修正起訴状（1991年、事件番号 F-912542）", source: MPD, aspect: 1700 / 517 },
@@ -53,7 +53,7 @@ const ASSETS: Record<string, DocMeta & { aspect: number }> = {
  * 資料に書かれていることの日本語の説明（F-020）。1行目が見出し、2行目から本文。資料の文字を元に短く訳す。
  * 被害者の名前・住所は書かない（資料に写っていても、説明では繰り返さない）。台本の visual に ja があればそちらを使う
  */
-const JA: Record<string, string[]> = {
+export const JA: Record<string, string[]> = {
   mpd_p064: [
     "1991年7月23日（火）の補充報告書",
     "ケネディ刑事とデュビス刑事が、アパートの213号室へ捜査に向かった。",

@@ -87,21 +87,44 @@ export type SceneProps = { variant?: string };
 
 export type CamKey = { pos: [number, number, number]; target: [number, number, number]; fov?: number };
 
+/**
+ * 縦の画面（ショート、720x1280）で使うときのカメラの寄せ方。1 なら横の画面と同じ左右の幅が入る。
+ * 0.8 なら左右を2割落として寄る（縦では上下が大きく空くので、少し寄った方が主役が大きく見える）
+ */
+export const PortraitZoom = createContext<number>(0.8);
+/** 縦の画面で、主役が真ん中に来るようにカメラの向きを足す（度。[左右（+で左へ）, 上下（+で上へ）]） */
+export const PortraitAim = createContext<[number, number]>([0, 0]);
+
+/** 横の画面用の画角（縦の角度）を、縦の画面で左右の幅が zoom 倍になる画角に直す */
+const portraitFov = (fov: number, aspect: number, zoom: number) => {
+  const half = THREE.MathUtils.degToRad(fov / 2);
+  const hHalf = Math.atan(Math.tan(half) * (16 / 9)) * zoom;
+  return THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(hHalf) / aspect));
+};
+
 export const Camera: React.FC<{ from: CamKey; to: CamKey }> = ({ from, to }) => {
   const { camera, advance } = useThree();
   const frame = useCurrentFrame();
   const durationInFrames = useInsertDur();
+  const { width, height } = useVideoConfig();
+  const zoom = useContext(PortraitZoom);
+  const aim = useContext(PortraitAim);
   useLayoutEffect(() => {
     const t = THREE.MathUtils.smootherstep(frame / (durationInFrames - 1), 0, 1);
     const c = camera as THREE.PerspectiveCamera;
     c.position.lerpVectors(new THREE.Vector3(...from.pos), new THREE.Vector3(...to.pos), t);
     const tg = new THREE.Vector3(...from.target).lerp(new THREE.Vector3(...to.target), t);
-    c.fov = THREE.MathUtils.lerp(from.fov ?? 35, to.fov ?? 35, t);
+    const fov = THREE.MathUtils.lerp(from.fov ?? 35, to.fov ?? 35, t);
+    c.fov = height > width ? portraitFov(fov, width / height, zoom) : fov;
     c.near = 0.1;
     c.far = 300;
     c.lookAt(tg);
+    if (height > width && (aim[0] || aim[1])) {
+      c.rotateY(THREE.MathUtils.degToRad(aim[0]));
+      c.rotateX(THREE.MathUtils.degToRad(aim[1]));
+    }
     c.updateProjectionMatrix();
-  }, [frame, camera, durationInFrames, from, to, advance]);
+  }, [frame, camera, durationInFrames, from, to, advance, width, height, zoom, aim]);
   return null;
 };
 
@@ -211,6 +234,8 @@ export const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure
 }) => {
   const frame = useCurrentFrame();
   const durationInFrames = useInsertDur();
+  // 横の本編（1280x720）でも縦のショート（720x1280）でも、画面いっぱいに描く
+  const { width: vw, height: vh } = useVideoConfig();
   // 本編の中では、カットの切り替え（クロスフェード）は本編側が行う。ここでも黒へフェードすると、
   // 切り替えの途中で下の画面が急に暗くなり、チラつきと判定される
   const inEpisode = useContext(InsertDuration) !== null;
@@ -219,7 +244,7 @@ export const Stage: React.FC<{ children: React.ReactNode; fog?: number; exposure
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       <AbsoluteFill style={{ opacity: fade, filter: grade }}>
-        <ThreeCanvas width={W} height={H} shadows gl={{ antialias: true, preserveDrawingBuffer: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: exposure }}>
+        <ThreeCanvas width={vw} height={vh} shadows gl={{ antialias: true, preserveDrawingBuffer: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: exposure }}>
           <color attach="background" args={[bg]} />
           <fogExp2 attach="fog" args={[bg, fog]} />
           <hemisphereLight args={hemi} />
