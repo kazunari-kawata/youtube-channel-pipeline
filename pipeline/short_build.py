@@ -26,6 +26,7 @@ from common import PUBLIC, ROOT, build_dir, decode_audio, episode_dir, ffmpeg_bi
 
 SR = 48000
 FPS = 30
+XF = 8  # Short.tsx のカットの切り替え（クロスフェード）のフレーム数
 SFX_REF_DB = -18.0  # stage.py と同じ（fetch_sfx.py がそろえた効果音の音量）
 PUNCT = re.compile(r"[、。,.・「」『』（）()\s　]")
 
@@ -272,6 +273,23 @@ def main():
     caps = [c for g in segs if not g["spec"].get("captions_off") for c in g["caps"]]
     for c in caps:
         c["from"] = max(c["from"], thumb_f)  # サムネイルのフレームには字幕を重ねない
+    # 字幕の切り替えを、画面の切り替え（XF フレームのクロスフェード）の途中に置かない。
+    # 途中で字幕が消えて出ると、文字の所の明るさが下がって上がり、チラつきと判定された（ショートA の最初の書き出し）
+    fades = [(sh["from"], sh["from"] + XF) for sh in shots[1:]]
+    # クロスフェードの直前・直後の1フレームも避ける（フェードの最後の1段と字幕の切り替えが続くと、文字の所が上がって下がる：2回目の書き出しで1件）
+    for c in caps:
+        for w0, w1 in fades:
+            if w0 - 2 < c["from"] < w1 + 2:
+                c["from"] = w1 + 2
+    for c in caps:
+        for w0, w1 in fades:
+            if w0 - 2 < c["to"] < w1 + 2:
+                c["to"] = w0 - 2
+    # 区間の間の短い切れ目（声の間）では前の字幕を出したままにする（消えてすぐ出る「点滅」にしない）
+    for a_, b_ in zip(caps, caps[1:]):
+        if b_["from"] - a_["to"] < 15:
+            a_["to"] = b_["from"]
+    caps = [c for c in caps if c["to"] > c["from"]]
 
     # 3) 音を混ぜる：声、BGM（話している間は下げる）、効果音
     a = cfg["audio"]
