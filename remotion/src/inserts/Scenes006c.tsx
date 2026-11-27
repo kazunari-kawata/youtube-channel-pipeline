@@ -214,9 +214,9 @@ const VentHole: React.FC<{ x: number; y: number; z: number; dz: number }> = ({ x
       </mesh>
       {chips.map((c, i) => (
         // かけらは角ばらせない（小さな面の明暗がカメラの動きで入れ替わり、チラつきと判定された）
-        <mesh key={i} position={c.p} rotation={[c.r, c.r * 1.7, 0]} scale={c.s}>
-          <icosahedronGeometry args={[1, 1]} />
-          <meshStandardMaterial color={i % 4 ? "#8e8b82" : "#5d7a63"} roughness={1} />
+        <mesh key={i} position={c.p} rotation={[0, c.r * 1.7, 0]} scale={[c.s, c.s * 0.4, c.s * 0.75]}>
+          <icosahedronGeometry args={[1, 0]} />
+          <meshStandardMaterial color={i % 5 ? "#8e8b82" : "#6a7f6c"} roughness={1} />
         </mesh>
       ))}
     </group>

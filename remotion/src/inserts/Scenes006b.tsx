@@ -151,13 +151,11 @@ const Foam: React.FC<{ t: number; z: number; w: number; d: number; k: number; pe
   const a = k * (0.55 + 0.45 * Math.sin(((t + phase) / period) * Math.PI * 2));
   // 泡が一部のコマで丸ごと消えた（006 の夜明けの岸、2コマ）。原因は、水面（16km 四方の大きな1枚）の深さの計算の粗さで、
   // 水面すれすれ（6cm 上）の泡がコマによって水面の下になったこと。泡は水面から25cm 上に置く（y の既定）。
-  // 描き方も不透明（alphaTest で形を抜く）にして、明るさで濃さを変える
-  const c = useMemo(() => new THREE.Color(), []);
-  c.set(color).multiplyScalar(Math.min(1, a * 1.6));
+  // 形を抜く描き方（alphaTest）は縁が硬く、夜の水面に白いしみのように見えたので、半透明のやわらかい描き方のまま
   return (
     <mesh position={[0, y, z]} rotation={[-Math.PI / 2, 0, 0]} frustumCulled={false}>
       <planeGeometry args={[w, d]} />
-      <meshBasicMaterial map={tex} color={c} alphaTest={0.18} />
+      <meshBasicMaterial map={tex} color={color} transparent opacity={a} depthWrite={false} />
     </mesh>
   );
 };
@@ -233,7 +231,7 @@ export const InsertBayNight006: React.FC<SceneProps> = ({ variant = "a" }) => {
   if (variant === "c") {
     const rocks = shoreRocks("ac", 90, -50, 50, -7, 6, 0.6, 3.2, 60);
     return (
-      <NightWorld look="night" from={from} to={to} fog={0.0006} hemi={1.5} lightZ={-900}>
+      <NightWorld look="night" from={from} to={to} fog={0.0006} hemi={2.1} lightZ={-900}>
         <ShoreGround hill={60} color="#4a5444" />
         <Rocks items={rocks} dry="#5a5952" wet="#36363a" />
         <BayWater t={t} color="#0c1011" env={ENV.night} rot={rotOf(to)} drift={1.4} waves={0.45} />

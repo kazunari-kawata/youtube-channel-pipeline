@@ -649,7 +649,8 @@ export const InsertIslandFar006: React.FC<SceneProps> = ({ variant = "a" }) => {
 export const InsertIslandBoat006: React.FC<SceneProps> = ({ variant = "a" }) => {
   // 水面の低い所（船の甲板くらいの高さ）から。船そのものは画面に入れない
   const cams: Record<string, [CamKey, CamKey]> = {
-    a: [{ pos: [300, 4, 760], target: [30, 26, 0], fov: 34 }, { pos: [290, 4, 722], target: [30, 26, 0], fov: 34 }],
+    // 遠景（island_far a・b）と見分けがつくよう、近くまで寄せる（船の速さ、毎秒5m前後）
+    a: [{ pos: [250, 4, 500], target: [28, 24, 0], fov: 38 }, { pos: [243, 4, 466], target: [28, 24, 0], fov: 38 }],
     // 北側を近くから：岩の斜面の上に房棟
     b: [{ pos: [-60, 4, -360], target: [14, 34, 0], fov: 38 }, { pos: [-20, 4, -340], target: [18, 34, 0], fov: 38 }],
     // 曇りの朝、水面すれすれから横へ流して
