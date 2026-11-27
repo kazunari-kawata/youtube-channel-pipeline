@@ -141,7 +141,7 @@ const foamTex = (key: string) => {
   foamTexCache[key] = t;
   return t;
 };
-const Foam: React.FC<{ t: number; z: number; w: number; d: number; k: number; period?: number; phase?: number; color?: string; y?: number }> = ({ t, z, w, d, k, period = 7, phase = 0, color = "#ffffff", y = 0.06 }) => {
+const Foam: React.FC<{ t: number; z: number; w: number; d: number; k: number; period?: number; phase?: number; color?: string; y?: number }> = ({ t, z, w, d, k, period = 7, phase = 0, color = "#ffffff", y = 0.25 }) => {
   const tex = useMemo(() => {
     const x = foamTex("f").clone();
     x.repeat.set(w / 30, 1);
@@ -149,10 +149,15 @@ const Foam: React.FC<{ t: number; z: number; w: number; d: number; k: number; pe
     return x;
   }, [w]);
   const a = k * (0.55 + 0.45 * Math.sin(((t + phase) / period) * Math.PI * 2));
+  // 泡が一部のコマで丸ごと消えた（006 の夜明けの岸、2コマ）。原因は、水面（16km 四方の大きな1枚）の深さの計算の粗さで、
+  // 水面すれすれ（6cm 上）の泡がコマによって水面の下になったこと。泡は水面から25cm 上に置く（y の既定）。
+  // 描き方も不透明（alphaTest で形を抜く）にして、明るさで濃さを変える
+  const c = useMemo(() => new THREE.Color(), []);
+  c.set(color).multiplyScalar(Math.min(1, a * 1.6));
   return (
-    <mesh position={[0, y, z]} rotation={[-Math.PI / 2, 0, 0]}>
+    <mesh position={[0, y, z]} rotation={[-Math.PI / 2, 0, 0]} frustumCulled={false}>
       <planeGeometry args={[w, d]} />
-      <meshBasicMaterial map={tex} color={color} transparent opacity={a} depthWrite={false} />
+      <meshBasicMaterial map={tex} color={c} alphaTest={0.18} />
     </mesh>
   );
 };

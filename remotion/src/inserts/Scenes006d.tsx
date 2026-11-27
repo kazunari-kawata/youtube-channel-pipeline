@@ -91,11 +91,13 @@ const calPage = (seed: number) =>
   });
 
 const DeskCalendar: React.FC<{ position: V3; rotY?: number; t: number }> = ({ position, rotY = 0, t }) => {
-  // 2.4秒に1枚、上の紙がゆっくりめくれて後ろへ倒れる（めくる動きは1秒かけて）
-  const PER = 2.4;
+  // 2.8秒に1枚、上の紙が少し持ち上がりながら薄れて消え、下の紙が出る（0.9秒かけて）。
+  // 紙を回してめくると、真横を向いた細い紙が速く画面を横切り、チラつきと判定された
+  const PER = 2.8;
   const n = Math.floor(t / PER);
-  const k = Math.min(1, (t - n * PER) / 1.0);
-  const flip = THREE.MathUtils.smootherstep(k, 0, 1) * Math.PI * 0.92;
+  const k = Math.min(1, (t - n * PER) / 0.9);
+  const fade = 1 - THREE.MathUtils.smootherstep(k, 0, 1);
+  const flip = THREE.MathUtils.smootherstep(k, 0, 1) * 0.25;
   return (
     <group position={position} rotation={[0, rotY, 0]}>
       <mesh position={[0, 0.03, 0]}>
@@ -108,12 +110,14 @@ const DeskCalendar: React.FC<{ position: V3; rotY?: number; t: number }> = ({ po
         <meshStandardMaterial map={calPage(n + 1)} roughness={0.9} />
       </mesh>
       {/* めくれる紙（上の綴じ目を軸に回る） */}
-      <group position={[0, 0.27, -0.028]} rotation={[-0.25 - flip, 0, 0]}>
-        <mesh position={[0, -0.11, 0.003]}>
-          <planeGeometry args={[0.18, 0.22]} />
-          <meshStandardMaterial map={calPage(n)} roughness={0.9} side={THREE.DoubleSide} />
-        </mesh>
-      </group>
+      {fade > 0.001 ? (
+        <group position={[0, 0.27, -0.028]} rotation={[-0.25 - flip, 0, 0]}>
+          <mesh position={[0, -0.11, 0.003]}>
+            <planeGeometry args={[0.18, 0.22]} />
+            <meshStandardMaterial map={calPage(n)} roughness={0.9} side={THREE.DoubleSide} transparent opacity={fade} />
+          </mesh>
+        </group>
+      ) : null}
     </group>
   );
 };
