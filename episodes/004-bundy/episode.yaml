@@ -1,0 +1,7 @@
+series: profile   # シリーズ「犯罪者の紹介」（CLAUDE.md の「シリーズ」）
+title: "（仮）FBIが手配した5日後、男を捕まえたのは交通の取り締まりだった【テッド・バンディ】"
+bgm:
+  # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。仮に 002 の曲。時代（1970年代）に合う曲を選び直す
+  tracks: [assets/bgm/red_shift.mp3, assets/bgm/aether.mp3]
+# 本人が写った使用可の素材（F-022。香盤表が最初の30秒に出ているかを確かめる）
+person_photos: [fbi_top_ten_360]
