@@ -27,7 +27,7 @@
 | クラウドの準備 | `automation/setup.sh` |
 | 素材から画面用のファイルまで（どの PC でも同じものを作る） | `pipeline/build_assets.py` |
 | 声なしの仮編集を Remotion に配る | `pipeline/draft_preview.py` |
-| Windows で仮編集を書き出す（Claude の使用量は使わない） | `automation/windows/draft_review.ps1`、`register_task.ps1` |
+| Windows で仮編集を書き出す（Claude の使用量は使わない。Remotion が動いている間は飛ばし、書き出したあとは Studio で見ていた回に戻す） | `automation/windows/draft_review.ps1`、`register_task.ps1` |
 
 ## 人がすること
 

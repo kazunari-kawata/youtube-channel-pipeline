@@ -5,6 +5,7 @@
 #   2時間ごとに自動： powershell -ExecutionPolicy Bypass -File automation\windows\register_task.ps1
 # Claude の使用量は使わない（git、Python、Remotion だけ）。出力：episodes\<回>\build\draft.mp4（1280x720）
 # Remotion（Studio か書き出し）が動いている間は何もしない（bgm.wav と current.json を上書きすると、開いている回の音と画面が変わる：F-033）
+# 書き出したあとは、Studio で見ていた回（current.json・timeline.json・meta.json・bgm.wav）を元に戻す。-NoRender のときは戻さない（その回を Studio で見るため）
 param([string]$Episode = "", [switch]$NoRender, [switch]$Force)
 # Stop にしない：Windows PowerShell 5.1 では、2>&1 で受けたコマンドの標準エラー（Python の警告など）が止める例外になる。終了コードで判断する
 $ErrorActionPreference = "Continue"
@@ -54,6 +55,16 @@ foreach ($ep in $eps) {
     Log "$ep：仮編集は最新（$sig）"
     continue
   }
+  $dataDir = Join-Path $root "remotion\src\data"
+  $pubDir = Join-Path $root "remotion\public"
+  $keep = Join-Path $logDir "studio_backup"
+  $saved = @()
+  if (-not $NoRender) {
+    New-Item -ItemType Directory -Force $keep | Out-Null
+    foreach ($f in @((Join-Path $dataDir "current.json"), (Join-Path $dataDir "timeline.json"), (Join-Path $dataDir "meta.json"), (Join-Path $pubDir "bgm.wav"))) {
+      if (Test-Path $f) { Copy-Item $f $keep -Force; $saved += $f }
+    }
+  }
   try {
     Log "$ep：準備を始めます"
     Py @("pipeline/fetch_data.py", "--light")
@@ -85,5 +96,9 @@ foreach ($ep in $eps) {
     Set-Location $root
     Log "$ep：止まりました：$($_.Exception.Message)"
     Notify "仮編集を作れませんでした" "$ep：build\draft_review.log を見てください"
+  } finally {
+    Set-Location $root
+    foreach ($f in $saved) { Copy-Item (Join-Path $keep (Split-Path $f -Leaf)) $f -Force }
+    if ($saved) { Log "$ep：Studio で見ていた回の準備を元に戻しました" }
   }
 }
