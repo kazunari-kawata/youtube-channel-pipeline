@@ -13,7 +13,8 @@
   max_pause  区間の中の声の切れ目（読点の間など）を、この秒数まで詰める
   hook       最初の区間のあいだ、画面に大きく出す一言（{"tag", "lines", "hl"}）。0秒から出し、動く絵の上に重ねる
   thumb      止まったサムネイルを最初に出すときだけ書く（hook と同時には使わない）
-区間ごと：skip（文頭の数文字を落とす。例 "中の"）、cut（1つ、またはリスト）、captions_off
+区間ごと：skip（文頭の数文字を落とす。例 "中の"）、cut（1つ、またはリスト）、captions_off、
+          notes（字幕の上に小さく足す説明。{"20万ドル": "今の価値で約2.6億円"} のように、字幕の区切りに含まれる語で引く）
 """
 from __future__ import annotations
 
@@ -314,6 +315,12 @@ def main():
             c1 = tstart + (remap(ct[starts[j + 1]] - a0 / SR, pts, ratio) if j + 1 < len(starts) else dur)
             caps.append({"from": max(0, int(round(c0 * FPS))), "to": int(round(c1 * FPS)), "text": txt,
                          "hl": [h for h in s.get("hl", []) if h in txt]})
+        # 字幕の上に小さく足す説明（例：「20万ドル」に「今の価値で約2.6億円」）。その語が出た字幕から、区間の終わりまで出したままにする
+        # （語の字幕だけに付けると0.7秒で消え、読めなかった）
+        for key, note in s.get("notes", {}).items():
+            hit = next((j for j, c in enumerate(caps) if key in c["text"]), None)
+            for c in caps[hit:] if hit is not None else []:
+                c["note"] = note
         segs.append({"id": s["id"], "t0": tstart, "t1": tstart + dur, "spec": s, "caps": caps})
         t = tstart + dur + gap
     speech_end = segs[-1]["t1"]

@@ -19,13 +19,13 @@ import { C } from "../lib/shots";
 
 type Visual = { kind: string; [k: string]: any };
 type Shot = { from: number; to: number; visual: Visual };
-type Caption = { from: number; to: number; text: string; hl: string[] };
+type Caption = { from: number; to: number; text: string; hl: string[]; note?: string };
 export type ShortData = {
   id: string; dir: string; fps: number; durationInFrames: number; audio: string;
   thumb: { frames: number; photo: string; doc: string; tag: string; name: string; name_en?: string; big: string; line: string };
   end: { from: number; text: string }; shots: Shot[]; captions: Caption[];
   /** 動く絵の上に0秒から重ねる一言（F-059。止まったサムネイルの代わり） */
-  hook?: { from: number; to: number; tag?: string; lines: string[]; hl?: string[] } | null;
+  hook?: { from: number; to: number; tag?: string; lines: string[]; hl?: string[]; sub?: string; source?: string } | null;
 };
 type Props = { id: string; data?: ShortData };
 
@@ -158,12 +158,20 @@ const Hook: React.FC<{ h: NonNullable<ShortData["hook"]> }> = ({ h }) => (
     {h.tag ? (
       <div style={{ position: "absolute", left: 40, top: 200, background: "#FFD400", padding: "4px 14px", fontFamily: FONT, fontWeight: 900, fontSize: 26, color: "#000", letterSpacing: 2 }}>{h.tag}</div>
     ) : null}
-    <div style={{ position: "absolute", left: 30, width: 600, top: 625, textAlign: "center" }}>
+    {/* 画面の真ん中（x=360）にそろえる（2026-11-28 ユーザーの指摘：字幕と同じ左寄せ x=330 で、左にずれて見えた）。
+        右のボタンにかからないよう、文字は76の大きさで幅を約540に収める */}
+    <div style={{ position: "absolute", left: 60, width: 600, top: 610, textAlign: "center" }}>
       {h.lines.map((l, i) => (
         <div key={i}>
-          <Outlined text={l} size={i === 0 ? 78 : 86} color="#fff" stroke={12} hl={h.hl ?? []} />
+          <Outlined text={l} size={76} color="#fff" stroke={12} hl={h.hl ?? []} />
         </div>
       ))}
+      {h.sub ? (
+        <div style={{ marginTop: 6 }}>
+          <Outlined text={h.sub} size={40} color="#FFD400" stroke={8} />
+        </div>
+      ) : null}
+      {h.source ? <div style={{ marginTop: 6, fontFamily: FONT, fontSize: 15, color: "rgba(239,228,208,0.85)", textShadow: "0 2px 6px #000" }}>{h.source}</div> : null}
     </div>
   </AbsoluteFill>
 );
@@ -305,9 +313,17 @@ const Captions: React.FC<{ caps: Caption[] }> = ({ caps }) => {
   const c = caps.find((x) => f >= x.from && f < x.to);
   if (!c) return null;
   return (
-    <div style={{ position: "absolute", left: CAP_X - CAP_W / 2, width: CAP_W, top: CAP_Y - 34, textAlign: "center" }}>
-      <Outlined text={c.text} size={44} color="#fff" stroke={9} hl={c.hl} />
-    </div>
+    <>
+      {c.note ? (
+        // 字幕の上に小さく足す説明（金額の円換算など）。字幕と同じく動かさない
+        <div style={{ position: "absolute", left: CAP_X - CAP_W / 2, width: CAP_W, top: CAP_Y - 86, textAlign: "center" }}>
+          <Outlined text={c.note} size={32} color="#FFD400" stroke={7} />
+        </div>
+      ) : null}
+      <div style={{ position: "absolute", left: CAP_X - CAP_W / 2, width: CAP_W, top: CAP_Y - 34, textAlign: "center" }}>
+        <Outlined text={c.text} size={44} color="#fff" stroke={9} hl={c.hl} />
+      </div>
+    </>
   );
 };
 
