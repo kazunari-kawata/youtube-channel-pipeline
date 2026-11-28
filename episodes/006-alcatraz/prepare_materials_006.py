@@ -50,7 +50,9 @@ def load(item: dict, page: int | None) -> Image.Image:
 def make_assets() -> None:
     """remotion/public/006/*.jpg の大きさを、動画の定義が読む一覧にする（縦横比を手で書かないため）"""
     out = {p.stem: list(Image.open(p).size) for p in sorted(PUB.glob("*.jpg"))}
-    ASSETS.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    # 中身が同じなら書かない（Windows の作業フォルダでは改行コードの違いだけで git の変更になり、次の取り込みが止まる）
+    if not (ASSETS.exists() and json.loads(ASSETS.read_text(encoding="utf-8")) == out):
+        ASSETS.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"{ASSETS.relative_to(ROOT)}：{len(out)}点")
 
 
