@@ -102,11 +102,14 @@ items:
     status: pd_federal
     note: 数字の出典。いかだは6×14フィート、レインコート50着以上、天井まで30フィート、煙突45フィート、エンジェル島まで1マイル余り、1979年12月31日にFBIが捜査を終え連邦保安官局へ引き継ぎ
   - id: fbi_mugshots
-    title: 3人の顔写真（John Anglin、Clarence Anglin、Frank Morris。FBI公式ページに掲載）
+    title: 3人の顔写真（左から John Anglin、Clarence Anglin、Frank Morris）を横に並べたもの
     file: fbi/mugshots_three.jpg
-    original: https://www.fbi.gov/history/famous-cases/alcatraz-escape
+    original: https://www.fbi.gov/history/cases-and-criminals/alcatraz-escape
     status: pd_federal
-    note: 連邦刑務所局が撮った受刑者の写真をFBIが掲載。最初の30秒に出す本人の姿（F-022）。episode.yaml の person_photos に書く。画像は手作業で保存
+    note: "連邦刑務所局が撮った受刑者の写真。最初の30秒に出す本人の姿（F-022）。episode.yaml の person_photos に書く。
+      prepare_materials_006.py が3枚を並べて作る：ジョンとモリスは fbi.gov の原寸（fbi/mugshot_john.jpg 477x581、fbi/mugshot_morris.jpg 475x546）、
+      クラレンスは fbi.gov の写真が 111x113 と小さいため、連邦保安官局の手配書（usms/poster_anglin_clarence.pdf）に入っている当時の写真（480x524）を使う（F-040）。
+      画面の表示は「FBI・連邦保安官局の資料」。2026-11-28 に Windows の Chrome で取得"
   - id: fbi_dummy_head
     title: Morris の房で見つかった人形の頭（横から。鼻が欠けている）と、Clarence Anglin の房の寝台に置かれた様子
     file: fbi/dummy_head_morris.jpg
@@ -314,19 +317,21 @@ items:
     note: 画像で確認済み。用紙の全体を見せてから DISCONTINUE からの4行に寄る
   - id: usms_release_2012
     title: "連邦保安官局の発表（2012年6月7日）「After 50 Years, the U.S. Marshals Remain Diligent in Hunt for Renowned Alcatraz Escapees」"
-    file: usms/release_2012_06_07.html
-    original: https://webarchive.library.unt.edu/web/20121006194401/http:/www.usmarshals.gov/news/chron/2012/060712a.htm
-    status: check
-    note: 連邦政府の発表文で著作権なし。ただし保存ページの本文はまだ開けておらず、検索結果の抜粋で「逮捕、死亡の確認、99歳まで追う」の文を見ただけ。原文を保存し、画面の写しを作ってから pd_federal にする。第5章の柱
+    file: usms/release_2012_06_07_2026-11-28.jpg
+    original: https://webarchive.library.unt.edu/web/20121007015511/http://www.usmarshals.gov/news/chron/2012/060712a.htm
+    status: pd_federal
+    note: "連邦政府の発表文で著作権なし。2026-11-28 に北テキサス大学のウェブ保存（2012年10月7日の保存）で本文を開いて確かめた：
+      The Marshals will continue to pursue the escapees until they are either arrested, positively determined to be deceased or reach the age of 99.
+      画面の写しは同じ日に Windows の Chrome で撮った（usms/release_2012_06_07_2026-11-28.jpg）。本文の HTML は usms/release_2012_06_07.html。第5章の柱"
   - id: usms_profile_morris
-    title: 連邦保安官局のサイトのモリスの手配ページの写し（2026年11月26日に保存）
-    file: usms/profile_morris_2026-11-26.png
+    title: 連邦保安官局のサイトのモリスの手配ページの写し（2026年11月28日に保存）
+    file: usms/profile_morris_2026-11-28.jpg
     original: https://www.usmarshals.gov/what-we-do/fugitive-apprehension/profiled-fugitives/frank-lee-morris
     status: pd_federal
     note: 画面の写しを保存日つきで作る。身体の特徴の行は映さない。冒頭
   - id: usms_profiles_list
-    title: 連邦保安官局のサイトのカリフォルニア北部地区の手配の一覧（3人）の写し（2026年11月26日に保存）
-    file: usms/profiles_list_2026-11-26.png
+    title: 連邦保安官局のサイトのカリフォルニア北部地区の手配の一覧（3人）の写し（2026年11月28日に保存）
+    file: usms/profiles_list_2026-11-28.jpg
     original: https://www.usmarshals.gov/what-we-do/fugitive-apprehension/profiled-fugitives/1906
     status: pd_federal
     note: 公開日にもう一度見て、載っていなければ台本を直す
@@ -346,48 +351,48 @@ items:
   - id: fbi_dummy_head_side
     title: 人形の頭（横から。FBI公式ページの写真）
     file: fbi/dummy_head_side.jpg
-    original: https://www.fbi.gov/history/famous-cases/alcatraz-escape
+    original: https://www.fbi.gov/history/cases-and-criminals/alcatraz-escape
     status: pd_federal
-    note: 冒頭の1コマ目とサムネイル、第2章（塗りと髪）の2回。表示は「FBI提供」（撮影者の表示がないため「FBI撮影」とは書かない）
+    note: 原寸（1444x1531）を 2026-11-28 に取得。冒頭の1コマ目とサムネイル、第2章（塗りと髪）の2回。表示は「FBI提供」（撮影者の表示がないため「FBI撮影」とは書かない）
   - id: fbi_dummy_head_bed
     title: 房の寝台に置かれた人形の頭（FBI公式ページの写真）
     file: fbi/dummy_head_bed.jpg
-    original: https://www.fbi.gov/history/famous-cases/alcatraz-escape
+    original: https://www.fbi.gov/history/cases-and-criminals/alcatraz-escape
     status: pd_federal
-    note: 第1章。台帳ではクラレンスの房の写真。台本は房の番号を画面に出さない。遺体に見えない寄り方にする
+    note: 原寸（2279x2138）を 2026-11-28 に取得。第1章。FBIの説明ではクラレンスの房の写真。台本は房の番号を画面に出さない。遺体に見えない寄り方にする
   - id: fbi_ev_vent_grille
     title: 房の奥の通気口と格子（FBI公式ページの写真）
     file: fbi/evidence_set/vent_grille.jpg
-    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    original: https://www.fbi.gov/history/cases-and-criminals/alcatraz-escape
     status: pd_federal
-    note: 第1章。表示は「FBI提供」
+    note: 原寸（2856x2266）を 2026-11-28 に取得。第1章。表示は「FBI提供」
   - id: fbi_ev_roof_vent
     title: 屋根の通気口のふた（FBI公式ページの写真）
     file: fbi/evidence_set/roof_vent.jpg
-    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    original: https://www.fbi.gov/history/cases-and-criminals/alcatraz-escape
     status: pd_federal
-    note: 第1章
+    note: 原寸（2982x2398）を 2026-11-28 に取得。第1章
   - id: fbi_ev_shore_aerial
     title: 島の北東の岸の航空写真（FBI公式ページの写真）
     file: fbi/evidence_set/shore_aerial.jpg
     original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
     status: pd_federal
-    note: 第1章と第2章の終わり（ナレーションが北東の岸を指す）の2回
+    note: 使わない（2026-11-28：今の fbi.gov のページに載っておらず、大きい版が手に入らない。台本で替えた）。元の予定：第1章と第2章の終わり（ナレーションが北東の岸を指す）の2回
   - id: fbi_ev_raft
     title: いかだの一部（FBI公式ページの写真）
     file: fbi/evidence_set/raft.jpg
     original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
     status: pd_federal
-    note: 第3章（試していない）。作り方が分かる寄り方にしない
+    note: 使わない（2026-11-28：今の fbi.gov のページに載っておらず、大きい版が手に入らない。台本で替えた）。元の予定：第3章（試していない）。作り方が分かる寄り方にしない
   - id: fbi_ev_paddle
     title: 手作りの櫂（FBI公式ページの写真）
     file: fbi/evidence_set/paddle.jpg
-    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    original: https://www.fbi.gov/history/cases-and-criminals/alcatraz-escape
     status: pd_federal
-    note: 第3章
+    note: 原寸（636x420。これより大きい版はない）を 2026-11-28 に取得。第3章
   - id: fbi_ev_lifevest
     title: 手作りの救命胴衣（FBI公式ページの写真）
     file: fbi/evidence_set/lifevest.jpg
-    original: https://www.fbi.gov/news/stories/2007/june/alcatraz_060807/
+    original: https://www.fbi.gov/history/cases-and-criminals/alcatraz-escape
     status: pd_federal
-    note: 第3章
+    note: 原寸（2540x1679）を 2026-11-28 に取得。第3章

@@ -56,7 +56,7 @@ const META: Record<string, DocMeta> = {
   // FBI の公式ページの写真
   fbi_dummy_head_side: { title: "人形の頭", source: FBI_WEB },
   fbi_dummy_head_bed: { title: "房の寝台に置かれていた人形の頭", source: FBI_WEB },
-  fbi_mugshots: { title: "3人の顔写真", source: FBI_WEB },
+  fbi_mugshots: { title: "3人の顔写真", source: "出典：FBI、連邦保安官局（クラレンスの写真は手配書から）" },
   fbi_ev_vent_grille: { title: "房の奥の通気口", source: FBI_WEB },
   fbi_ev_roof_vent: { title: "屋根の通気口", source: FBI_WEB },
   fbi_ev_shore_aerial: { title: "島の北東の岸", source: FBI_WEB },
@@ -64,12 +64,12 @@ const META: Record<string, DocMeta> = {
   fbi_ev_paddle: { title: "手作りの櫂", source: FBI_WEB },
   fbi_ev_lifevest: { title: "手作りの救命胴衣", source: FBI_WEB },
   // 連邦保安官局（手配書と、サイトの画面の写し）
-  usms_profile_morris: { title: "連邦保安官局の手配ページ（2026年11月26日に保存）", source: USMS },
-  usms_profiles_list: { title: "連邦保安官局のサイト（2026年11月26日に保存）", source: USMS },
+  usms_profile_morris: { title: "連邦保安官局の手配ページ（2026年11月28日に保存）", source: USMS },
+  usms_profiles_list: { title: "連邦保安官局のサイト（2026年11月28日に保存）", source: USMS },
   usms_poster_morris: { title: "連邦保安官局の手配書（フランク・リー・モリス）", source: USMS },
   usms_poster_john: { title: "連邦保安官局の手配書（ジョン・ウィリアム・アングリン）", source: USMS },
   usms_poster_clarence: { title: "連邦保安官局の手配書（クラレンス・アングリン）", source: USMS },
-  usms_release_2012: { title: "連邦保安官局の発表（2012年6月7日）", source: USMS },
+  usms_release_2012: { title: "連邦保安官局の発表（2012年6月7日）", source: "出典：連邦保安官局（北テキサス大学のウェブ保存）" },
   // 議会図書館（歴史的アメリカ建築調査 HABS。1986年の記録写真）
   loc_habs_exterior: { title: "閉鎖後のアルカトラズの房棟（1986年撮影）", source: LOC },
   loc_habs_cellhouse: { title: "閉鎖後の房棟の内部（1986年撮影）", source: LOC },

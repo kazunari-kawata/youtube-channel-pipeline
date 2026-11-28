@@ -1,4 +1,32 @@
 {
+ "fbi_dummy_head_bed": [
+  1778,
+  1582
+ ],
+ "fbi_dummy_head_side": [
+  1415,
+  1485
+ ],
+ "fbi_ev_lifevest": [
+  2236,
+  1444
+ ],
+ "fbi_ev_paddle": [
+  624,
+  315
+ ],
+ "fbi_ev_roof_vent": [
+  2400,
+  1879
+ ],
+ "fbi_ev_vent_grille": [
+  2227,
+  1722
+ ],
+ "fbi_mugshots": [
+  1533,
+  560
+ ],
  "fbi_v01_p078__jacket": [
   1381,
   380
@@ -30,6 +58,10 @@
  "fbi_v05_p003__para1": [
   1273,
   284
+ ],
+ "fbi_v05_p033__raft": [
+  1226,
+  139
  ],
  "fbi_v05_p033__synopsis": [
   1337,
@@ -98,5 +130,33 @@
  "loc_habs_exterior": [
   2379,
   1700
+ ],
+ "usms_poster_clarence__age": [
+  485,
+  979
+ ],
+ "usms_poster_john__age": [
+  434,
+  979
+ ],
+ "usms_poster_morris__age": [
+  451,
+  979
+ ],
+ "usms_poster_morris__header": [
+  1700,
+  576
+ ],
+ "usms_profile_morris__dob": [
+  1020,
+  284
+ ],
+ "usms_profiles_list__list": [
+  1094,
+  664
+ ],
+ "usms_release_2012__pledge": [
+  1373,
+  137
  ]
 }

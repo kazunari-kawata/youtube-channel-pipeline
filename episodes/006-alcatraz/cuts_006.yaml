@@ -4,25 +4,23 @@
 #   crop: [左, 上, 右, 下]（ページ・写真に対する割合）。null は「まだ画像で見て決めていない」。null のものは作らない
 #   redact: [[x0, y0, x1, y1], ...]  切り出す前のページに対する割合で黒く塗る（名前・住所など）
 #
-# FBI と連邦保安官局の資料・写真は、Mac にある build/materials/fbi/ と usms/ がこのリポジトリに届いてから、
-# 1枚ずつ画像で見て crop を書く（台帳の note の「入れない段落」を外す。黒塗りはそのまま）。それまで画面は「素材待ち」の仮の絵。
-# クラウドからは fbi.gov・usmarshals.gov が開けない（403）。
+# FBI と連邦保安官局の資料・写真は、1枚ずつ画像で見て crop を書く（台帳の note の「入れない段落」を外す。黒塗りはそのまま）。
+# クラウドからは fbi.gov・usmarshals.gov が開けない（403）。取り方は docs/browser-downloads.md
 
 # ---------- 議会図書館（HABS CA-1792-A）：2026-11-28 に取得して画像で確かめた ----------
 # 写真の番号の札（HABS No. CA-1792-A-3 / A-24）とフィルムの黒い縁は入れない
 - {name: loc_habs_exterior,  src: loc_habs_exterior,  crop: [0.03, 0.05, 0.945, 0.965]}   # A-3：運動場から見た房棟と給水塔（階段の人は小さく、顔は分からない）
 - {name: loc_habs_cellhouse, src: loc_habs_cellhouse, crop: [0.045, 0.045, 0.965, 0.975]}  # A-24：房棟の中の通路（Bブロックと Cブロックの間）
 
-# ---------- FBI の写真（fbi.gov の公式ページ） ----------
-- {name: fbi_dummy_head_side, src: fbi_dummy_head_side, crop: null}   # 冒頭の1コマ目、第2章
-- {name: fbi_mugshots,        src: fbi_mugshots,        crop: null}   # 3人の顔写真（F-022）
-- {name: fbi_dummy_head_bed,  src: fbi_dummy_head_bed,  crop: null}   # 遺体に見えない寄り方
-- {name: fbi_ev_vent_grille,  src: fbi_ev_vent_grille,  crop: null}
-- {name: fbi_ev_roof_vent,    src: fbi_ev_roof_vent,    crop: null}
-- {name: fbi_ev_shore_aerial, src: fbi_ev_shore_aerial, crop: null}
-- {name: fbi_ev_raft,         src: fbi_ev_raft,         crop: null}   # 作り方が分かる寄り方にしない
-- {name: fbi_ev_paddle,       src: fbi_ev_paddle,       crop: null}
-- {name: fbi_ev_lifevest,     src: fbi_ev_lifevest,     crop: null}
+# ---------- FBI の写真（fbi.gov の公式ページの原寸 @@images/image）：2026-11-28 に取得して画像で確かめた ----------
+# 北東の岸の航空写真といかだの写真は、今の fbi.gov のページに載っておらず、大きい版が手に入らないので使わない（台本で替えた）
+- {name: fbi_dummy_head_side, src: fbi_dummy_head_side, crop: [0.0, 0.02, 0.98, 0.99]}    # 頭の全体（首の書き込みも資料のまま）
+- {name: fbi_mugshots,        src: fbi_mugshots,        crop: [0.0, 0.0, 1.0, 1.0]}       # 3枚を並べたもの（prepare_materials_006.py の compose_mugshots）
+- {name: fbi_dummy_head_bed,  src: fbi_dummy_head_bed,  crop: [0.22, 0.0, 1.0, 0.74]}     # 格子・ヘッドホン・枕の頭と毛布。眠っている人に見える（それがだました仕掛け）
+- {name: fbi_ev_vent_grille,  src: fbi_ev_vent_grille,  crop: [0.02, 0.14, 0.80, 0.90]}   # 洗面台の下の穴と格子
+- {name: fbi_ev_roof_vent,    src: fbi_ev_roof_vent,    crop: [0.035, 0.015, 0.975, 0.93]} # 写真の白い縁は入れない
+- {name: fbi_ev_paddle,       src: fbi_ev_paddle,       crop: [0.02, 0.10, 1.0, 0.85]}    # 原寸が 636x420 と小さい（これより大きい版はない）
+- {name: fbi_ev_lifevest,     src: fbi_ev_lifevest,     crop: [0.12, 0.12, 1.0, 0.98]}    # 左上の格子のかけらは入れない
 
 # ---------- FBI Vault（Alcatraz Escape）：2026-11-28 に Mac から PDF が届き、ページを画像で見て位置を決めた ----------
 - {name: fbi_v15_p041__para1,    src: fbi_v15_p041, crop: [0.19, 0.155, 0.93, 0.265]}   # 第1段落だけ（上の黒塗りは入れない）
@@ -41,6 +39,7 @@
 - {name: fbi_v01_p078__last,     src: fbi_v01_p078, crop: [0.15, 0.748, 0.93, 0.7838]}   # 最後の1文（支局長の言葉）
 - {name: fbi_v11_p112__lab,      src: fbi_v11_p112, crop: [0.18, 0.403, 0.92, 0.548]}   # 鑑識の段落だけ（下の伝聞の段落は絶対に入れない）
 - {name: fbi_v05_p033__synopsis, src: fbi_v05_p033, crop: [0.135, 0.441, 0.91, 0.6112]}   # 概要の段落（黒塗りの行は入れない）
+- {name: fbi_v05_p033__raft,     src: fbi_v05_p033, crop: [0.165, 0.619, 0.875, 0.6812]}   # 第3段落の頭3行（いかだは一度も試していない）。そのあとの黒塗りの行は入れない
 - {name: fbi_v11_p042__para1,    src: fbi_v11_p042, crop: [0.125, 0.2913, 0.935, 0.511]}   # 第1段落だけ（第3段落は絶対に入れない）
 - {name: fbi_v02_p005__price,    src: fbi_v02_p005, crop: [0.15, 0.578, 0.91, 0.712]}   # 支局長の報告の段落（上の記者の段落は入れない）
 - {name: fbi_v13_p073__body,     src: fbi_v13_p073, crop: [0.2, 0.408, 0.905, 0.688]}   # 第2段落と下の注記
@@ -50,10 +49,11 @@
 - {name: fbi_v15_p087__body,     src: fbi_v15_p087, crop: [0.145, 0.526, 0.875, 0.648]}   # DISCONTINUE からの4行
 
 # ---------- 連邦保安官局 ----------
-- {name: usms_profile_morris__dob,   src: usms_profile_morris,  crop: null}   # 生年月日の行（身体の特徴の行は入れない）
-- {name: usms_poster_morris__header, src: usms_poster_morris,   crop: null}   # 見出し（WANTED BY U.S. MARSHALS）だけ
-- {name: usms_poster_morris__age,    src: usms_poster_morris,   crop: null}   # 当時の顔写真と年齢を進めた絵
-- {name: usms_poster_john__age,      src: usms_poster_john,     crop: null}   # 入れ墨などの特徴の行は入れない
-- {name: usms_poster_clarence__age,  src: usms_poster_clarence, crop: null}   # 入れ墨の記述の行は入れない
-- {name: usms_profiles_list__list,   src: usms_profiles_list,   crop: null}   # 3人の名前が並ぶ所（保存日を表示）
-- {name: usms_release_2012__pledge,  src: usms_release_2012,    crop: null}   # 台帳が check（本文を開けていない）。使用可になるまで作らない
+# サイトの写しは 2026-11-28 に Windows の Chrome で撮った（1568x698。手配ページは拡大 1.35、発表文は 1.6）
+- {name: usms_profile_morris__dob,   src: usms_profile_morris,  crop: [0.0255, 0.122, 0.676, 0.530]}   # 名前・手配の年・州・生年月日・出生地（性別から下の身体の特徴の行は入れない）
+- {name: usms_poster_morris__header, src: usms_poster_morris,   crop: [0.0, 0.0, 1.0, 0.262]}         # 見出し（WANTED BY U.S. MARSHALS）だけ
+- {name: usms_poster_morris__age,    src: usms_poster_morris,   crop: [0.58, 0.27, 0.845, 0.715]}    # 写真の列だけ（上が当時、下が年齢を進めた絵）。左の特徴の欄は入れない
+- {name: usms_poster_john__age,      src: usms_poster_john,     crop: [0.585, 0.27, 0.84, 0.715]}    # 同上（入れ墨などの特徴の行は入れない）
+- {name: usms_poster_clarence__age,  src: usms_poster_clarence, crop: [0.57, 0.27, 0.855, 0.715]}    # 同上（入れ墨の記述の行は入れない）
+- {name: usms_profiles_list__list,   src: usms_profiles_list,   crop: [0.1467, 0.0115, 0.845, 0.963]}  # 見出しと3人の欄（名前と州まで。身長・体重の行は入れない）
+- {name: usms_release_2012__pledge,  src: usms_release_2012,    crop: [0.0, 0.477, 0.876, 0.673]}    # 99歳まで追うと書いた段落（UNT の保存ページ）

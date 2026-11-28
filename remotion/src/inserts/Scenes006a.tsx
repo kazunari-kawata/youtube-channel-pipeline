@@ -1,6 +1,6 @@
 /**
  * 006 アルカトラズ脱獄（1962年6月）のイメージ映像：湾に浮かぶ島（人物なし、船なし）
- *   island_far：曇りの湾に浮かぶ島の遠景（a 正面、b 少し近く、c 横から、d 夕方）
+ *   island_far：曇りの湾に浮かぶ島の遠景（a 正面、b 少し近く、c 横から、d 夕方、e 日暮れの島を北東から）
  *   island_boat：水面の低い所から見た島（a 近づく全景、b 北側の近く、c 曇りの朝に横へ、d ゆっくり引いていく）
  * 見た目は、ユーザーが2026年8月に撮った映像を参考にした（episodes/006-alcatraz/footage.md）。映像そのものは使わない（F-057）。
  * 島は1962年の姿にする：今の展示・解説板・観光客・売店は入れない。建物に文字・標章は描かない。
@@ -636,12 +636,18 @@ export const InsertIslandFar006: React.FC<SceneProps> = ({ variant = "a" }) => {
     // 近くの水面が画面の下に入るとちらつくので、カメラを少し高く（画面の下に映る水面を遠くに）、横の動きは小さく
     c: [{ pos: [-1170, 9, 1070], target: [0, 24, 0], fov: 24 }, { pos: [-1159, 9, 1080], target: [2, 24, 0], fov: 24 }],
     d: [{ pos: [300, 7, 1550], target: [12, 22, 0], fov: 26 }, { pos: [250, 7, 1545], target: [10, 22, 0], fov: 26 }],
+    // 北東（エンジェル島の側）から。3人が離れた北東の岸の側を見る（006 の s030。島の北東の岸の航空写真の代わり）
+    e: [{ pos: [1010, 9, -1180], target: [0, 20, 0], fov: 24 }, { pos: [985, 9, -1205], target: [0, 20, 0], fov: 24 }],
   };
   const [from, to] = cams[variant] ?? cams.a;
   if (variant === "d") {
     // 夕方：光が少しずつ落ちる。灯台は止まった灯り（回る光の筋は描かない：明滅になる）
     const dim = interpolate(p, [0, 1], [1, 0.72], clamp);
     return <BayScene look="dusk" from={from} to={to} dim={dim} glow={interpolate(p, [0, 1], [0.6, 1.6], clamp)} lit={interpolate(p, [0, 1], [0.2, 0.6], clamp)} />;
+  }
+  if (variant === "e") {
+    // 日暮れ：d と同じ見た目で、光は落としきった所で止める（島の形と房棟が静止画1コマで分かる明るさ。F-052）
+    return <BayScene look="dusk" from={from} to={to} dim={0.8} glow={1.2} lit={0.5} />;
   }
   return <BayScene look="overcast" from={from} to={to} />;
 };

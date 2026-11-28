@@ -90,6 +90,10 @@ def status(ep, v):
     if v["kind"] == "video":
         f = ROOT / "remotion" / "public" / ep.split("-")[0] / f"{v['src']}.mp4"
         return "あり" if f.exists() else "切り出し待ち"
+    if v["kind"] in ("doc", "photo") and v.get("focus"):
+        # この回の切り出しは <src>__<focus>.jpg（ep006-alcatraz.tsx の assetName と同じ）。共有の status は <src>.jpg だけを見る
+        f = ROOT / "remotion" / "public" / ep.split("-")[0] / f"{v['src']}__{v['focus']}.jpg"
+        return "あり" if f.exists() else "切り出し待ち"
     return _status(ep, v)
 
 

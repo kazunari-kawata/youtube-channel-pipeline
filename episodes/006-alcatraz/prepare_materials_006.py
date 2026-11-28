@@ -17,6 +17,9 @@ PDF を画像にする pdftoppm の版で幅が1画素変わり、Windows とク
   - crop がまだ決まっていない（null）：画像で見て、台帳の note の「入れない段落」を外す位置を決めてから書く
   - 元のファイルがまだない（Mac にある fbi/・usms/ が届いていない）
 作られなかったものは、動画の中で「素材待ち」の仮の絵になる（ep006-alcatraz.tsx の Pending）
+
+3人の顔写真（台帳の fbi_mugshots = fbi/mugshots_three.jpg）は、ここで3枚を横に並べて作る（compose_mugshots）。
+FBI の公式ページのクラレンスの写真は 111x113 と小さいので、連邦保安官局の手配書に入っている写真（480x524）を使う（F-040）
 """
 import argparse
 import json
@@ -47,6 +50,41 @@ def load(item: dict, page: int | None) -> Image.Image:
     return Image.open(f).convert("RGB")
 
 
+MUGSHOTS = [  # 左から。ナレーションのラベルと同じ順（ジョン、クラレンス、モリス）
+    ("fbi/mugshot_john.jpg", None),
+    ("usms/poster_anglin_clarence.pdf", 0),   # 手配書の1枚目の写真（当時の顔写真。2枚目は年齢を進めた絵）
+    ("fbi/mugshot_morris.jpg", None),
+]
+
+
+def compose_mugshots() -> str | None:
+    """3人の顔写真を同じ高さにそろえて横に並べる。部品がそろっていなければ理由を返す"""
+    out = MAT / "fbi" / "mugshots_three.jpg"
+    if out.exists():
+        return None
+    ims = []
+    for f, idx in MUGSHOTS:
+        src = MAT / f
+        if not src.exists():
+            return f"fbi_mugshots：{f} がまだない"
+        if idx is None:
+            ims.append(Image.open(src))
+        else:
+            with tempfile.TemporaryDirectory() as td:
+                subprocess.run(["pdfimages", "-f", "1", "-l", "1", "-j", str(src), f"{td}/i"], check=True)
+                ims.append(Image.open(sorted(Path(td).glob("i-*"))[idx]).copy())
+    h, gap = 560, 22
+    ims = [im.convert("L").resize((round(im.size[0] * h / im.size[1]), h), Image.LANCZOS) for im in ims]
+    canvas = Image.new("L", (sum(im.size[0] for im in ims) + gap * (len(ims) - 1), h), 236)
+    x = 0
+    for im in ims:
+        canvas.paste(im, (x, 0))
+        x += im.size[0] + gap
+    canvas.convert("RGB").save(out, quality=92)
+    print(f"fbi/mugshots_three.jpg {canvas.size[0]}x{canvas.size[1]}（{'、'.join(f for f, _ in MUGSHOTS)}）")
+    return None
+
+
 def make_assets() -> None:
     """remotion/public/006/*.jpg の大きさを、動画の定義が読む一覧にする（縦横比を手で書かないため）"""
     out = {p.stem: list(Image.open(p).size) for p in sorted(PUB.glob("*.jpg"))}
@@ -65,6 +103,8 @@ def main():
     ledger = {i["id"]: i for i in yaml.safe_load((EP / "materials.yaml").read_text(encoding="utf-8"))["items"]}
     PUB.mkdir(parents=True, exist_ok=True)
     made, kept, waiting = 0, 0, []
+    if (msg := compose_mugshots()):
+        waiting.append(msg)
     for c in yaml.safe_load((EP / "cuts_006.yaml").read_text(encoding="utf-8")):
         if only and c["name"] not in only:
             continue
