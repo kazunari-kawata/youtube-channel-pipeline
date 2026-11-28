@@ -5,6 +5,8 @@
 本編の check_video.py と同じ基準（チラつき・真っ黒・音量・音のピーク）に、ショートの決まりを足す：
 縦 1080x1920、60秒以内、1フレーム目がサムネイル（真っ黒でなく、サムネイルの間は止まっている）、
 字幕は1回13字まで・サムネイルに重ねない・隠れない範囲、最後に本編への案内。
+hook（0秒からの一言）で始めるショートは、止まったサムネイルの代わりに「最初の0.5秒で絵が動いている」「一言がある」を確かめる（F-059）。
+絵の切り替えは1つ6秒まで（F-059）。
 """
 from __future__ import annotations
 
@@ -66,19 +68,32 @@ def main():
     add("チラつき", len(flicker) <= q["flicker_max_frames"], f"{len(flicker)}フレーム（最大{worst}画素）", f"{q['flicker_max_frames']}フレーム",
         ("該当: " + ", ".join(str(i) for i, _ in flicker[:10])) if flicker else "")
     add("真っ黒なフレーム", len(black) == 0, f"{len(black)}フレーム", "0")
-    # 1フレーム目＝サムネイル：真っ黒でなく、サムネイルの間は止まっている（フェードしない）
     tf = data["thumb"]["frames"]
-    f0, f1 = frame_gray(video, 0), frame_gray(video, tf - 2)
-    diff = float(np.abs(f0 - f1).mean())
-    add("1フレーム目がサムネイル", f0.max() > 120 and diff < 3.0, f"明るさの最大 {int(f0.max())}、{tf - 2}フレーム目との差 {diff:.1f}",
-        "真っ黒でなく、サムネイルの間は動かない", "F-058")
-    name = data["thumb"].get("name", "")
-    add("サムネイルに名前", bool(name), name or "なし", "本人の名前", "F-058")
+    hook = data.get("hook")
+    if tf > 0:
+        # 1フレーム目＝サムネイル：真っ黒でなく、サムネイルの間は止まっている（フェードしない）
+        f0, f1 = frame_gray(video, 0), frame_gray(video, tf - 2)
+        diff = float(np.abs(f0 - f1).mean())
+        add("1フレーム目がサムネイル", f0.max() > 120 and diff < 3.0, f"明るさの最大 {int(f0.max())}、{tf - 2}フレーム目との差 {diff:.1f}",
+            "真っ黒でなく、サムネイルの間は動かない", "F-058")
+        name = data["thumb"].get("name", "")
+        add("サムネイルに名前", bool(name), name or "なし", "本人の名前", "F-058")
+    else:
+        # 0秒からの一言（F-059）：最初のフレームは真っ黒でなく、最初の0.5秒で絵が動いている（止まった絵で始めない）
+        f0, f1 = frame_gray(video, 0), frame_gray(video, 15)
+        diff = float(np.abs(f0 - f1).mean())
+        add("最初の0.5秒で絵が動く", f0.max() > 120 and diff > 0.3, f"明るさの最大 {int(f0.max())}、15フレーム目との差 {diff:.2f}",
+            "真っ黒でなく、動いている", "F-059")
+        add("0秒からの一言", bool(hook and hook.get("lines")), " / ".join(hook["lines"]) if hook else "なし", "あり", "F-059")
+    # 絵の切り替え：1つの絵は6秒まで（F-059）
+    lens = [(sh["to"] - sh["from"]) / data["fps"] for sh in data["shots"]]
+    add("絵の切り替え", max(lens) <= 6.0, f"平均 {np.mean(lens):.1f}秒、最長 {max(lens):.1f}秒", "1つ6秒まで", "F-059")
     # 字幕
     long_caps = [c["text"] for c in data["captions"] if len(re.sub(r"\s", "", c["text"])) > CAP_MAX]
     add("字幕は1回13字まで", not long_caps, "、".join(long_caps) or "すべて13字以内", f"{CAP_MAX}字")
-    early = [c["text"] for c in data["captions"] if c["from"] < tf]
-    add("サムネイルに字幕を重ねない", not early, "、".join(early) or "なし", "なし")
+    first = max(tf, hook["to"] if hook else 0)
+    early = [c["text"] for c in data["captions"] if c["from"] < first]
+    add("サムネイル・一言に字幕を重ねない", not early, "、".join(early) or "なし", "なし")
     inside = CAP_BOX["left"] >= SAFE["left"] and CAP_BOX["right"] <= SAFE["right"] and CAP_BOX["top"] >= SAFE["top"] and CAP_BOX["bottom"] <= SAFE["bottom"]
     add("字幕の位置（隠れない範囲）", inside, f"x {CAP_BOX['left']}〜{CAP_BOX['right']}、y {CAP_BOX['top']}〜{CAP_BOX['bottom']}",
         f"x {SAFE['left']}〜{SAFE['right']}、y {SAFE['top']}〜{SAFE['bottom']}（720x1280）")

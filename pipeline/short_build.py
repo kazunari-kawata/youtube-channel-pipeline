@@ -7,6 +7,13 @@
 出力：remotion/public/shorts/<回の番号><名前>/audio.wav（声・BGM・効果音を混ぜて -1dBFS のリミッター）、
       remotion/public/shorts/<回の番号><名前>/data.json（Remotion の Short が読む。本編の current.json とは別なので Studio の Main は変わらない）
 書き出し：cd remotion && npx remotion render src/index.ts Short out.mp4 --props='{"id":"002a"}' --scale=1.5
+
+台本で使える指定（F-059。002 のショートAは「視聴された」20.2%で、最初の1秒で離れられていた）：
+  speed      声の速さ（1.2 なら1.2倍。高さは変えない。ffmpeg の atempo）
+  max_pause  区間の中の声の切れ目（読点の間など）を、この秒数まで詰める
+  hook       最初の区間のあいだ、画面に大きく出す一言（{"tag", "lines", "hl"}）。0秒から出し、動く絵の上に重ねる
+  thumb      止まったサムネイルを最初に出すときだけ書く（hook と同時には使わない）
+区間ごと：skip（文頭の数文字を落とす。例 "中の"）、cut（1つ、またはリスト）、captions_off
 """
 from __future__ import annotations
 
@@ -137,6 +144,50 @@ def fix_times(caption: str, a: np.ndarray, st: list[float], en: list[float]) -> 
     return out
 
 
+def tighten(clip: np.ndarray, max_pause: float | None) -> tuple[np.ndarray, list[tuple[float, float]]]:
+    """区間の中の声の切れ目（読点の間など）を max_pause 秒まで詰める。
+    返り値：詰めた声と、元の時刻→新しい時刻の対応（折れ線の点の列）"""
+    n = len(clip) / SR
+    if not max_pause:
+        return clip, [(0.0, 0.0), (n, n)]
+    runs = voiced_runs(clip)
+    keep = []  # 残す区間（秒）
+    for k, (r0, r1) in enumerate(runs):
+        s0 = 0.0 if k == 0 else r0 - max_pause / 2
+        s1 = n if k == len(runs) - 1 else r1 + max_pause / 2
+        if keep and s0 <= keep[-1][1]:
+            keep[-1][1] = max(keep[-1][1], s1)
+        else:
+            keep.append([max(0.0, s0), min(n, s1)])
+    out, pts, t = [], [], 0.0
+    xf = int(0.012 * SR)
+    for s0, s1 in keep:
+        seg = clip[int(s0 * SR) : int(s1 * SR)].copy()
+        if out and len(seg) > 2 * xf:
+            seg[:xf] *= np.linspace(0, 1, xf, dtype=np.float32)
+            out[-1][-xf:] *= np.linspace(1, 0, xf, dtype=np.float32)
+        pts += [(s0, t), (s1, t + (s1 - s0))]
+        t += s1 - s0
+        out.append(seg)
+    return np.concatenate(out), pts
+
+
+def stretch(clip: np.ndarray, speed: float) -> np.ndarray:
+    """高さを変えずに速さだけ変える（ffmpeg の atempo）"""
+    if abs(speed - 1.0) < 1e-3:
+        return clip
+    r = subprocess.run([ffmpeg_bin(), "-v", "error", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "pipe:0",
+                        "-af", f"atempo={speed}", "-f", "f32le", "-ar", str(SR), "-ac", "1", "pipe:1"],
+                       input=clip.astype(np.float32).tobytes(), capture_output=True, check=True)
+    return np.frombuffer(r.stdout, np.float32).copy()
+
+
+def remap(t: float, pts: list[tuple[float, float]], ratio: float) -> float:
+    """元の時刻 t（秒）を、間を詰めて速さを変えたあとの時刻に直す"""
+    xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+    return float(np.interp(t, xs, ys)) * ratio
+
+
 _WHISPER = None
 
 
@@ -181,9 +232,9 @@ def asr_times(caption: str, a: np.ndarray, rough: list[float]) -> list[float]:
     return out
 
 
-def chunk_starts(caption: str, parts: list[str]) -> list[int]:
-    """字幕の区切り（句読点なし）が、台本の何文字目から始まるか"""
-    idx = [k for k, ch in enumerate(caption) if not PUNCT.match(ch)]
+def chunk_starts(caption: str, parts: list[str], start: int = 0) -> list[int]:
+    """字幕の区切り（句読点なし）が、台本の何文字目から始まるか（start：skip で落とした文字数）"""
+    idx = [k for k, ch in enumerate(caption) if not PUNCT.match(ch) and k >= start]
     flat = "".join(caption[k] for k in idx)
     joined = "".join(strip(p) for p in parts)
     if not flat.startswith(joined):
@@ -217,6 +268,7 @@ def main():
     sid = args.episode.split("-")[0] + args.name
     chunks = load_alignment(build)
     gap, lead = spec.get("gap_sec", 0.18), spec.get("lead_sec", 0.2)
+    speed, max_pause = spec.get("speed", 1.0), spec.get("max_pause")
 
     # 1) 声：区間ごとに声のある所だけを取り、間を詰めてつなぐ
     pieces, segs, t = [], [], 0.0
@@ -235,19 +287,31 @@ def main():
             nxt = [g for g in voiced_runs(a) if g[0] >= ct[k + 1] - 0.05]
             prev = [g for g in voiced_runs(a) if g[1] <= ct[k + 1] + 0.05]
             b1 = min(b1, int((prev[-1][1] if prev else ct[k + 1]) * SR))
+        k0 = 0
+        if s.get("skip"):
+            # 文頭の数文字（例「中の」）を落とす。落とした次の文字の声が始まる少し手前から使う
+            if not cap.startswith(s["skip"]):
+                sys.exit(f"{s['id']} の skip「{s['skip']}」が台本の文頭と合いません")
+            k0 = len(s["skip"])
+            b0 = max(b0, int((ct[k0] - 0.03) * SR))
         a0, a1 = max(0, b0 - int(0.04 * SR)), min(len(a), b1 + int(0.12 * SR))
         clip = a[a0:a1].copy()
         fade = int(0.015 * SR)
+        clip[:fade] *= np.linspace(0, 1, fade, dtype=np.float32)
         clip[-fade:] *= np.linspace(1, 0, fade, dtype=np.float32)
-        pieces.append((t, clip))
+        # 区間の中の間を詰め、速さを変える（字幕の時刻も同じだけ動かす）
+        tight, pts = tighten(clip, max_pause)
+        fast = stretch(tight, speed)
+        ratio = len(fast) / max(1, len(tight))
+        pieces.append((t, fast))
         tstart = t
-        dur = len(clip) / SR
+        dur = len(fast) / SR
         # 字幕の時刻
         caps = []
-        starts = chunk_starts(cap, s["captions"])
+        starts = chunk_starts(cap, s["captions"], k0)
         for j, (txt, ci) in enumerate(zip(s["captions"], starts)):
-            c0 = tstart + ct[ci] - a0 / SR
-            c1 = tstart + (ct[starts[j + 1]] - a0 / SR if j + 1 < len(starts) else dur)
+            c0 = tstart + remap(ct[ci] - a0 / SR, pts, ratio)
+            c1 = tstart + (remap(ct[starts[j + 1]] - a0 / SR, pts, ratio) if j + 1 < len(starts) else dur)
             caps.append({"from": max(0, int(round(c0 * FPS))), "to": int(round(c1 * FPS)), "text": txt,
                          "hl": [h for h in s.get("hl", []) if h in txt]})
         segs.append({"id": s["id"], "t0": tstart, "t1": tstart + dur, "spec": s, "caps": caps})
@@ -258,18 +322,18 @@ def main():
     n_total = int(round(total * FPS))
 
     # 2) 画面：区間の頭（少し前）で替え、cut.at（声の長さに対する割合）で途中で替える。1フレーム目からはサムネイル
-    thumb_f = int(round(spec["thumb"]["sec"] * FPS))
+    thumb_f = int(round((spec.get("thumb") or {}).get("sec", 0) * FPS))
     shots = []
     for k, g in enumerate(segs):
         s = g["spec"]
         f0 = thumb_f if k == 0 else int(round((g["t0"] - lead) * FPS))
         f_end = int(round((segs[k + 1]["t0"] - lead) * FPS)) if k + 1 < len(segs) else int(round(end_from * FPS))
-        if s.get("cut"):
-            fc = int(round((g["t0"] + s["cut"]["at"] * (g["t1"] - g["t0"])) * FPS))
-            shots.append({"from": f0, "to": fc, "visual": s["visual"], "sfx": s.get("sfx", [])})
-            shots.append({"from": fc, "to": f_end, "visual": s["cut"]["visual"], "sfx": s["cut"].get("sfx", [])})
-        else:
-            shots.append({"from": f0, "to": f_end, "visual": s["visual"], "sfx": s.get("sfx", [])})
+        raw = s.get("cut")
+        cuts = sorted(raw if isinstance(raw, list) else ([raw] if raw else []), key=lambda c: c["at"])
+        bounds = [f0] + [int(round((g["t0"] + c["at"] * (g["t1"] - g["t0"])) * FPS)) for c in cuts] + [f_end]
+        vis = [(s["visual"], s.get("sfx", []))] + [(c["visual"], c.get("sfx", [])) for c in cuts]
+        for (v, sx), b0_, b1_ in zip(vis, bounds, bounds[1:]):
+            shots.append({"from": b0_, "to": b1_, "visual": v, "sfx": sx})
     caps = [c for g in segs if not g["spec"].get("captions_off") for c in g["caps"]]
     for c in caps:
         c["from"] = max(c["from"], thumb_f)  # サムネイルのフレームには字幕を重ねない
@@ -339,9 +403,13 @@ def main():
                     "-c:a", "pcm_s16le", str(out_dir / "audio.wav")], check=True)
     tmp.unlink()
 
+    hook = None
+    if spec.get("hook"):
+        # 最初の区間の声が終わるまで（次の画面に替わる所まで）出す
+        hook = {**spec["hook"], "from": 0, "to": int(round((segs[0]["t1"] + 0.05) * FPS))}
     data = {
         "id": sid, "episode": args.episode, "dir": args.episode.split("-")[0], "fps": FPS, "durationInFrames": n_total,
-        "audio": f"shorts/{sid}/audio.wav", "thumb": {**spec["thumb"], "frames": thumb_f},
+        "audio": f"shorts/{sid}/audio.wav", "thumb": {**(spec.get("thumb") or {}), "frames": thumb_f}, "hook": hook,
         "end": {"from": int(round(end_from * FPS)), "text": spec["end"]["text"]},
         "shots": [{k: v for k, v in sh.items() if k != "sfx"} for sh in shots], "captions": caps,
     }
@@ -349,6 +417,9 @@ def main():
     (build / f"short_{args.name}_cues.json").write_text(json.dumps({"cues": cues, "segments": [{k: g[k] for k in ("id", "t0", "t1")} for g in segs]}, ensure_ascii=False, indent=1), encoding="utf-8")
     loud = meter.integrated_loudness(sf.read(out_dir / "audio.wav", dtype="float32")[0])
     print(f"ショート {sid}：{total:.1f}秒（{n_total}フレーム）、画面 {len(shots)}、字幕 {len(caps)}、効果音 {len(cues)}、音量 {loud:.1f} LUFS")
+    # 画面1つあたりの長さ（F-059：絵の切り替えの間隔を見る）
+    lens = [(sh["to"] - sh["from"]) / FPS for sh in shots]
+    print(f"画面の長さ：平均 {np.mean(lens):.1f}秒、最長 {max(lens):.1f}秒、最短 {min(lens):.1f}秒")
 
 
 if __name__ == "__main__":
