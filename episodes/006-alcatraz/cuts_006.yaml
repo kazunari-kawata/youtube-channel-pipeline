@@ -1,0 +1,59 @@
+# 006 アルカトラズ脱獄：画面に出す切り出し（prepare_materials_006.py が読む）
+#   name: remotion/public/006/<name>.jpg。台本の visual.src と同じ名前。同じ資料の別の行は <src>__<focus>
+#   src:  素材台帳（materials.yaml）の id。ファイルとページは台帳の file から取る（「#page=N」がページ）
+#   crop: [左, 上, 右, 下]（ページ・写真に対する割合）。null は「まだ画像で見て決めていない」。null のものは作らない
+#   redact: [[x0, y0, x1, y1], ...]  切り出す前のページに対する割合で黒く塗る（名前・住所など）
+#
+# FBI と連邦保安官局の資料・写真は、Mac にある build/materials/fbi/ と usms/ がこのリポジトリに届いてから、
+# 1枚ずつ画像で見て crop を書く（台帳の note の「入れない段落」を外す。黒塗りはそのまま）。それまで画面は「素材待ち」の仮の絵。
+# クラウドからは fbi.gov・usmarshals.gov が開けない（403）。
+
+# ---------- 議会図書館（HABS CA-1792-A）：2026-11-28 に取得して画像で確かめた ----------
+# 写真の番号の札（HABS No. CA-1792-A-3 / A-24）とフィルムの黒い縁は入れない
+- {name: loc_habs_exterior,  src: loc_habs_exterior,  crop: [0.03, 0.05, 0.945, 0.965]}   # A-3：運動場から見た房棟と給水塔（階段の人は小さく、顔は分からない）
+- {name: loc_habs_cellhouse, src: loc_habs_cellhouse, crop: [0.045, 0.045, 0.965, 0.975]}  # A-24：房棟の中の通路（Bブロックと Cブロックの間）
+
+# ---------- FBI の写真（fbi.gov の公式ページ） ----------
+- {name: fbi_dummy_head_side, src: fbi_dummy_head_side, crop: null}   # 冒頭の1コマ目、第2章
+- {name: fbi_mugshots,        src: fbi_mugshots,        crop: null}   # 3人の顔写真（F-022）
+- {name: fbi_dummy_head_bed,  src: fbi_dummy_head_bed,  crop: null}   # 遺体に見えない寄り方
+- {name: fbi_ev_vent_grille,  src: fbi_ev_vent_grille,  crop: null}
+- {name: fbi_ev_roof_vent,    src: fbi_ev_roof_vent,    crop: null}
+- {name: fbi_ev_shore_aerial, src: fbi_ev_shore_aerial, crop: null}
+- {name: fbi_ev_raft,         src: fbi_ev_raft,         crop: null}   # 作り方が分かる寄り方にしない
+- {name: fbi_ev_paddle,       src: fbi_ev_paddle,       crop: null}
+- {name: fbi_ev_lifevest,     src: fbi_ev_lifevest,     crop: null}
+
+# ---------- FBI Vault（Alcatraz Escape）：2026-11-28 に Mac から PDF が届き、ページを画像で見て位置を決めた ----------
+- {name: fbi_v15_p041__para1,    src: fbi_v15_p041, crop: [0.19, 0.155, 0.93, 0.265]}   # 第1段落だけ（上の黒塗りは入れない）
+- {name: fbi_v06_p115__quote,    src: fbi_v06_p115, crop: [0.12, 0.305, 0.86, 0.3919]}   # 7:20 a.m. から rolled on the floor まで（右上の日付欄は入れない）
+- {name: fbi_v02_p035__title,    src: fbi_v02_p035, crop: [0.13, 0.318, 0.7, 0.42]}   # 件名の欄（3人の名前と罪名）
+- {name: fbi_v02_p035__synopsis, src: fbi_v02_p035, crop: [0.13, 0.448, 0.866, 0.5895]}   # 概要の段落（4人目の黒塗りは入れない）
+- {name: fbi_v07_p044__roof,     src: fbi_v07_p044, crop: [0.13, 0.289, 0.89, 0.492]}   # 第2段落（屋根）だけ
+- {name: fbi_v10_p027__counts,   src: fbi_v10_p027, crop: [0.2, 0.457, 0.91, 0.715]}   # 下の段落（点検の時刻）だけ
+- {name: fbi_v05_p003__para1,    src: fbi_v05_p003, crop: [0.17, 0.424, 0.91, 0.553]}   # 第1段落（所長の話）だけ
+- {name: fbi_v02_p037__plan,     src: fbi_v02_p037, crop: [0.14, 0.198, 0.89, 0.308]}   # いちばん上の計画の段落だけ
+- {name: fbi_v05_p048__engineers, src: fbi_v05_p048, crop: [0.14, 0.37, 0.92, 0.6562]}  # 陸軍工兵隊の説明の2段落（下の表は入れない）
+- {name: fbi_v05_p044__angel,    src: fbi_v05_p044, crop: [0.15, 0.443, 0.92, 0.745]}   # エンジェル島の捜索の段落
+- {name: fbi_v05_p044__debris,   src: fbi_v05_p044, crop: [0.15, 0.747, 0.92, 0.875]}   # 清掃船の段落
+- {name: fbi_v01_p089__summary,  src: fbi_v01_p089, crop: [0.525, 0.253, 0.975, 0.375]}   # 右上の要約の枠だけ（記者の名前の文は入れない）
+- {name: fbi_v01_p078__jacket,   src: fbi_v01_p078, crop: [0.15, 0.572, 0.965, 0.745]}   # 胴衣の状態の段落（見つけた人の名前の黒塗りはそのまま）
+- {name: fbi_v01_p078__last,     src: fbi_v01_p078, crop: [0.15, 0.748, 0.93, 0.7838]}   # 最後の1文（支局長の言葉）
+- {name: fbi_v11_p112__lab,      src: fbi_v11_p112, crop: [0.18, 0.403, 0.92, 0.548]}   # 鑑識の段落だけ（下の伝聞の段落は絶対に入れない）
+- {name: fbi_v05_p033__synopsis, src: fbi_v05_p033, crop: [0.135, 0.441, 0.91, 0.6112]}   # 概要の段落（黒塗りの行は入れない）
+- {name: fbi_v11_p042__para1,    src: fbi_v11_p042, crop: [0.125, 0.2913, 0.935, 0.511]}   # 第1段落だけ（第3段落は絶対に入れない）
+- {name: fbi_v02_p005__price,    src: fbi_v02_p005, crop: [0.15, 0.578, 0.91, 0.712]}   # 支局長の報告の段落（上の記者の段落は入れない）
+- {name: fbi_v13_p073__body,     src: fbi_v13_p073, crop: [0.2, 0.408, 0.905, 0.688]}   # 第2段落と下の注記
+- {name: fbi_v15_p042__last,     src: fbi_v15_p042, crop: [0.18, 0.525, 0.91, 0.625]}   # 最後の段落だけ（親族の段落は入れない）
+- {name: fbi_v15_p049__body,     src: fbi_v15_p049, crop: [0.18, 0.473, 0.9, 0.616]}   # 本文の2段落
+- {name: fbi_v15_p049__reason,   src: fbi_v15_p049, crop: [0.18, 0.517, 0.9, 0.616]}   # 理由の1行（Identification Order fugitives）
+- {name: fbi_v15_p087__body,     src: fbi_v15_p087, crop: [0.145, 0.526, 0.875, 0.648]}   # DISCONTINUE からの4行
+
+# ---------- 連邦保安官局 ----------
+- {name: usms_profile_morris__dob,   src: usms_profile_morris,  crop: null}   # 生年月日の行（身体の特徴の行は入れない）
+- {name: usms_poster_morris__header, src: usms_poster_morris,   crop: null}   # 見出し（WANTED BY U.S. MARSHALS）だけ
+- {name: usms_poster_morris__age,    src: usms_poster_morris,   crop: null}   # 当時の顔写真と年齢を進めた絵
+- {name: usms_poster_john__age,      src: usms_poster_john,     crop: null}   # 入れ墨などの特徴の行は入れない
+- {name: usms_poster_clarence__age,  src: usms_poster_clarence, crop: null}   # 入れ墨の記述の行は入れない
+- {name: usms_profiles_list__list,   src: usms_profiles_list,   crop: null}   # 3人の名前が並ぶ所（保存日を表示）
+- {name: usms_release_2012__pledge,  src: usms_release_2012,    crop: null}   # 台帳が check（本文を開けていない）。使用可になるまで作らない

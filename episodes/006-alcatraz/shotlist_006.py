@@ -35,7 +35,7 @@ EP = "006-alcatraz"
 shotlist.KIND_JA["video"] = "実写映像"
 script_md.KIND_JA["video"] = "実写映像"
 
-# ---- この回の環境音（ファイルはまだない。香盤表の「足りないもの」に出る。取得したら LICENSES.md に記録して config/sfx.yaml へ）----
+# ---- この回の環境音（2026-11-28 に Mixkit から取得：config/sfx_sources.yaml と assets/sfx/LICENSES.md。短いループは loop_beds_006.py で30秒に）----
 SOUNDS = {
     "amb_bay":       {"ja": "湾の環境音（波と風。人の声・船内放送は入れない）", "level": "bed", "variants": 1, "search": "bay waves wind ambience"},
     "amb_cellhouse": {"ja": "広い房棟の中の響き（遠い金属のきしみ、空調。人の声は入れない）", "level": "bed", "variants": 1, "search": "large empty hall room tone metal creak"},
@@ -44,10 +44,9 @@ SOUNDS = {
     "amb_beach":     {"ja": "外海の浜の波と風（曇りの午後。人の声は入れない）", "level": "bed", "variants": 1, "search": "ocean beach waves wind overcast"},
     "amb_boat":      {"ja": "小型艇のエンジンの低い音と波（無線の声は入れない）", "level": "bed", "variants": 1, "search": "small patrol boat engine idle water"},
     "amb_hill":      {"ja": "草の斜面の風と、遠い波（人の声・号令は入れない）", "level": "bed", "variants": 1, "search": "grassy hillside wind distant surf"},
-    "amb_office62":  {"ja": "1960年代の事務所の環境音（遠いタイプライター、時計）", "level": "bed", "variants": 1, "search": "1960s office ambience distant typewriter"},
     "amb_corridor":  {"ja": "配管の通路の環境音（管の低いうなり、遠いしずく）", "level": "bed", "variants": 1, "search": "utility corridor pipes hum drip"},
 }
-# イメージ映像の場面は、構成案（2026-11-26）で決めた8場面。remotion/src/inserts/registry.ts にはまだない（香盤表の状態は「作る」）
+# イメージ映像の場面（2026-11-27 に remotion/src/inserts/Scenes006a〜d.tsx で作り、registry.ts に登録した）
 RULES = {
     "video/ext": [{"key": "amb_bay", "at": 0.0}],
     "video/int": [{"key": "amb_cellhouse", "at": 0.0}],
@@ -58,7 +57,7 @@ RULES = {
     "insert/patrol_boat":  [{"key": "amb_boat", "at": 0.0}],
     "insert/beach_day":    [{"key": "amb_beach", "at": 0.0}],
     "insert/angel_search": [{"key": "amb_hill", "at": 0.0}],
-    "insert/sf_office"   : [{"key": "amb_office62", "at": 0.0}],
+    "insert/sf_office":     [{"key": "amb_office", "at": 0.0}],   # 003 で取った事務所の音（遠いタイプライター）をそのまま使う
     "insert/island_far":    [{"key": "amb_bay", "at": 0.0}],
     "insert/island_boat":   [{"key": "amb_bay", "at": 0.0}],
     "insert/cell_front":    [{"key": "amb_cellhouse", "at": 0.0}],

@@ -333,15 +333,15 @@ items:
   - id: loc_habs_exterior
     title: 議会図書館 HABS CA-1792-A のうち、閉鎖後の建物の外観（1986年）
     file: loc/habs_ca1792a/exterior.jpg
-    original: https://www.loc.gov/item/ca1498
+    original: https://tile.loc.gov/storage-services/master/pnp/habshaer/ca/ca1400/ca1498/photos/015916pu.tif
     status: pd_federal
-    note: loc_habs から1枚選ぶ。「1986年撮影（議会図書館）」
+    note: 2026-11-28 取得。写真 CA-1792-A-3（運動場から見た房棟と給水塔。階段に小さく人が写るが顔は分からない）。TIFF を JPEG にして、番号の札とフィルムの縁を外して切り出す（cuts_006.yaml）。「1986年撮影（議会図書館）」
   - id: loc_habs_cellhouse
     title: 議会図書館 HABS CA-1792-A のうち、房棟の内部（1986年）
     file: loc/habs_ca1792a/cellhouse.jpg
-    original: https://www.loc.gov/item/ca1498
+    original: https://tile.loc.gov/storage-services/master/pnp/habshaer/ca/ca1400/ca1498/photos/015934pu.tif
     status: pd_federal
-    note: loc_habs から1枚選ぶ。「1986年撮影（議会図書館）」
+    note: 2026-11-28 取得。写真 CA-1792-A-24（房棟の中の通路。両側に3段の房）。番号の札とフィルムの縁を外して切り出す（cuts_006.yaml）。細い格子が並ぶので、画面では拡大しない。「1986年撮影（議会図書館）」
   # FBIの写真（fbi_dummy_head と fbi_evidence_photos を1枚ずつに分けた。台本で使う名前。公式ページから保存して、撮影者の表示を確かめる）
   - id: fbi_dummy_head_side
     title: 人形の頭（横から。FBI公式ページの写真）

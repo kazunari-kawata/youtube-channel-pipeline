@@ -39,3 +39,12 @@ files:
   amb_forest_rain_1: {id: 1225, title: "Forest rain loop", max: 24, bed: true}
   amb_river_1:       {id: 2454, title: "River water flowing", start: 10, max: 30, bed: true}
   amb_office_1:      {id: 447,  title: "Office ambience", max: 30, bed: true}
+  # 006-alcatraz のイメージ映像の環境音（2026-11-28 に題名から選んだ。人の声・船内放送・汽笛が入っていないかは Studio で耳で確かめる）
+  amb_bay_1:       {id: 1191, title: "Distant sea humming ambiance", max: 30, bed: true}
+  amb_shore_1:     {id: 1190, title: "Sea waves on a rocky shore", max: 30, bed: true}
+  amb_beach_1:     {id: 1206, title: "Sea coast breaking waves", max: 30, bed: true}
+  amb_boat_1:      {id: 3077, title: "Ship engine loop", max: 30, bed: true}
+  amb_hill_1:      {id: 1201, title: "Strong wind sea breeze", max: 30, bed: true}
+  amb_cellhouse_1: {id: 1172, title: "Wind cold interior", max: 30, bed: true}
+  amb_cell_1:      {id: 3199, title: "Cinematic room tone loop", max: 30, bed: true}
+  amb_corridor_1:  {id: 2139, title: "Industrial hum loop", max: 30, bed: true}
