@@ -1,0 +1,11 @@
+# 010 22日間の「誘拐」は作り話だった（2016年、カリフォルニア州レディング）の設定（config/channel.yaml を上書きしたいキーだけ書く）
+id: 010-papini
+# シリーズ（CLAUDE.md「シリーズ」）。保安官事務所の事情聴取の録画を主役にする回
+series: bodycam
+
+bgm:
+  # 2026-11-28：構成案の段階。曲はユーザーに選んでもらうまで、002 用に記録済みの曲を仮で入れた
+  tracks: [assets/bgm/aether.mp3, assets/bgm/red_shift.mp3]
+
+# 本人の姿（F-022）。事情聴取の録画の1コマを候補にする（素材台帳では要確認。権利の判断はユーザー）
+person_photos: [sso_interview_2020]

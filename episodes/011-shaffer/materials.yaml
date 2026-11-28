@@ -1,0 +1,147 @@
+# 素材台帳：バーの防犯カメラは「出る姿」を映していなかった（第11回・2006年4月1日、オハイオ州コロンバス、ブライアン・シェイファーの失踪。未解決）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status の意味は episodes/002-dahmer/materials.yaml の冒頭と pipeline/fetch_materials.py の STATUS を参照
+#   pd_federal / pd_no_notice / pd_other / cc_by / fair_use / own → 使用可
+#   check → 要確認（画面に出さない） / reference → 参照のみ / unusable → 使用不可
+# 取得：python pipeline/fetch_materials.py 011-shaffer  → episodes/011-shaffer/build/materials/
+#
+# この回の注意
+# - 未解決の行方不明。コロンバス市警は2026年4月の時点で「捜査は続いている」（Columbus Dispatch）。本人は見つかっていない。生きているとも亡くなったとも言わない
+# - 一緒にいた友人、店の外で話した2人の女性、恋人、ネットや番組で名前が挙がった人は、名前を出さない・ほのめかさない（CLAUDE.md「未解決事件では特定の人をほのめかさない」）。
+#   ネット上の書き込みをめぐる名誉毀損の裁判が実際に起きている（2024年の報道）。2026年の「同じ名前の情報が20年ぶりに届いた」という報道も使わない
+# - 自死の説（ネットの書き込み）は扱わない。父の死（2008年）は一言だけ、場面にしない
+# - 「密室から消えた」と言い切らない。店の出口とエスカレーターにはカメラがあった（2006年の警察の説明）が、工事中の区画と仮設の搬入用エレベーターは映っていなかったと報じられている（MEL Magazine）。
+#   「カメラに映る道」と「映らない道」を分けて見せるのが、この回の芯
+# - 本人の写真は家族の提供（家族の著作物）。FBI・州のページに載っていても、写真は FBI の作ではない。防犯カメラの静止画（コロンバス市警の提供）を本人の姿の第1候補にする
+# - コロンバス市・オハイオ州の文書と画像は州・市の著作物の扱いがフロリダと違う可能性がある。ユーザーが判断するまで check
+# - fbi.gov はクラウドからも Windows の作業用シェルからも開けない（403）。Windows の Chrome で開き、保存はユーザーの許可のあと
+# - 台帳の状態は調査の初回（2026-11-28）。この会話では WebFetch の許可が取れず、検索結果の抜粋で確かめた。原本はまだ1点も保存していない
+
+case: Disappearance of Brian Shaffer（2006年4月1日 午前1時55分が最後の映像、オハイオ州コロンバス、South Campus Gateway の2階のバー。コロンバス市警の事件番号 060286094）
+series: profile
+checked_on: 2026-11-28
+
+items:
+  # ---------- FBI（連邦政府の著作物。写真は除く） ----------
+  - id: fbi_vicap_page
+    title: "FBI ViCAP の行方不明者のページ「BRIAN RANDALL SHAFFER - COLUMBUS, OHIO」"
+    file: ""
+    original: https://www.fbi.gov/wanted/vicap/missing-persons/brian-shaffer
+    status: pd_federal
+    note: "FBI の文章は著作権なし。検索結果の抜粋で確認：2006年4月1日、理由が分からないまま姿を消した。27歳、身長6フィート2インチ、体重160〜165ポンド、茶色の髪、ヘーゼルの目、右の二の腕にパール・ジャムの入れ墨。NamUs の番号 MP#1709。ページの写真は家族の提供とみられるので、文字の部分だけを使う（写真は fbi_vicap_photos で別に確かめる）"
+  - id: fbi_vicap_alert
+    title: "FBI ViCAP の警報（ViCAP Alert #2006-06-01、2018年9月7日改訂）PDF"
+    file: ""
+    original: https://www.fbi.gov/wanted/vicap/missing-persons/brian-shaffer/shaffera-9-7-18.pdf
+    status: pd_federal
+    note: "検索結果の抜粋で確認：「Missing: 04/01/2006」「最後に分かっている接触は午前1時55分、オハイオ州立大学のそばのバーで友人と飲んでいたとき」、市警の事件番号 060286094、連絡先はコロンバス市警の担当の刑事。名前が初めて出る所の資料（F-039）。担当者の名前とメール・電話は画面の説明で繰り返さない（資料の上はそのまま）"
+  - id: fbi_vicap_photos
+    title: FBI のページと警報に載っている本人の写真
+    file: ""
+    status: check
+    note: 家族の提供とみられる（WSYX の写真説明でも家族の提供）。FBI の作ではないので pd_federal にしない。使うなら家族の許可の有無をユーザーと決める。使わない案が基本
+  # ---------- オハイオ州・コロンバス市（州・市。ユーザーが判断するまで check） ----------
+  - id: cpd_cctv_stills
+    title: 防犯カメラの静止画（2006年4月1日。午前1時15分ごろエスカレーターで2階へ上がる姿、1時55分ごろ店の入口の外で話す姿）
+    file: ""
+    status: check
+    note: "報道では「Surveillance Image Courtesy: Columbus Police」（WSYX）、「Credit: Columbus Division of Police」（MEL）。撮ったのはビルの防犯カメラ、公開したのはコロンバス市警。原本は市警の公開先か公開記録の請求で取る（ニュース局の写しは使わない）。本人の姿（F-022）の第1候補。同じ画面に映る友人・2人の女性の顔はぼかす"
+  - id: cpd_cctv_video
+    title: 防犯カメラの映像（同じ夜。1時15分と1時55分の場面）
+    file: ""
+    status: check
+    note: 静止画と同じ扱い。映像の長さ・何台のカメラかは未確認。店の外の映像に映る客の顔はぼかす
+  - id: ohio_ag_poster
+    title: オハイオ州司法長官の行方不明者のページとポスター（Missing Adult – Brian Randal Shaffer）
+    file: ""
+    original: https://ohioattorneygeneral.gov/Files/Law-Enforcement/Investigator/Ohio-Missing-Persons/Missing-Adults-1/Shaffer
+    status: check
+    note: "検索結果の抜粋で確認：最後の服装はジーンズ、青か緑の縞のシャツ、テニスシューズ。連絡先はコロンバス市警。オハイオ州の作の権利の扱いを確かめる（文字の部分は事実なので台本には使える）"
+  - id: ohio_ag_age_progression
+    title: オハイオ州の捜査局（BCI）が作った42歳の姿の推定画像（2021年3月、州司法長官の発表）
+    file: ""
+    original: https://www.ohioattorneygeneral.gov/Media/News-Releases/March-2021/Age-Progression-Image-Released-in-Brian-Shaffer-Ca
+    status: check
+    note: "URL は他のチャンネルの概要欄にあったもの（末尾が切れている可能性。開いて確かめる）。州の作の権利を確かめる。「20年」の章で使う候補"
+  - id: cpd_poster_2006
+    title: 2006年にコロンバス市警が電柱に貼った行方不明のポスター、クライム・ストッパーズのちらし
+    file: ""
+    status: check
+    note: 報道（MEL、WSYX）で存在を確認。原本の写しは未入手。写真は家族の提供の可能性
+  # ---------- 当時の実物資料・場所 ----------
+  - id: naip_gateway
+    title: 米農務省の航空写真（NAIP）。South Campus Gateway の一角（北緯39.99382度、西経83.00657度。Wikipedia の記事の座標）
+    file: naip/south_campus_gateway.png
+    naip: {lat: 39.99382, lon: -83.00657, half_m: 250}
+    status: pd_federal
+    note: "fetch_materials.py は新しい年の写真から取る。2006年ごろの写真が要るなら、取得の前に年を選べるようにするか、USGS EarthExplorer で探す。商業ビルなので建物まで寄ってよい。座標は Wikipedia のもので、住所（1546 North High Street）と合うか地図で確かめる"
+  - id: photo_building_2006
+    title: 当時のビルの外観の写真（Flickr の DRust など）
+    file: ""
+    status: check
+    note: MEL の写真説明で存在を確認。ライセンスが CC なら cc_by。なければ使わず、3D で作る
+  # ---------- 自作 ----------
+  - id: own_3d_building
+    title: 自作の模式図（3D）：ビルの1階の入口とエスカレーター、2階のロビー、店の入口、工事中の区画、仮設の搬入用エレベーター、カメラの位置と向き
+    file: ""
+    status: own
+    note: "配置は報道の説明で確かめた範囲だけ（2006年の NBC の番組の説明：店の出口は2つともカメラが見ていて、通りへ下りるエスカレーターも映っていた。MEL：ビルは工事中で、仮設の搬入用エレベーターは監視をすり抜けた）。右上に「模式図」、下に「報道による配置の目安」と出す（CLAUDE.md）。カメラが首を振っていたかなど、確かめていない細部は入れない"
+  - id: own_maps
+    title: 自作の地図（実データ：Natural Earth、Copernicus DEM、米国勢調査局 TIGER）。コロンバス、オハイオ州立大学、ハイ・ストリート、ヒリアード
+    file: ""
+    status: own
+    note: maps.yaml で作る。ヒリアードは「携帯電話の基地局の記録が出た町」の縮尺まで。本人の住まいは出さない
+  # ---------- 参照のみ ----------
+  - id: ref_dispatch_2026
+    title: Columbus Dispatch（2026年3〜4月）「20 years after he vanished, here's what to know about Brian Shaffer」
+    file: ""
+    original: https://www.aol.com/articles/20-years-vanishing-heres-know-100541914.html
+    status: reference
+    note: 市警はメールで「捜査は続いている」と回答。今も情報が届き、州の捜査局（BCI）の助けを得ている、情報には聞き取りを含めて当たっている
+  - id: ref_nbc_2006
+    title: NBC Dateline（2006年）「Into thin air」
+    file: ""
+    original: https://www.nbcnews.com/news/amp/wbna12689476
+    status: reference
+    note: 当時の担当の巡査部長の説明：クレジットカード・携帯電話・バス・飛行機の使った跡がない。番組の説明（ナレーション）：店の出口は2つともカメラが見ていて、通りへ下りるエスカレーターも同じ
+  - id: ref_mel
+    title: MEL Magazine「A Guy Walks Into a Bar and Is Never Seen Again」
+    file: ""
+    original: https://melmagazine.com/en-us/story/a-guy-walks-into-a-bar-and-is-never-seen-again
+    status: reference
+    note: 1時15分にエスカレーターで上がる映像、ビルは工事中で仮設の搬入用エレベーターが監視をすり抜けた、9月に携帯電話が鳴りヒリアード（中心部から北西に14マイル）の基地局の記録が出た。人名が多いので、事実だけを使う
+  - id: ref_columbus_monthly_2009
+    title: Columbus Monthly（2009年）の長い記事（Wikipedia の主な出典）
+    file: ""
+    status: reference
+    note: 未入手。当夜の流れ、月曜朝のマイアミ行きの便に現れず届けが出たこと、市内の防犯カメラの多さ。人名は使わない
+  - id: ref_aetv_2026
+    title: A&E（2026年3月31日）「What Happened to Brian Shaffer?」
+    file: ""
+    original: https://www.aetv.com/articles/brian-shaffer-disappearance-2006
+    status: reference
+    note: 母が亡くなったのは失踪の3週間前、4月3日のマイアミ行きの便に乗らず届けが出た。記事の中の人名は使わない
+  - id: ref_wsyx_2026
+    title: WSYX ABC6（2026年3月27日）元担当刑事の話
+    file: ""
+    original: https://abc6onyourside.com/on-your-side/6-on-your-side/cold-case-missing-ohio-state-medical-student-brian-shaffer-vanished-after-night-out-ugly-tuna-saloona-never-seen-again-2006-osu-campus-gateway-disappearance-police-detective-john-hurst
+    status: reference
+    note: 元刑事の見方（亡くなっていて、事件に巻き込まれた可能性が高い）。個人の見方として扱い、使うなら「当時の担当刑事は、退職したあとの取材で〜と話した」。局の写真・映像は使わない
+  - id: ref_charley
+    title: The Charley Project（行方不明者のまとめ）
+    file: ""
+    original: https://charleyproject.org/case/brian-randall-shaffer
+    status: reference
+    note: 父は2008年9月の事故で亡くなった。生年月日は資料によって食い違う（2月11日と2月25日）ので、台本では言わない
+  # ---------- 使用不可 ----------
+  - id: no_media_footage
+    title: テレビ局・新聞社の写真と映像、番組・ポッドキャストの素材、Reddit などの書き込み
+    file: ""
+    status: unusable
+    note: 局・社・個人の著作物。書き込みは事実の根拠にしない
+  - id: no_family_photos
+    title: 家族・恋人が提供した写真
+    file: ""
+    status: unusable
+    note: 家族の著作物。fbi_vicap_photos と同じ扱い（ユーザーが家族の許可の有無を決めるまで出さない）

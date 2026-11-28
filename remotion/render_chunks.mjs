@@ -1,5 +1,6 @@
 // 長い動画を区間（チャンク）に分けて書き出す。途中で止まっても、次に動かすと書き出し済みの区間は飛ばして続きから。
 //   node render_chunks.mjs <出力フォルダ> [区間の秒数=20] [使う時間の上限（分）=9] [scale=1]
+//   ショート：COMP=Short PROPS='{"id":"003a"}' node render_chunks.mjs <出力フォルダ> 5 100 1.5
 // 時間の上限を過ぎたら、新しい区間を始めずに終わる（終了コード 3 ＝まだ残りがある）。全部そろったら終了コード 0。
 import { bundle } from "@remotion/bundler";
 import { renderMedia, selectComposition } from "@remotion/renderer";
@@ -15,7 +16,8 @@ const browserExecutable = process.platform === "linux" && fs.existsSync(chrome) 
 fs.mkdirSync(outDir, { recursive: true });
 
 const serveUrl = await bundle({ entryPoint: path.resolve("src/index.ts") });
-const composition = await selectComposition({ serveUrl, id: "Main", browserExecutable, chromiumOptions: { gl } });
+const inputProps = process.env.PROPS ? JSON.parse(process.env.PROPS) : {};
+const composition = await selectComposition({ serveUrl, id: process.env.COMP ?? "Main", inputProps, browserExecutable, chromiumOptions: { gl } });
 const per = Math.round(Number(chunkSecArg) * composition.fps);
 const n = Math.ceil(composition.durationInFrames / per);
 fs.writeFileSync(path.join(outDir, "plan.json"), JSON.stringify({ frames: composition.durationInFrames, per, n }));
@@ -30,7 +32,7 @@ for (let i = 0; i < n; i++) {
   const tmp = out + ".part.mp4";
   const s = Date.now();
   await renderMedia({
-    serveUrl, composition, codec: "h264", crf: 20, outputLocation: tmp, frameRange: [a, b],
+    serveUrl, composition, inputProps: composition.props, codec: "h264", crf: 20, outputLocation: tmp, frameRange: [a, b],
     scale: Number(scaleArg), browserExecutable, chromiumOptions: { gl }, muted: true,
     onBrowserLog: (l) => { if (l.type === "error") console.log("[browser]", l.text); },
   });

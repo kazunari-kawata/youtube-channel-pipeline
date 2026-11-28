@@ -1,0 +1,28 @@
+# 自動化（定期実行）の設定。説明は automation/README.md
+# 定期実行の Claude は、この上限を超えて進めない
+
+# 自動で同時に進める回の数（人の確認待ち＝review の回は数えない）
+max_in_flight: 3
+# 人の確認待ち（review）の回がこの数になったら、新しい題材を始めない（見きれない量を作らない）
+max_waiting_review: 3
+# 新しい題材の調査を自動で始めてよいか（false にすると、いまある回だけを進める）
+new_topics: true
+
+# 定期実行が push する枝。定期実行は指示がなければ claude/ で始まる枝に push するので、保存した指示（README.md）で main と指定している。
+# main への push が止められる（GitHub の保護ルール、自動モードの判定）なら claude/auto にし、たまった変更を人が main へ取り込む（README.md の「枝」）
+branch: main
+
+# ロック（同時に2つの実行が同じリポジトリを触らないため）。これより古いロックは、前の実行が途中で止まったとみなす
+lock_stale_hours: 4
+
+# vidIQ のクレジット（月2,000、毎月16日に補充）。自動で使ってよいのは、このうちの分だけ
+vidiq:
+  credits_per_run: 40
+  credits_per_month: 600
+
+# 定期実行の Claude がしないこと（RUNNER.md にも書いてある。ここは確認用の一覧）
+never:
+  - ElevenLabs で声を作る（人の確認のあと、人が始める）
+  - ブラウザを開く（YouTube、YouTube Studio、fbi.gov を含む）
+  - 公開・アップロード
+  - mode が auto でない回のファイルを変える

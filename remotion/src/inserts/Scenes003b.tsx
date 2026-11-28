@@ -65,6 +65,9 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
     h: [{ pos: [34, 4, 46], target: [-2, 1, 0], fov: 30 }, { pos: [29, 3.8, 44], target: [-12, 1, 0], fov: 29 }],
     // i：午後8時11分。後ろの階段を下ろしたまま、夜の雨雲の中を飛ぶ機体を、後ろの斜め下から（人物は描かない。飛び降りる姿も描かない）
     i: [{ pos: [52, -10, 22], target: [10, -1.5, 0], fov: 33 }, { pos: [46, -9.5, 21], target: [-6, -1.5, 0], fov: 32 }],
+    // hook：ショートの最初の1コマ（003 ショート、F-059）。i と同じ「階段を下ろした機体」を、後ろの斜め下から近く大きく。
+    // 機体と一緒にカメラも進めて、機体を画面の真ん中に置いたまま、雲だけが流れる。月明かりを強めて、機体の形がはっきり見えるように
+    hook: [{ pos: [44, -12, 26], target: [4, -1, 0], fov: 30 }, { pos: [23.2, -12, 26], target: [-16.8, -1, 0], fov: 30 }],
   };
   const [from, to] = cams[variant] ?? cams.a;
   // c は機体がないので、雲そのものを見せる：月明かりを強めて、雲を明るく濃くする（暗いままだと何も映らない画面になる）
@@ -78,7 +81,9 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
     <Stage fog={variant === "b" ? 0.006 : variant === "c" ? 0.006 : 0.008} exposure={1.15} bloom={0.5} bg={variant === "c" ? "#151b28" : variant === "h" ? "#3b3a4c" : "#1b2333"} hemi={variant === "h" ? ["#c8a898", "#1a1820", 0.9] : ["#6a7a9a", "#10131a", 0.9]}>
       <Camera from={from} to={to} />
       <directionalLight position={variant === "h" ? [-60, 25, 20] : [40, 60, 30]} intensity={cl.k} color={variant === "h" ? "#e6b894" : "#a8b8d8"} />
-      {variant !== "c" ? <Jet727 position={[planeX, 0, 0]} rotation={[variant === "h" ? 0.2 : 0, Math.PI, 0.02]} lights={0.9} cabin={0.6} stairs={variant === "i"} /> : null}
+      {/* hook：カメラ側の下から月明かりを足し、機体の腹と階段を見せる */}
+      {variant === "hook" ? <directionalLight position={[30, -20, 25]} intensity={1.6} color="#c4d0e8" /> : null}
+      {variant !== "c" ? <Jet727 position={[planeX, 0, 0]} rotation={[variant === "h" ? 0.2 : 0, Math.PI, 0.02]} lights={0.9} cabin={0.6} stairs={variant === "i" || variant === "hook"} /> : null}
       {variant === "c" ? (
         // 遠い灯りだけ。だんだん雲に消えていく
         <mesh position={[-14 - t * 3, 3, -40]}>
@@ -743,9 +748,13 @@ export const InsertRiverBank003: React.FC<SceneProps> = ({ variant = "a" }) => {
  * 灰色の背景に浮かべた 727 を、後ろの斜め下からゆっくり回り込んで見せ、胴体の下側の後ろの階段を赤く示す。
  * 模式図なので右上に「模式図」、左下に赤い部分の説明を出す（文字は動かさない）。塗装・ロゴ・文字は入れない
  */
-export const InsertExitDiagram003: React.FC<SceneProps> = () => {
+export const InsertExitDiagram003: React.FC<SceneProps> = ({ variant = "a" }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
+  // 縦の画面（ショート）：右上と下は YouTube の表示に隠れるので、文字は左上と字幕の上に置く（CLAUDE.md「ショート動画」）
+  const portrait = height > width;
+  // rear：機体の後ろの階段の場所だけを示す（規則の話の前に使う。003 ショート）
+  const legend = variant === "rear" ? "胴体の下側の後ろの階段" : "胴体の下側の後ろの階段（飛行中は開かない作りに）";
   const t = frame / fps;
   const hl = interpolate(t, [1.0, 2.2], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
   const from: CamKey = { pos: [-40, -9, -27], target: [-7, 2.2, 0], fov: 41 };
@@ -758,10 +767,11 @@ export const InsertExitDiagram003: React.FC<SceneProps> = () => {
         <directionalLight position={[10, 30, 20]} intensity={1.0} color="#ffffff" />
         <Jet727 position={[0, 0, 0]} lights={0} cabin={0} stairsHl={hl} />
       </Stage>
-      <div style={{ position: "absolute", right: 56, top: 44, fontFamily: FONT, fontSize: 20, color: "#d9d4c8", letterSpacing: 2, opacity: 0.85 }}>模式図</div>
-      <div style={{ position: "absolute", left: 60, bottom: 66, display: "flex", alignItems: "center", gap: 14, opacity: hl, fontFamily: FONT, fontSize: 24, color: "#efe4d0", background: "rgba(13,14,18,0.72)", padding: "8px 16px" }}>
+      <div style={portrait ? { position: "absolute", left: 40, top: 200, fontFamily: FONT, fontSize: 22, color: "#d9d4c8", letterSpacing: 2, opacity: 0.85 }
+        : { position: "absolute", right: 56, top: 44, fontFamily: FONT, fontSize: 20, color: "#d9d4c8", letterSpacing: 2, opacity: 0.85 }}>模式図</div>
+      <div style={{ position: "absolute", ...(portrait ? { left: 40, top: 660 } : { left: 60, bottom: 66 }), display: "flex", alignItems: "center", gap: 14, opacity: hl, fontFamily: FONT, fontSize: 24, color: "#efe4d0", background: "rgba(13,14,18,0.72)", padding: "8px 16px" }}>
         <div style={{ width: 22, height: 22, background: "#d23a2c" }} />
-        胴体の下側の後ろの階段（飛行中は開かない作りに）
+        {legend}
       </div>
     </AbsoluteFill>
   );

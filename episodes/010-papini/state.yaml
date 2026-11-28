@@ -1,0 +1,59 @@
+# 自動化の状態（pipeline/auto.py が書く。人が直してもよい。説明は automation/README.md）
+# mode: auto＝定期実行が進める / manual＝人の会話で進める（定期実行は触らない）
+mode: auto
+priority: 3
+title: 「DNAはうそをつかない」22日間"誘拐"されていた妻（仮）
+series: bodycam
+created: '2026-11-28T00:00:00Z'
+stages:
+  research:
+    status: done
+    finished: '2026-11-28T00:00:00Z'
+    note: 人の会話で調べた（2026-11-28、vidIQ。Project「次の3本の企画調査_2026-11-28」。plan.md の「題材に選んだ理由」）
+  materials:
+    status: done
+    finished: '2026-11-28T00:00:00Z'
+    note: 台帳と時系列の初回（2026-11-28、人の会話）。原本はまだ保存していない。WebFetch が通らず、検索の抜粋で書いた所は note に書いてある
+  fetch:
+    status: todo
+  plan:
+    status: done
+    finished: '2026-11-28T00:00:00Z'
+    note: 構成案の第1稿（2026-11-28、人の会話。Claude Docs と plan.md）。fetch で原文を確かめたら、章立てと「要確認」を見直す
+  script:
+    status: todo
+  visuals:
+    status: todo
+  checks:
+    status: todo
+  review:
+    status: todo
+gates:
+- id: rights_sso_interview
+  q: シャスタ郡保安官事務所の事情聴取の録画（sso_interview_2020）を使うか（カリフォルニア州の郡の映像。使うなら fair_use と日付）。使わないなら、ボディカメラのシリーズにならない
+  blocks: visuals
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: translation
+  q: 映像の中の英語の会話を日本語でどう伝えるか（plan.md の案 A・B・C。案は C）。CLAUDE.md の未決
+  blocks: visuals
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: blur_husband
+  q: 夫（当時）の顔をぼかすか（plan.md の案：うそをつかれた側としてぼかす）
+  blocks: visuals
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: video_component
+  q: 実写の映像を出す部品（video）、ぼかし、音の差し替えの仕組みがまだない。作ってよいか、段取りを決めてほしい（CLAUDE.md「作る前にユーザーに伝える」）
+  blocks: visuals
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: question
+  q: 問いと結論は plan.md の案から決めてほしい（いまは第1案で進める）
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: title
+  q: 題を決めてほしい（いまは plan.md の第1案「「DNAはうそをつかない」22日間"誘拐"されていた妻」で仮）
+  status: open
+  asked: '2026-11-28T00:00:00Z'

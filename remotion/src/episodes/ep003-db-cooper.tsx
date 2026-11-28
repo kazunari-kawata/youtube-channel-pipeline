@@ -31,7 +31,7 @@ const FBI_WEB = "出典：FBI";
 const NARA = "出典：米国立公文書館";
 
 /** 画面に出す素材の見出しと出典（台帳 materials.yaml の id ごと）。縦横比は ep003-assets.json（prepare_materials.py --assets） */
-const META: Record<string, DocMeta> = {
+export const META: Record<string, DocMeta> = {
   fbi_v43_press_1980: { title: "FBIシアトル支局の発表文（1980年2月12日）", source: FBI },
   fbi_v64_p159: { title: "FBIの聞き取りの記録（客室乗務員、1971年12月3日）", source: FBI },
   fbi_v64_p161: { title: "FBIの聞き取りの記録（客室乗務員）", source: FBI },

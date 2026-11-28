@@ -10,6 +10,8 @@
 import React from "react";
 import { AbsoluteFill, Audio, CalculateMetadataFunction, Easing, Img, interpolate, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { ASSETS as ASSETS_002, JA as JA_002 } from "../episodes/ep002-dahmer";
+import { META as META_003 } from "../episodes/ep003-db-cooper";
+import SIZES_003 from "../episodes/ep003-assets.json";
 import { FILM_GRADE, InsertDuration, PortraitAim, PortraitZoom } from "../inserts/Inserts";
 import { INSERT_SCENES } from "../inserts/registry";
 import { FONT } from "../lib/font";
@@ -17,17 +19,30 @@ import { C } from "../lib/shots";
 
 type Visual = { kind: string; [k: string]: any };
 type Shot = { from: number; to: number; visual: Visual };
-type Caption = { from: number; to: number; text: string; hl: string[] };
+type Caption = { from: number; to: number; text: string; hl: string[]; note?: string };
 export type ShortData = {
   id: string; dir: string; fps: number; durationInFrames: number; audio: string;
   thumb: { frames: number; photo: string; doc: string; tag: string; name: string; name_en?: string; big: string; line: string };
   end: { from: number; text: string }; shots: Shot[]; captions: Caption[];
+  /** 動く絵の上に0秒から重ねる一言（F-059。止まったサムネイルの代わり） */
+  hook?: { from: number; to: number; tag?: string; lines: string[]; hl?: string[]; sub?: string; source?: string } | null;
 };
 type Props = { id: string; data?: ShortData };
 
-const DOCS: Record<string, { assets: Record<string, { title: string; source: string; aspect: number }>; ja: Record<string, string[]> }> = {
+type AssetMeta = { title: string; source: string; aspect: number };
+/** 003：資料の題と出典は ep003 の META、縦横比は切り出した画像の大きさ（<src>__<focus> も） */
+const ASSETS_003: Record<string, AssetMeta> = Object.fromEntries(
+  Object.entries(SIZES_003 as unknown as Record<string, [number, number]>).map(([k, [w, h]]) => {
+    const m = META_003[k.split("__")[0]];
+    return [k, { title: m?.title ?? k, source: m?.source ?? "", aspect: w / h }];
+  }),
+);
+const DOCS: Record<string, { assets: Record<string, AssetMeta>; ja: Record<string, string[]> }> = {
   "002": { assets: ASSETS_002, ja: JA_002 },
+  "003": { assets: ASSETS_003, ja: {} },
 };
+/** 台本の src と focus から、出す画像の名前（同じ資料の別の所は <src>__<focus>） */
+const imgName = (dir: string, v: Visual) => (v.focus && DOCS[dir].assets[`${v.src}__${v.focus}`] ? `${v.src}__${v.focus}` : v.src);
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const XF = 8; // カットの切り替え（なめらかに）
@@ -130,6 +145,37 @@ const Thumb: React.FC<{ d: ShortData }> = ({ d }) => {
   );
 };
 
+/* ---------- 0秒からの一言（F-059） ---------- */
+
+/**
+ * 動く絵の上に、最初のフレームから大きく重ねる一言。止まったサムネイルで始めない（002 のショートAは「視聴された」20.2%）。
+ * 見ている人は最初の1〜2秒で残るか決めるので、何の話かを文字でも一目で伝える。文字は動かさない（拡大・揺れはチラつく）
+ */
+const Hook: React.FC<{ h: NonNullable<ShortData["hook"]> }> = ({ h }) => (
+  <AbsoluteFill>
+    {/* 文字の下だけ少し暗く（絵の上でも読めるように） */}
+    <div style={{ position: "absolute", left: 0, right: 0, top: 560, height: 330, background: "linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0) 100%)" }} />
+    {h.tag ? (
+      <div style={{ position: "absolute", left: 40, top: 200, background: "#FFD400", padding: "4px 14px", fontFamily: FONT, fontWeight: 900, fontSize: 26, color: "#000", letterSpacing: 2 }}>{h.tag}</div>
+    ) : null}
+    {/* 画面の真ん中（x=360）にそろえる（2026-11-28 ユーザーの指摘：字幕と同じ左寄せ x=330 で、左にずれて見えた）。
+        右のボタンにかからないよう、文字は76の大きさで幅を約540に収める */}
+    <div style={{ position: "absolute", left: 60, width: 600, top: 610, textAlign: "center" }}>
+      {h.lines.map((l, i) => (
+        <div key={i}>
+          <Outlined text={l} size={76} color="#fff" stroke={12} hl={h.hl ?? []} />
+        </div>
+      ))}
+      {h.sub ? (
+        <div style={{ marginTop: 6 }}>
+          <Outlined text={h.sub} size={40} color="#FFD400" stroke={8} />
+        </div>
+      ) : null}
+      {h.source ? <div style={{ marginTop: 6, fontFamily: FONT, fontSize: 15, color: "rgba(239,228,208,0.85)", textShadow: "0 2px 6px #000" }}>{h.source}</div> : null}
+    </div>
+  </AbsoluteFill>
+);
+
 /* ---------- 画面の種類 ---------- */
 
 const Label: React.FC<{ kind: string; title?: string; sub?: string }> = ({ kind, title, sub }) => (
@@ -165,8 +211,9 @@ const InsertV: React.FC<{ v: Visual; dur: number }> = ({ v, dur }) => {
 /** 資料：横幅いっぱいに置き、下に日本語の説明（F-020）。動かさない */
 const DocV: React.FC<{ v: Visual; dir: string }> = ({ v, dir }) => {
   const reg = DOCS[dir];
-  const meta = reg.assets[v.src];
-  const ja = reg.ja[v.src] ?? [];
+  const name = imgName(dir, v);
+  const meta = reg.assets[name];
+  const ja: string[] = v.ja ?? reg.ja[v.src] ?? [];
   const w = 640;
   let h = w / meta.aspect;
   let ww = w;
@@ -181,7 +228,7 @@ const DocV: React.FC<{ v: Visual; dir: string }> = ({ v, dir }) => {
     <Film bg="radial-gradient(ellipse at 50% 35%, #2a2420 0%, #110e0c 75%)">
       <Label kind="資料" title={meta.title} />
       <div style={{ position: "absolute", left: (720 - ww) / 2, top, width: ww, height: h, background: "#ece6d8", boxShadow: "0 18px 50px rgba(0,0,0,0.7)" }}>
-        <Img src={staticFile(`${dir}/${v.src}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "contrast(1.08)" }} />
+        <Img src={staticFile(`${dir}/${name}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "contrast(1.08)" }} />
       </div>
       {head ? (
         <div style={{ position: "absolute", left: 40, top: top + h + 22, width: 560, fontFamily: FONT, color: C.cream, background: "rgba(13,14,18,0.78)", borderLeft: `3px solid ${C.amber}`, padding: "10px 16px" }}>
@@ -199,15 +246,25 @@ const DocV: React.FC<{ v: Visual; dir: string }> = ({ v, dir }) => {
 
 /** 写真：縦長の写真を大きく。動かさない */
 const PhotoV: React.FC<{ v: Visual; dir: string }> = ({ v, dir }) => {
-  const meta = DOCS[dir].assets[v.src];
-  const h = 620;
-  const w = h * meta.aspect;
+  const name = imgName(dir, v);
+  const meta = DOCS[dir].assets[name];
+  // 写真は、題（ラベル）の下から字幕の帯（y 750〜）の手前までの枠に収める。縦長は高さで、横長は幅 580 で合わせる
+  const top0 = v.label ? 292 : 210;
+  const boxH = 712 - top0;
+  let h = boxH;
+  let w = h * meta.aspect;
+  if (w > 580) {
+    w = 580;
+    h = w / meta.aspect;
+  }
+  const top = top0 + (boxH - h) / 2;
   return (
     <Film bg="radial-gradient(ellipse at 50% 40%, #2a2420 0%, #110e0c 75%)">
-      <div style={{ position: "absolute", left: (720 - w) / 2 - 20, top: 196, width: w, height: h, padding: 12, background: "#f4efe4", boxShadow: "0 18px 50px rgba(0,0,0,0.7)", transform: "rotate(0.8deg)" }}>
-        <Img src={staticFile(`${dir}/${v.src}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+      {v.label ? <Label kind="写真" title={v.label} /> : null}
+      <div style={{ position: "absolute", left: (720 - w) / 2 - 20, top, width: w, height: h, padding: 12, background: "#f4efe4", boxShadow: "0 18px 50px rgba(0,0,0,0.7)", transform: "rotate(0.8deg)" }}>
+        <Img src={staticFile(`${dir}/${name}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
       </div>
-      {v.caption ? <div style={{ position: "absolute", left: 40, top: 840, fontFamily: FONT, fontSize: 18, color: "rgba(239,228,208,0.8)" }}>{v.caption}</div> : null}
+      {v.caption ? <div style={{ position: "absolute", left: 40, top: Math.min(top + h + 30, 718), fontFamily: FONT, fontSize: 18, color: "rgba(239,228,208,0.8)" }}>{v.caption}</div> : null}
       <Source text={meta.source} top={1060} />
     </Film>
   );
@@ -215,7 +272,9 @@ const PhotoV: React.FC<{ v: Visual; dir: string }> = ({ v, dir }) => {
 
 /** 文字カード：数字・期間・問い */
 const CardV: React.FC<{ v: Visual }> = ({ v }) => {
-  const big = v.style === "question" ? 50 : v.style === "span" ? 96 : 170;
+  // 数字の大きさは、文字の数で決める（「20万ドル」が170では画面からはみ出した）。数字と英字は幅0.6字で数える
+  const est = [...String(v.text).split("\n")[0]].reduce((a, ch) => a + (/[ -~]/.test(ch) ? 0.6 : 1), 0);
+  const big = v.style === "question" ? 64 : v.style === "span" ? 96 : Math.min(170, Math.floor(540 / Math.max(1, est)));
   const color = v.style === "question" ? "#fff" : C.amber;
   return (
     <Film bg="radial-gradient(ellipse at 50% 40%, #241d18 0%, #0d0b0a 78%)">
@@ -249,14 +308,29 @@ const FadeIn: React.FC<{ children: React.ReactNode; instant?: boolean }> = ({ ch
   return <AbsoluteFill style={{ opacity: o }}>{children}</AbsoluteFill>;
 };
 
+/** 一言を、次のカットの切り替えと同じ長さでなめらかに消す（1コマで消すと、文字の所が暗くなってから次の絵で明るくなり、チラつきになる） */
+const FadeOut: React.FC<{ children: React.ReactNode; len: number }> = ({ children, len }) => {
+  const f = useCurrentFrame();
+  const o = interpolate(f, [len, len + XF], [1, 0], { ...clamp, easing: Easing.inOut(Easing.ease) });
+  return <AbsoluteFill style={{ opacity: o }}>{children}</AbsoluteFill>;
+};
+
 const Captions: React.FC<{ caps: Caption[] }> = ({ caps }) => {
   const f = useCurrentFrame();
   const c = caps.find((x) => f >= x.from && f < x.to);
   if (!c) return null;
   return (
-    <div style={{ position: "absolute", left: CAP_X - CAP_W / 2, width: CAP_W, top: CAP_Y - 34, textAlign: "center" }}>
-      <Outlined text={c.text} size={44} color="#fff" stroke={9} hl={c.hl} />
-    </div>
+    <>
+      {c.note ? (
+        // 字幕の上に小さく足す説明（金額の円換算など）。字幕と同じく動かさない
+        <div style={{ position: "absolute", left: CAP_X - CAP_W / 2, width: CAP_W, top: CAP_Y - 86, textAlign: "center" }}>
+          <Outlined text={c.note} size={32} color="#FFD400" stroke={7} />
+        </div>
+      ) : null}
+      <div style={{ position: "absolute", left: CAP_X - CAP_W / 2, width: CAP_W, top: CAP_Y - 34, textAlign: "center" }}>
+        <Outlined text={c.text} size={44} color="#fff" stroke={9} hl={c.hl} />
+      </div>
+    </>
   );
 };
 
@@ -290,9 +364,18 @@ export const Short: React.FC<Props> = ({ data }) => {
           <EndCard text={d.end.text} />
         </FadeIn>
       </Sequence>
-      <Sequence from={0} durationInFrames={tf} layout="none">
-        <Thumb d={d} />
-      </Sequence>
+      {tf > 0 ? (
+        <Sequence from={0} durationInFrames={tf} layout="none">
+          <Thumb d={d} />
+        </Sequence>
+      ) : null}
+      {d.hook ? (
+        <Sequence from={d.hook.from} durationInFrames={d.hook.to - d.hook.from + XF} layout="none">
+          <FadeOut len={d.hook.to - d.hook.from}>
+            <Hook h={d.hook} />
+          </FadeOut>
+        </Sequence>
+      ) : null}
       <Captions caps={d.captions} />
       <Audio src={staticFile(d.audio)} />
     </AbsoluteFill>

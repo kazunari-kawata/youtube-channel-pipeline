@@ -1,0 +1,486 @@
+{
+ "note": "ショートA：20万ドルと夜空に消えた男。本編の声だけを使い、区間の中の間を詰めて1.2倍に（作り直しなし）。根拠は episodes/003-db-cooper/shorts_plan.md（F-059）",
+ "title": "20万ドルと夜空に消えた男",
+ "speed": 1.2,
+ "max_pause": 0.12,
+ "gap_sec": 0.16,
+ "lead_sec": 0.12,
+ "hook": {
+  "tag": "1971年 アメリカ",
+  "lines": [
+   "20万ドルと",
+   "夜空に消えた男"
+  ],
+  "hl": [
+   "20万ドル"
+  ],
+  "sub": "今の価値で 約2.6億円",
+  "source": "米労働統計局の物価指数と11月27日の為替（1ドル約159円）で換算"
+ },
+ "end": {
+  "sec": 1.6,
+  "text": "本編はこの下のリンクから"
+ },
+ "bgm": "assets/bgm/red_shift.mp3",
+ "segments": [
+  {
+   "id": "s001",
+   "visual": {
+    "kind": "insert",
+    "scene": "plane_clouds",
+    "var": "hook",
+    "zoom": 0.8,
+    "aim": [
+     -8,
+     -7
+    ]
+   },
+   "sfx": [
+    {
+     "file": "low_hit_1.wav",
+     "level": "mid",
+     "at": 0.0
+    },
+    {
+     "file": "amb_wind_high_1.wav",
+     "level": "bed"
+    }
+   ],
+   "captions_off": true,
+   "captions": [
+    "飛んでいる旅客機から",
+    "一人の男が",
+    "20万ドルとともに",
+    "夜の空へ消えました"
+   ],
+   "cut": {
+    "at": 0.5,
+    "visual": {
+     "kind": "insert",
+     "scene": "plane_clouds",
+     "var": "a",
+     "zoom": 0.8,
+     "aim": [
+      -14,
+      -8
+     ]
+    }
+   }
+  },
+  {
+   "id": "s003",
+   "visual": {
+    "kind": "photo",
+    "src": "fbi_sketches_web",
+    "focus": "color",
+    "label": "FBIが公開している似顔絵"
+   },
+   "sfx": [
+    {
+     "file": "photo_1.wav",
+     "level": "light",
+     "at": 0.1
+    }
+   ],
+   "captions": [
+    "名乗った名前は",
+    "ダン・クーパー"
+   ],
+   "hl": [
+    "ダン・クーパー"
+   ]
+  },
+  {
+   "id": "s013",
+   "skip": "午後2時53分、305便はポートランドを出ます。滑走路へ向かう機内で、",
+   "visual": {
+    "kind": "insert",
+    "scene": "cabin_seat",
+    "var": "a",
+    "zoom": 0.75
+   },
+   "sfx": [
+    {
+     "file": "amb_cabin_1.wav",
+     "level": "bed"
+    }
+   ],
+   "captions": [
+    "男は後ろの席の",
+    "客室乗務員に",
+    "封筒を渡しました"
+   ],
+   "hl": [
+    "封筒"
+   ],
+   "cut": {
+    "at": 0.5,
+    "visual": {
+     "kind": "insert",
+     "scene": "cabin_seat",
+     "var": "ask",
+     "zoom": 0.7
+    }
+   }
+  },
+  {
+   "id": "s014",
+   "visual": {
+    "kind": "doc",
+    "src": "fbi_v64_p159",
+    "focus": "line",
+    "ja": [
+     "FBIの聞き取りの記録（もう1人の客室乗務員）",
+     "離陸の直前、同僚はメモを落として席を立ち、18Eの席の男の隣に座った"
+    ]
+   },
+   "sfx": [
+    {
+     "file": "paper_1.wav",
+     "level": "light",
+     "at": 0.1
+    }
+   ],
+   "captions": [
+    "中のメモには",
+    "爆発物を持っている",
+    "隣に座ってほしい",
+    "と書かれていました"
+   ],
+   "hl": [
+    "爆発物"
+   ],
+   "cut": {
+    "at": 0.5,
+    "visual": {
+     "kind": "insert",
+     "scene": "cabin_seat",
+     "var": "b",
+     "zoom": 0.75
+    }
+   }
+  },
+  {
+   "id": "s015",
+   "visual": {
+    "kind": "card",
+    "style": "fact",
+    "text": "20万ドル",
+    "sub": "現金で。ほかにパラシュート4つ",
+    "source": "出典：FBI（情報公開法による公開）。円は米労働統計局の消費者物価指数（1971年→2026年）と2026年11月27日の為替（1ドル約159円）で換算"
+   },
+   "sfx": [
+    {
+     "file": "stamp_1.wav",
+     "level": "mid",
+     "at": 0.1
+    }
+   ],
+   "captions": [
+    "要求は現金で",
+    "20万ドル",
+    "そして",
+    "パラシュートを4つ"
+   ],
+   "hl": [
+    "20万ドル",
+    "パラシュート"
+   ],
+   "notes": {
+    "20万ドル": "今の価値で 約2.6億円"
+   },
+   "cut": {
+    "at": 0.62,
+    "visual": {
+     "kind": "photo",
+     "src": "fbi_parachute",
+     "label": "機内に残されたパラシュート（FBI）"
+    },
+    "sfx": [
+     {
+      "file": "photo_2.wav",
+      "level": "light",
+      "at": 0.05
+     }
+    ]
+   }
+  },
+  {
+   "id": "s021b",
+   "visual": {
+    "kind": "insert",
+    "scene": "exit_diagram",
+    "var": "rear",
+    "zoom": 0.62
+   },
+   "sfx": [
+    {
+     "file": "pin_1.wav",
+     "level": "light",
+     "at": 1.0
+    }
+   ],
+   "captions": [
+    "後ろの階段を",
+    "下ろしたまま飛び立て",
+    "とも求めました"
+   ],
+   "hl": [
+    "後ろの階段"
+   ],
+   "cut": {
+    "at": 0.95,
+    "visual": {
+     "kind": "insert",
+     "scene": "cabin_seat",
+     "var": "c",
+     "zoom": 0.75
+    },
+    "sfx": [
+     {
+      "file": "amb_cabin_1.wav",
+      "level": "bed"
+     }
+    ]
+   }
+  },
+  {
+   "id": "s025",
+   "visual": "same",
+   "cut": [
+    {
+     "at": 0.33,
+     "visual": {
+      "kind": "doc",
+      "src": "fbi_v76_p78",
+      "focus": "line",
+      "ja": [
+       "FBIのまとめ：午後8時11分",
+       "高度1万フィートで機内の気圧が揺れ、男が機外に出たと考えられた"
+      ]
+     },
+     "sfx": [
+      {
+       "file": "paper_2.wav",
+       "level": "light",
+       "at": 0.05
+      }
+     ]
+    },
+    {
+     "at": 0.66,
+     "visual": {
+      "kind": "insert",
+      "scene": "plane_clouds",
+      "var": "i",
+      "zoom": 0.8,
+      "aim": [
+       0,
+       -4
+      ]
+     },
+     "sfx": [
+      {
+       "file": "amb_wind_high_1.wav",
+       "level": "bed"
+      }
+     ]
+    }
+   ],
+   "captions": [
+    "そして午後8時11分",
+    "機内の気圧が揺れ",
+    "乗務員は",
+    "男が機外に出たのでは",
+    "ないかと考えました"
+   ],
+   "hl": [
+    "午後8時11分",
+    "機外"
+   ]
+  },
+  {
+   "id": "s028",
+   "visual": {
+    "kind": "insert",
+    "scene": "cabin_seat",
+    "var": "empty",
+    "zoom": 0.7
+   },
+   "sfx": [
+    {
+     "file": "amb_cabin_1.wav",
+     "level": "bed"
+    }
+   ],
+   "captions": [
+    "機内に",
+    "男の姿は",
+    "ありませんでした",
+    "金も",
+    "パラシュート2つも",
+    "書類かばんも",
+    "消えていました"
+   ],
+   "hl": [
+    "男の姿",
+    "消えて"
+   ],
+   "cut": {
+    "at": 0.5,
+    "visual": {
+     "kind": "insert",
+     "scene": "cabin_seat",
+     "var": "d",
+     "zoom": 0.75
+    }
+   }
+  },
+  {
+   "id": "s044",
+   "visual": {
+    "kind": "insert",
+    "scene": "rain_forest",
+    "var": "a",
+    "zoom": 0.7
+   },
+   "sfx": [
+    {
+     "file": "amb_forest_rain_1.wav",
+     "level": "bed"
+    }
+   ],
+   "captions": [
+    "遺体も",
+    "パラシュートも",
+    "見つかっていません"
+   ],
+   "hl": [
+    "見つかっていません"
+   ]
+  },
+  {
+   "id": "s005",
+   "visual": {
+    "kind": "card",
+    "style": "fact",
+    "text": "800人以上",
+    "sub": "事件から5年で、FBIが調べた人の数",
+    "source": "出典：FBI（情報公開法による公開）"
+   },
+   "sfx": [
+    {
+     "file": "typewriter_1.wav",
+     "level": "mid",
+     "at": 0.1
+    }
+   ],
+   "cut": {
+    "at": 0.48,
+    "visual": {
+     "kind": "insert",
+     "scene": "field_office",
+     "var": "e",
+     "zoom": 0.7
+    },
+    "sfx": [
+     {
+      "file": "amb_office_1.wav",
+      "level": "bed"
+     }
+    ]
+   },
+   "captions": [
+    "FBIは45年にわたって",
+    "男を追い",
+    "最初の5年だけで",
+    "800人以上を",
+    "調べました"
+   ],
+   "hl": [
+    "45年",
+    "800人以上"
+   ]
+  },
+  {
+   "id": "s006",
+   "visual": {
+    "kind": "photo",
+    "src": "fbi_ticket",
+    "label": "男が「ダン・クーパー」の名で買った航空券（FBI）"
+   },
+   "sfx": [
+    {
+     "file": "photo_2.wav",
+     "level": "light",
+     "at": 0.1
+    }
+   ],
+   "captions": [
+    "それでも今も",
+    "男の本当の名前は",
+    "分かっていません"
+   ],
+   "hl": [
+    "本当の名前"
+   ],
+   "cut": {
+    "at": 0.45,
+    "visual": {
+     "kind": "photo",
+     "src": "fbi_sketches_web",
+     "label": "FBIが公開している似顔絵"
+    },
+    "sfx": [
+     {
+      "file": "photo_1.wav",
+      "level": "light",
+      "at": 0.05
+     }
+    ]
+   }
+  },
+  {
+   "id": "s007",
+   "visual": {
+    "kind": "photo",
+    "src": "fbi_tie",
+    "label": "機内に残されたネクタイ（FBI）"
+   },
+   "sfx": [
+    {
+     "file": "photo_3.wav",
+     "level": "light",
+     "at": 0.1
+    }
+   ],
+   "cut": {
+    "at": 0.5,
+    "visual": {
+     "kind": "card",
+     "style": "question",
+     "text": "なぜ名前すら\n分からないのか"
+    },
+    "sfx": [
+     {
+      "file": "low_hit_2.wav",
+      "level": "hit",
+      "at": 0.0
+     }
+    ]
+   },
+   "captions": [
+    "証拠も",
+    "目撃者も",
+    "大がかりな捜査も",
+    "あったのに",
+    "なぜなのでしょうか"
+   ],
+   "hl": [
+    "なぜ"
+   ]
+  }
+ ],
+ "yen_note": "円は米労働統計局の消費者物価指数（1971年→2026年）と2026年11月27日の為替（1ドル約159円）で換算",
+ "max_shot_sec": 3.0
+}
