@@ -85,6 +85,22 @@ def main():
         add("最初の0.5秒で絵が動く", f0.max() > 120 and diff > 0.3, f"明るさの最大 {int(f0.max())}、15フレーム目との差 {diff:.2f}",
             "真っ黒でなく、動いている", "F-059")
         add("0秒からの一言", bool(hook and hook.get("lines")), " / ".join(hook["lines"]) if hook else "なし", "あり", "F-059")
+        # 一言は大きく短く（F-064：YouTube の助言「何の話か一瞬で分かるよう、テロップを大きく・シンプルに」）。
+        # 大きさ76・幅540（F-060）に収まるのは、全角で1行約7字。半角の数字は0.6字に数える
+        if hook and hook.get("lines"):
+            wid = lambda x: sum(0.6 if ord(ch) < 0x2E80 else 1.0 for ch in x)
+            over = [ln for ln in hook["lines"] if wid(ln) > 7.2]
+            add("一言は2行・1行約7字まで", len(hook["lines"]) <= 2 and not over,
+                f"{len(hook['lines'])}行、" + "、".join(f"{ln}（{wid(ln):.1f}字）" for ln in hook["lines"]), "2行・1行7字", "F-064")
+    # 声は0秒から、途中で途切れさせない（F-064：最初の3秒に前置きの無音を作らない。維持率が急に落ちる所で声が途切れていないか）
+    vi = data.get("voice")
+    if vi:
+        add("声の始まり", vi["start"] <= 0.3, f"{vi['start']:.2f}秒", "0.3秒以内", "F-064")
+        gmax = max([g[1] for g in vi["gaps"]], default=0.0)
+        bad = [f"{g[0]:.1f}秒に{g[1]:.2f}秒" for g in vi["gaps"] if g[1] > 0.4]
+        add("声の途切れ", not bad, f"最長 {gmax:.2f}秒" + (f"（{'、'.join(bad[:4])}）" if bad else ""), "0.4秒まで", "F-064")
+    else:
+        add("声の始まり・途切れ", False, "data.json に voice がない", "short_build.py で作り直す", "F-064")
     # 絵の切り替え：1つの絵は3秒まで（F-062。最初の飛行機の5.2秒で離脱すると指摘された。F-059 では6秒まで）
     lens = [(sh["to"] - sh["from"]) / data["fps"] for sh in data["shots"]]
     cap = data.get("max_shot_sec", 3.0)

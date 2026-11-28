@@ -376,6 +376,21 @@ def main():
         voice[i0 : i0 + len(clip)] += clip[: n - i0]
     meter = pyln.Meter(SR)
     voice *= 10 ** ((a["narration_lufs"] - meter.integrated_loudness(voice)) / 20)
+    # 声の始まりと、声の途切れ（F-064：最初の3秒に前置きの無音を作らない。維持率が落ちる所で声が途切れていないか）。
+    # 10ミリ秒ごとの音量で、いちばん大きい所から40dB下までを「声あり」とみなす
+    hop = SR // 100
+    rms = np.sqrt(np.mean(voice[: len(voice) // hop * hop].reshape(-1, hop) ** 2, axis=1) + 1e-12)
+    on = 20 * np.log10(rms) > 20 * np.log10(rms.max()) - 40
+    idx = np.nonzero(on)[0]
+    v_gaps, run = [], 0
+    for i_ in range(idx[0], idx[-1] + 1):
+        if on[i_]:
+            if run * 0.01 >= 0.2:
+                v_gaps.append([round((i_ - run) * 0.01, 2), round(run * 0.01, 2)])
+            run = 0
+        else:
+            run += 1
+    voice_info = {"start": round(idx[0] * 0.01, 2), "end": round((idx[-1] + 1) * 0.01, 2), "gaps": v_gaps}
     gain = np.full(n, a["bgm_gain_gap"], np.float32)
     for g in segs:
         gain[int(g["t0"] * SR) : int(g["t1"] * SR)] = a["bgm_gain_speech"]
@@ -422,7 +437,7 @@ def main():
     data = {
         "id": sid, "episode": args.episode, "dir": args.episode.split("-")[0], "fps": FPS, "durationInFrames": n_total,
         "audio": f"shorts/{sid}/audio.wav", "thumb": {**(spec.get("thumb") or {}), "frames": thumb_f}, "hook": hook,
-        "max_shot_sec": spec.get("max_shot_sec", 3.0),
+        "max_shot_sec": spec.get("max_shot_sec", 3.0), "voice": voice_info,
         "end": {"from": int(round(end_from * FPS)), "text": spec["end"]["text"]},
         "shots": [{k: v for k, v in sh.items() if k != "sfx"} for sh in shots], "captions": caps,
     }
@@ -433,6 +448,8 @@ def main():
     # 画面1つあたりの長さ（F-059：絵の切り替えの間隔を見る）
     lens = [(sh["to"] - sh["from"]) / FPS for sh in shots]
     print(f"画面の長さ：平均 {np.mean(lens):.1f}秒、最長 {max(lens):.1f}秒、最短 {min(lens):.1f}秒")
+    g_max = max([g[1] for g in v_gaps], default=0.0)
+    print(f"声：{voice_info['start']:.2f}秒から、途切れ（0.2秒以上）{len(v_gaps)}か所、最長 {g_max:.2f}秒")
 
 
 if __name__ == "__main__":
