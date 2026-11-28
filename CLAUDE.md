@@ -307,6 +307,7 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 | 自動化（定期実行）の手順・設定・題材の候補 | `automation/` |
 | ショートの公開後の数字（視聴された・平均再生率・維持率の落ち込み） | `docs/shorts-results.md` |
 | 回ごとの素材台帳・時系列 | `episodes/<id>/materials.yaml`, `timeline.md`（取得した素材は `build/materials/`） |
+| クラウドから届かないサイト（fbi.gov など）の素材の取り方 | `docs/browser-downloads.md`（Windows の Chrome で取り、ダウンロードから移す） |
 | 回ごとの生成物（音声・動画・QA結果） | `episodes/<id>/build/`（Gitに入らない） |
 | 処理スクリプト | `pipeline/` |
 | 動画の部品（地形・カメラ・カード・音） | `remotion/src/lib/` |

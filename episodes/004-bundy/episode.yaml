@@ -1,5 +1,5 @@
 series: profile   # シリーズ「犯罪者の紹介」（CLAUDE.md の「シリーズ」）
-title: "（仮）FBIが手配した5日後、男を捕まえたのは交通の取り締まりだった【テッド・バンディ】"
+title: "（仮）イケメンで法学部、選挙運動もした「好青年」は何をしたのか【テッド・バンディ】"
 bgm:
   # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。仮に 002 の曲。時代（1970年代）に合う曲を選び直す
   tracks: [assets/bgm/red_shift.mp3, assets/bgm/aether.mp3]
