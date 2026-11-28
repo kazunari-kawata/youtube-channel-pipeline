@@ -1,7 +1,12 @@
 """006 アルカトラズ脱獄：素材台帳の資料と写真から、画面に出す切り出しを作る（cuts_006.yaml → remotion/public/006/）
 
   python episodes/006-alcatraz/prepare_materials_006.py           # 作れるものを全部作り、ep006-assets.json を作り直す
-  python episodes/006-alcatraz/prepare_materials_006.py --only a,b
+  python episodes/006-alcatraz/prepare_materials_006.py --only a,b      # 切り出し位置を直したものだけ作り直す
+  python episodes/006-alcatraz/prepare_materials_006.py --force          # 全部作り直す
+
+もう remotion/public/006/ にある画像は作り直さない（--only か --force のときだけ）。
+PDF を画像にする pdftoppm の版で幅が1画素変わり、Windows とクラウドで ep006-assets.json が食い違うため
+（Windows へはクラウドで作った画像を zip で写す：CLAUDE.md「書き出し環境」）。
 
 共有の pipeline/cut_materials.py は、台帳の file とファイル名が一致することを前提にしている。
 この回の台帳は「fbi/alcatr2.pdf#page=35」のように1つの PDF の中のページを指すので、台帳の id で引くこの回用の版を使う
@@ -51,12 +56,13 @@ def make_assets() -> None:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--only", help="作る name（カンマ区切り）")
+    ap.add_argument("--only", help="作る name（カンマ区切り）。あっても作り直す")
+    ap.add_argument("--force", action="store_true", help="あるものも全部作り直す")
     a = ap.parse_args()
     only = set(a.only.split(",")) if a.only else None
     ledger = {i["id"]: i for i in yaml.safe_load((EP / "materials.yaml").read_text(encoding="utf-8"))["items"]}
     PUB.mkdir(parents=True, exist_ok=True)
-    made, waiting = 0, []
+    made, kept, waiting = 0, 0, []
     for c in yaml.safe_load((EP / "cuts_006.yaml").read_text(encoding="utf-8")):
         if only and c["name"] not in only:
             continue
@@ -74,6 +80,9 @@ def main():
         if c.get("crop") is None:
             waiting.append(f"{c['name']}：切り出す位置がまだ決まっていない（画像で見て cuts_006.yaml に書く）")
             continue
+        if (PUB / f"{c['name']}.jpg").exists() and not (a.force or only):
+            kept += 1
+            continue
         page = int(frag.split("=")[1]) if frag.startswith("page=") else c.get("page")
         im = load(item, page)
         W, H = im.size
@@ -86,7 +95,7 @@ def main():
         im.save(PUB / f"{c['name']}.jpg", quality=90)
         made += 1
         print(f"{c['name']:28s} {im.size[0]}x{im.size[1]}  ← {item['file']}")
-    print(f"作った {made}点、まだ作れない {len(waiting)}点")
+    print(f"作った {made}点、そのまま {kept}点、まだ作れない {len(waiting)}点")
     for w in waiting:
         print("  -", w)
     make_assets()
