@@ -1,0 +1,224 @@
+# 素材台帳：ガードナー美術館の盗難（第9回・1990年3月18日、マサチューセッツ州ボストン。13点が盗まれ、犯人は起訴されず、1点も戻っていない）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status の意味は episodes/002-dahmer/materials.yaml の冒頭と pipeline/fetch_materials.py の STATUS を参照
+#   pd_federal / pd_no_notice / pd_other / cc_by / fair_use / own → 使用可
+#   check → 要確認（画面に出さない） / reference → 参照のみ / unusable → 使用不可
+# 取得：python pipeline/fetch_materials.py 009-gardner  → episodes/009-gardner/build/materials/
+# url のない項目は手作業で取得する（note に取り方）
+#
+# この回の注意
+# - 未解決事件。FBI は2013年に「犯人を特定した」と発表し、2015年に「2人はすでに死亡」と述べたが、名前は出していない。
+#   報道や本で名前が挙がった人（盗品の所持を疑われた人、元受刑者など）は、画面にもナレーションにも出さない（CLAUDE.md「未解決事件では特定の人をほのめかさない」）
+# - 当夜の警備員2人の名前は出さない。「決まりを破って通した」は美術館の公式の説明として言ってよいが、関与をほのめかす言い方・並べ方をしない。
+#   前夜の映像の男は「連邦検事局が身元を探している人物」として扱う。人感センサーの記録をもとに特定の人を疑う説（報道にある）は使わない
+# - 盗み方の手順（縛り方、額からの切り取り方）は細かく描かない。言うのは「地下で縛られた」「額から切り取られた絵があった」の粗さまで
+# - 金額は「FBI・連邦検事局が言う少なくとも5億ドル（1990年代以降の評価）」。円は公開日の相場で換算し、換算した日を plan.md に書く
+# - 盗まれた絵そのものは、作者の死後数百年たったパブリックドメインの平面の作品。写真の写しは、米国では忠実な複製に新しい著作権が生じない（Bridgeman v. Corel、1999年）。
+#   Commons のファイルページで PD-Art の表示を1枚ずつ確かめてから pd_other にする。立体（青銅の器、旗の飾り）の写真は撮った人に権利があるので別に確かめる
+# - fbi.gov はクラウドからも Windows の作業用シェルからも開けない（403）。Windows の Chrome（Claude in Chrome）で開き、保存はユーザーの許可のあと（制作の引き継ぎ「fbi.gov の素材の取り方」）
+# - 台帳の状態は調査の初回（2026-11-28）。この会話では WebFetch の許可が取れず、検索結果の抜粋で確かめた。原本はまだ1点も開いていない
+
+case: Isabella Stewart Gardner Museum theft（1990年3月18日 午前1時24分〜2時45分ごろ、ボストンのイザベラ・スチュワート・ガードナー美術館。13点、少なくとも5億ドル）
+series: profile
+checked_on: 2026-11-28
+
+items:
+  # ---------- FBI・連邦検事局（連邦政府の著作物） ----------
+  - id: fbi_gardner_page
+    title: "FBI の特設ページ「The Gardner Museum Theft」（2013年3月18日、盗難から23年の日に開設）"
+    file: ""
+    original: https://www.fbi.gov/gardner
+    status: pd_federal
+    note: "FBI の文章は著作権なし。2013年の会見の要旨（ボストン支局の特別捜査官の言葉：絵は盗難のあとの数年でコネチカットとフィラデルフィアの地域へ運ばれた、いまの場所は分からない）がある（検索結果の抜粋で確認）。ページに載っている写真（盗まれた作品の写真、空の額）は美術館の提供の可能性があるので、画像は1枚ずつ別の項目で確かめる。開くのは Windows の Chrome"
+  - id: fbi_suspect_sketches
+    title: "FBI の画像「Sketches of Suspects」（1990年3月18日の盗難の2人の似顔絵）"
+    file: ""
+    original: https://www.fbi.gov/image-repository/gardner-suspects.jpeg/view
+    status: check
+    note: "FBI のページの説明では、米国で最大の財産犯罪の容疑者の似顔絵。描いたのが FBI かボストン市警かが未確認（市警なら州・市の著作物で check のまま）。名前の分からない2人の似顔絵なので、出しても特定の人をほのめかすことにはならない。F-022（最初の30秒の人物）の候補"
+  - id: fbi_artwork_composite
+    title: "FBI の画像「Composite of Stolen Artwork」（盗まれた13点を並べた画像）"
+    file: ""
+    original: https://www.fbi.gov/gardner
+    status: check
+    note: 特設ページの見出しに出てくる画像（検索結果の見出しで確認）。作品の写真は美術館の撮影の可能性があるので、Commons の写し（下の art_◯◯）と見比べて、使うならどちらかに決める
+  - id: fbi_yt_2013_reward
+    title: "FBI 公式 YouTube「Gardner Museum in Boston Offering $5 Million Reward for Stolen Art」（2分1秒、2013年3月18日公開）"
+    file: ""
+    original: https://www.youtube.com/watch?v=6DpD1HbcFfQ
+    status: check
+    note: "2026-11-28 に vidIQ の検索結果で確認：チャンネルは「FBI – Federal Bureau of Investigation」、再生約10.6万回。FBI が作った映像は pd_federal だが、中に美術館の写真・映像が入っている可能性があるので、見て確かめてから分ける。懸賞金はいまは1,000万ドル（この映像は当時の500万ドル）"
+  - id: fbi_yt_2013_sac
+    title: "FBI 公式 YouTube「Gardner Museum Thefts: FBI Special Agent in Charge Richard DesLauriers」（1分39秒、2013年3月18日公開）"
+    file: ""
+    original: https://www.youtube.com/watch?v=EyNdZmrqNFE
+    status: pd_federal
+    note: "2026-11-28 に vidIQ の検索結果で確認。FBI ボストン支局の特別捜査官（当時）の発表。FBI の職員が職務で話した映像。2013年の「特定した」「コネチカットとフィラデルフィア」の一次の出どころ。映像は未視聴（使う区間は見てから決める）"
+  - id: fbi_yt_2013_museum
+    title: "FBI 公式 YouTube「Gardner Museum Thefts: Gardner Security Director Anthony Amore」（3分17秒、2013年3月18日公開）"
+    file: ""
+    original: https://www.youtube.com/watch?v=6XArJWQBhpo
+    status: check
+    note: 2026-11-28 に vidIQ の検索結果で確認。FBI が作った映像だが、話しているのは美術館の警備責任者（美術館の職員）で、館内の映像は美術館の許可で撮ったもの。使うかどうかと権利の状態はユーザーと決める。事実確認には使える
+  - id: usao_2015_release
+    title: "マサチューセッツ州連邦検事局の発表「Historic Footage Connected to Gardner Museum Burglary Released - Public Assistance Sought」（2015年8月6日）"
+    file: ""
+    original: https://justice.gov/usao-ma/pr/historic-footage-connected-gardner-museum-burglary-released-public-assistance-sought
+    status: pd_federal
+    note: "連邦検事局の文章は著作権なし。要旨（検索結果の抜粋で確認）：盗難の前夜、同じ扉から無許可の人物が入った。車が裏口の横に止まり、降りた男が美術館の決まりに反して警備員に中へ入れられる。車は盗難の直前に外に止まっていたと報告された車の特徴と合う。犯人は当夜の監視の録画を持ち去ったが、前夜の分は持ち去らなかった。発表文を Windows の Chrome で保存して、資料の画面に出す"
+  - id: usao_2015_video
+    title: "盗難の前夜の監視カメラ映像（1990年3月17日 午前0時49分ごろ、6分39秒。2015年8月6日に連邦検事局と FBI が公開）"
+    file: ""
+    original: http://www.justice.gov/usao-ma/gardner-museum-theft
+    status: check
+    note: "撮ったのは美術館の監視カメラ、公開したのは連邦検事局と FBI（報道では FBI の YouTube にも載った）。連邦機関が撮った映像ではないので pd_federal にしない。ユーザーが使うと判断したら fair_use（日付を note に）。入手は連邦検事局のページか FBI の公式 YouTube から（ニュース局の写しは使わない）。長さは 6分39秒（WBUR）と 6分40秒（ロイター）の報道。前夜の映像に映る警備員の顔は、当夜の当事者の1人なので、出し方をユーザーと決める（ぼかす案）"
+  - id: usao_fbi_2013_release
+    title: "FBI ボストン支局・連邦検事局の発表文（2013年3月18日）「FBI Provides New Information Regarding the 1990 Isabella Stewart Gardner Museum Art Heist」"
+    file: ""
+    status: pd_federal
+    note: "WGBH の記事に全文の引用がある（検索結果の抜粋）。FBI の原文を fbi.gov（ボストン支局のプレスリリース）で探して保存する。要旨：犯人の身元は高い確度で分かっている、犯人は中部大西洋岸とニューイングランドを拠点にする犯罪組織の者、絵はコネチカットとフィラデルフィアの地域へ運ばれた、時効は過ぎている。取得したら URL を original に書く"
+  # ---------- 盗まれた作品（パブリックドメインの名画。Commons の写し） ----------
+  - id: art_category
+    title: "Wikimedia Commons のカテゴリ「Isabella Stewart Gardner Museum theft」（20ファイル、2つの下位カテゴリ）"
+    file: ""
+    original: https://commons.wikimedia.org/wiki/Category:Isabella_Stewart_Gardner_Museum_theft
+    status: reference
+    note: "2026-11-28 に検索結果（写しのサイト）で確認。ファイル名の例：Isabella Stewart Gardner Museum Vermeer 'The Concert'.jpg、La Sortie de Pesage by E Degas.jpg、Landscape with an Obelisk, Govaert Flinck, 1638, Isabella Stewart Gardner Museum, Boston.jpg、Rembrandt - Self portrait etching - ISGM.jpg。下の art_◯◯ に1枚ずつ分け、ファイルページで PD-Art の表示を確かめてから url と status を入れる"
+  - id: art_vermeer_concert
+    title: フェルメール「合奏」（1663〜66年ごろ、油彩）
+    file: ""
+    status: check
+    note: "Commons の「Isabella Stewart Gardner Museum Vermeer 'The Concert'.jpg」（1,199×1,600）。PD-Art を確かめたら pd_other。オランダの間から。美術館がガードナーの最初の大きな買い物と説明している作品（The Art Newspaper の写真説明）"
+  - id: art_rembrandt_storm
+    title: レンブラント「ガリラヤの海の嵐」（1633年、油彩。レンブラントの唯一の海の絵とされる）
+    file: ""
+    status: check
+    note: Commons にあるはず（ファイル名は未確認）。PD-Art を確かめたら pd_other。「唯一の海の絵」は言う前に美術館の作品解説で確かめる
+  - id: art_rembrandt_couple
+    title: レンブラント「黒い服の婦人と紳士」（1633年、油彩）
+    file: ""
+    status: check
+    note: Commons の「Rembrandt van Rijn - A Lady and Gentleman in Black…」（ファイル名の続きは未確認）
+  - id: art_rembrandt_etching
+    title: レンブラント「自画像」（1634年ごろ、エッチング。切手ほどの大きさ）
+    file: ""
+    status: check
+    note: Commons の「Rembrandt - Self portrait etching - ISGM.jpg」。大きさは Harvard Magazine の写真説明（1 3/4 × 2 インチ）。美術館の解説で確かめる
+  - id: art_flinck
+    title: フリンク「オベリスクのある風景」（1638年、油彩）
+    file: ""
+    status: check
+    note: Commons の「Landscape with an Obelisk, Govaert Flinck, 1638, Isabella Stewart Gardner Museum, Boston.jpg」（3,000×2,270）。以前はレンブラントの作とされていたという話は、美術館の作品解説で確かめるまで言わない
+  - id: art_manet
+    title: マネ「トルトーニにて」（1875年ごろ、油彩）
+    file: ""
+    status: check
+    note: Commons にあるはず（ファイル名は未確認）。青の間から
+  - id: art_degas
+    title: ドガの紙の作品5点（「計量場を出て」ほか。鉛筆・水彩など）
+    file: ""
+    status: check
+    note: Commons の「La Sortie de Pesage by E Degas.jpg」ほか。短い画廊から。5点のそれぞれの題名は美術館の作品解説で確かめる
+  - id: art_gu
+    title: 中国の青銅の器「觚（こ）」（殷の時代）
+    file: ""
+    status: check
+    note: 立体の写真なので、撮った人の権利を Commons のファイルページで確かめる。オランダの間から
+  - id: art_finial
+    title: ナポレオンの近衛連隊の旗の先の鷲の飾り（1813〜14年）
+    file: ""
+    status: check
+    note: 立体の写真。別の懸賞金10万ドルの対象（美術館の発表。報道で確認）
+  - id: art_sargent_portrait
+    title: サージェント「イザベラ・スチュワート・ガードナー」（1888年、油彩）
+    file: ""
+    status: check
+    note: 美術館を作った人の姿として。Commons の写しで PD-Art を確かめる。盗まれた作品ではない
+  # ---------- 美術館の写真（当時と今） ----------
+  - id: loc_1904_museum
+    title: フェンウェイ側から見た美術館（1904年、Detroit Publishing Company。米議会図書館）
+    file: ""
+    status: check
+    note: "1929年より前に出版された写真なのでパブリックドメイン（議会図書館の権利の欄で確かめてから pd_other）。Commons にも写しがある（artincontext の写真説明）。議会図書館の請求番号と URL は未確認"
+  - id: fbi_empty_frame
+    title: "盗難のあとの空の額（「ガリラヤの海の嵐」の額）。The Art Newspaper の写真説明では「FBI 提供」"
+    file: ""
+    status: check
+    note: FBI の職員が撮った写真なら pd_federal。美術館の撮影を FBI が配っただけなら美術館の権利。fbi.gov の画像の保存先で撮影者を確かめる。空の額は 3D のイメージ映像でも作れる（オランダの間の緑の壁と金の額）
+  - id: commons_empty_frames
+    title: 空の額（「黒い服の婦人と紳士」と「ガリラヤの海の嵐」）の写真。Commons、撮影者の名前は Chris で始まる
+    file: ""
+    status: check
+    note: artincontext の写真説明で確認。ライセンス（CC BY-SA など）をファイルページで確かめ、使うなら cc_by で概要欄にクレジット
+  - id: usgs_boston_1990
+    title: USGS の航空写真（NAPP、1987〜2007年）のボストン・フェンウェイ（1990年前後）
+    file: ""
+    status: pd_federal
+    note: EarthExplorer で、美術館の周りの1990年前後の写真を探す（エンティティIDは未確認）。美術館は公共の建物なので建物まで寄ってよい。地図に重ねるときは位置合わせしてから
+  # ---------- 自作 ----------
+  - id: own_maps
+    title: 自作の地図（実データ：Natural Earth、Copernicus DEM、米国勢調査局 TIGER）。ボストンと美術館、FBI が言う「コネチカットとフィラデルフィアの地域」
+    file: ""
+    status: own
+    note: maps.yaml で作る。FBI の言う地域は州・都市の範囲で面に描く（F-055）。特定の家・店の位置は出さない
+  - id: own_floorplan
+    title: 自作の模式図（美術館の1階・2階、通用口、守衛室、オランダの間・短い画廊・青の間、盗まれた13点の場所）
+    file: ""
+    status: own
+    note: 部屋の並びと作品の場所は、美術館の公式の説明と FBI の資料で確かめた範囲だけ。右上に「模式図」（CLAUDE.md）。人感センサーの記録の細かい時刻は、一次資料で確かめられた分だけ
+  # ---------- 参照のみ ----------
+  - id: ref_museum_theft
+    title: ガードナー美術館の公式ページ「The Theft」（盗難の経緯、懸賞金、盗まれた13点）
+    file: ""
+    original: https://www.gardnermuseum.org/about/theft-story
+    status: reference
+    note: 美術館の文章・写真は美術館の著作物。事実確認だけ。懸賞金は1,000万ドル（13点すべてが良い状態で戻ることにつながる情報）、鷲の飾りに別に10万ドル（報道で確認、ここで原文を確かめる）
+  - id: ref_smithsonian_2021
+    title: Smithsonian Magazine（2021年）「Five Things to Know About the Gardner Museum Heist」
+    file: ""
+    original: https://www.smithsonianmag.com/smart-news/five-things-know-about-isabella-stewart-gardner-art-heist-180977448/
+    status: reference
+    note: 午前1時24分に警官の服装の2人が入った、81分、地下で2人の警備員を縛った
+  - id: ref_history_com
+    title: History.com「History's Biggest Art Heist Remains Unsolved」
+    file: ""
+    original: https://www.history.com/news/historys-biggest-art-heist-remains-unsolved
+    status: reference
+    note: 呼び鈴は午前1時24分、着いてから81分で去った、監視カメラの録画テープを持ち去った、警備責任者の椅子に空の額を残した（この細部は一次資料で確かめるまで台本に入れない）
+  - id: ref_wbur_2015
+    title: WBUR（2015年8月7日）前夜の映像についての記事
+    file: ""
+    original: https://www.wbur.org/2015/08/07/gardner-video-questions
+    status: reference
+    note: 前夜の映像は6分39秒、2人の乗った車が着き、午前0時49分に1人が入る。若い FBI 捜査官が前日分のテープを回収していた。当夜の通行人の証言（車の中の2人）
+  - id: ref_cbs_2015_dead
+    title: CBS Boston・WGBH（2015年8月）FBI「警官に化けた2人はすでに死亡」
+    file: ""
+    original: https://www.wgbh.org/news/local/2015-08-07/fbi-says-suspects-in-gardner-heist-are-dead
+    status: reference
+    note: FBI ボストン支局の担当者の発言。名前は出していない。台本では「FBI は2015年、2人はすでに亡くなっていると述べた。名前は公表していない」まで
+  - id: ref_reward_history
+    title: 懸賞金の経過（artnet 2017年5月24日、CBS Boston 2018年、WPRI 2026年3月）
+    file: ""
+    original: https://news.artnet.com/art-world/gardner-museum-doubles-reward-10m-970745
+    status: reference
+    note: 1997年に100万ドルから500万ドルへ、2017年5月に1,000万ドル（期限つき）、2018年に期限なしで延長、2026年3月の時点でも1,000万ドルを出していて FBI の捜査も続いている
+  - id: ref_ap_2026
+    title: AP（2026年4月26日）「What to know about the world's largest art heist from a Boston museum」（PBS NewsHour に転載）
+    file: ""
+    original: https://www.pbs.org/newshour/arts/what-to-know-about-the-worlds-largest-art-heist-from-a-boston-museum
+    status: reference
+    note: 空の額は今も掛かっている。オランダの間の修復。記事の中の人名（盗品の売買をめぐる話）は使わない
+  - id: ref_kelly_2026
+    title: WCVB Chronicle（2026年7月22日）元 FBI 捜査官の本「13 Perfect Fugitives」
+    file: ""
+    original: https://www.youtube.com/watch?v=x3wLzptMlCk
+    status: reference
+    note: 22年担当した元捜査官の見方：作品は有名になりすぎて、売れる物から抱えるほど困る物に変わった。本人の見方として言う（FBI の公式の結論ではない）。局の映像は使わない
+  # ---------- 使用不可 ----------
+  - id: no_media_footage
+    title: テレビ局・新聞社の写真と映像、Netflix「This Is a Robbery」、Getty Images の写真
+    file: ""
+    status: unusable
+    note: 局・社・制作会社の著作物。番組の中で見える FBI の現場写真も、原本の出どころを確かめるまで使わない

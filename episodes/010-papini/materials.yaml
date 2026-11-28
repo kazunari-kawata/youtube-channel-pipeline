@@ -1,0 +1,162 @@
+# 素材台帳：22日間の「誘拐」は作り話だった（第10回・ボディカメラのシリーズ。2016年11月、カリフォルニア州レディング、シェリー・パピーニ事件）
+#
+# 1素材＝1項目。動画に出すものは、必ずここに載せてから使う（CLAUDE.md）。
+# status の意味は episodes/002-dahmer/materials.yaml の冒頭と pipeline/fetch_materials.py の STATUS を参照
+#   pd_federal / pd_no_notice / pd_other / cc_by / fair_use / own → 使用可
+#   check → 要確認（画面に出さない） / reference → 参照のみ / unusable → 使用不可
+# 警察の映像の決まりは CLAUDE.md「警察の映像を使う回のルール」
+# 取得：python pipeline/fetch_materials.py 010-papini  → episodes/010-papini/build/materials/
+#
+# この回の注意
+# - シリーズは bodycam。体に付けるボディカメラの映像ではなく、保安官事務所の事情聴取の部屋の録画（2020年8月13日）が主役。
+#   このときはまだ逮捕されておらず、事情を聞く場だった。「取調べ」ではなく「事情聴取」と言う
+# - 結論は出ている：2022年4月18日に有罪の答弁（郵便詐欺1件、連邦捜査官への虚偽の供述1件）、2022年9月19日に懲役18か月の判決（連邦検事局の発表）。
+#   CLAUDE.md「扱うのは、裁判か捜査の結論が出ている事件だけ」に合う
+# - 2025年に本人は、本とテレビのシリーズで「元交際相手に連れ去られた」と言い始めた。元交際相手は否定していて、起訴されたことはない（ABC News）。
+#   本人の新しい話は「本人の主張」として扱い、裁判の記録（本人の答弁）と並べて言う。どちらが正しいとも言わない。元交際相手の名前は出さない（「元交際相手」と言う）
+# - 夫（当時）は、うそをつかれた側。事情聴取の映像に隣に座っている。CLAUDE.md の「顔をぼかす人：被害者」に当たるので、顔をぼかす（本人が取材に出ていても、この回の決まりはぼかす。ユーザーに確かめる）。
+#   夫の 911 の通報の録音は使わない。子どもの名前・姿は出さない
+# - けがは本人が自分で付けたもの（連邦検事局の発表）。けがの写真・焼き印の写真は使わない。けがの細部も言わない（「自分で付けたものだった」まで）
+# - 作り話の中の「ヒスパニック系の女性2人」は実在しない。FBI の似顔絵を出すときは、実在しない人だと同じ区間で言う。
+#   この作り話が地域のヒスパニック系の人たちに向けた疑いと不安を生んだことは、検察の書面の言葉として扱う
+# - 英語ではこの事件の事情聴取の解説が非常に多い（1,781万回ほか）。日本語の動画は検索で見つからなかった（2026-11-28、vidIQ。表記ゆれは未確認）
+# - 台帳の状態は調査の初回（2026-11-28）。連邦の文書は検索結果の抜粋で中身を確かめただけで、まだ保存していない。映像は1本も取得していない
+
+case: United States v. Sherri Papini, 2:22-cr-0070 WBS（カリフォルニア州東部地区連邦地裁。2022年3月3日逮捕、4月18日有罪の答弁、9月19日判決）
+series: bodycam
+checked_on: 2026-11-28
+
+items:
+  # ---------- 連邦の文書（連邦検事局・FBI・連邦地裁。著作権なし） ----------
+  - id: usao_affidavit
+    title: "逮捕状と刑事告訴を求める FBI 特別捜査官の宣誓供述書（事件番号 3:22-mj-0001 DMC、2022年3月）"
+    file: usao/affidavit_2022-03.pdf
+    url: https://www.justice.gov/usao-edca/press-release/file/1479901/dl
+    status: pd_federal
+    note: "FBI サクラメント支局レディング駐在の特別捜査官が書いたもの。検索結果の抜粋で確認した中身：本人は2人のヒスパニック系の女性に連れ去られたと話し、FBI の似顔絵の担当者に2人の特徴を伝え、FBI の捜査官に道具についての文章を送った。元交際相手とは遅くとも2015年12月には連絡を取り合い、プリペイドの携帯電話で話していた。この回の事実の一次資料。画面に出すページは、元交際相手の名前・住所・電話番号を黒塗り（cuts.yaml の redact）"
+  - id: usao_information
+    title: "起訴状（Information、2:22-cr-0070 WBS、2022年4月12日。郵便詐欺34件と虚偽の供述1件）"
+    file: usao/information_2022-04-12.pdf
+    url: https://www.justice.gov/usao-edca/press-release/file/1493816/dl
+    status: pd_federal
+    note: "検索結果の抜粋で確認：本人は約22日間、自分の段取りで、自分の意思で、元交際相手とコスタメサに住んでいた。元交際相手がレンタカーで迎えに来て、レディングの辺りから南のコスタメサまで乗って行った。勤め先の電話と、のちにプリペイドの携帯電話で連絡を取り、自分の携帯電話を持っていたのに使わなかった。元交際相手は文書の中で「Ex-Boyfriend」と書かれている"
+  - id: usao_plea
+    title: 答弁の合意書（Plea Agreement、2:22-cr-0070 WBS、2022年4月）
+    file: usao/plea_agreement_2022-04.pdf
+    url: https://www.justice.gov/usao-edca/press-release/file/1493821/dl
+    status: pd_federal
+    note: 本人が認めた事実の一覧（factual basis）があるはず。返す金の内訳（FBI に 2,558.35ドル など）。原文で確かめる
+  - id: usao_pr_arrest
+    title: "連邦検事局の発表（2022年3月）「Shasta County Woman Arrested for Lying to Federal Agents Regarding Kidnapping and Defrauding the Victim Compensation Board」"
+    file: ""
+    original: https://www.justice.gov/usao-edca/pr/shasta-county-woman-arrested-lying-federal-agents-regarding-kidnapping-and-defrauding
+    status: pd_federal
+    note: 連邦検事・FBI サクラメント支局・シャスタ郡保安官の連名。捜査は FBI と保安官事務所、州司法省の鑑識と捜査局の協力
+  - id: usao_pr_plea
+    title: "連邦検事局の発表（2022年4月）「Redding Woman Agrees to Plead Guilty to Lying to Federal Agents Regarding Kidnapping and…」"
+    file: ""
+    original: https://www.justice.gov/usao-edca/pr/redding-woman-agrees-plead-guilty-lying-federal-agents-regarding-kidnapping-and
+    status: pd_federal
+    note: 3月3日に刑事告訴が出され、同じ日に逮捕
+  - id: usao_pr_sentence
+    title: "連邦検事局の発表（2022年9月19日）「Sherri Papini Sentenced to 18 Months in Prison for Lying to Federal Agents About Being Kidnapped and Defrauding the California Victim Compensation Board」"
+    file: ""
+    original: https://justice.gov/usao-edca/pr/sherri-papini-sentenced-18-months-prison-lying-federal-agents-about-being-kidnapped-and
+    status: pd_federal
+    note: "懲役18か月と、そのあと36か月の監督つきの釈放。返す金は 309,902ドル（州の犯罪被害者補償の委員会、社会保障局、シャスタ郡保安官事務所、FBI の損失）。4月12日に35件で起訴、4月18日に2件で有罪の答弁。2016年11月2日に行方不明と届けられた"
+  - id: court_gov_sentencing_memo
+    title: 検察の量刑についての書面（2022年9月、懲役8か月を求めた）
+    file: ""
+    status: check
+    note: "連邦検事局の書面なので pd_federal になるはず。入手先（PACER か CourtListener の RECAP）を探す。「地域の人たちは作り話を信じ、ヒスパニック系の女性が女性をさらって売っていると恐れて暮らした」という趣旨の文がある（CBS の引用）。弁護側の書面は弁護士の著作物なので使わない（参照だけ）"
+  - id: court_judgment
+    title: 判決書（Judgment in a Criminal Case、2022年9月）
+    file: ""
+    status: check
+    note: 入手先を探す（RECAP）。画面に出すなら刑の行だけ
+  - id: fbi_sketches_2017
+    title: "FBI の似顔絵2枚と呼びかけ（2017年10月25日公開、情報に最大1万ドル）"
+    file: ""
+    status: check
+    note: "報道では FBI の似顔絵の担当者が描いた（NBC、CBS）。FBI の作なら pd_federal。fbi.gov の公開先を探して保存する。実在しない人の顔なので、出すのは1回、短く、実在しないと同じ区間で言う。2人の人相の説明（年齢・背丈・髪）は読み上げない（作り話の中身を広めない）"
+  - id: fbi_911_call
+    title: 夫の 911 の通報の録音（2016年11月2日。2017年10月に公開）
+    file: ""
+    status: reference
+    note: うそをつかれた側の取り乱した声なので使わない。事実確認だけ
+  # ---------- 保安官事務所の映像と写真（カリフォルニア州の郡。権利はユーザーが判断するまで check） ----------
+  - id: sso_interview_2020
+    title: "シャスタ郡保安官事務所の事情聴取の録画（2020年8月13日、本人と夫、刑事2人。2022年9月20日に公開。約1時間25分）"
+    file: ""
+    status: check
+    note: "公開は判決の翌日（報道各社）。ABC10 が「Raw video」として載せた写し（1時間25分7秒、https://www.youtube.com/watch?v=T7idBeFkj84）は中身の確認にだけ使い、画面には出さない。原本は保安官事務所の公開先を探す。見つからなければカリフォルニア州の公開記録法（CPRA）で請求する（請求の下書きは 007 の records_request.md を参考に）。
+      報道で分かっている流れ：刑事が夫に部屋を出てもらうかを本人に尋ねる → 本人は「彼女を見つけないでほしい」と繰り返す → 刑事が DNA は元交際相手のものだったと告げる →「DNAはうそをつかない」→ 本人は泣き崩れる → 20分ほどで夫が退室を求める → 終わり近くに「わたしはひどい人間だ」。この場では罪を認めていない（CBS）。
+      夫の顔はぼかす。住所・電話番号が読まれる所は音を消す。この回の主役。権利の判断はユーザー（fair_use にするなら日付を note に）"
+  - id: sso_church_video_2016
+    title: "発見の直前の監視カメラ映像（2016年11月24日 午前4時15分、ヨロ郡の教会の建物。2017年に保安官事務所が公開）"
+    file: ""
+    status: check
+    note: "撮ったのは教会のカメラ、公開したのはシャスタ郡保安官事務所（報道）。7分後の4時22分にヨロ郡の通報の窓口に電話が入った。原本の公開先を探す。人が小さく映るだけで顔は分からない"
+  - id: sso_images_2022
+    title: 2022年9月に保安官事務所が事情聴取の映像と一緒に公開した写真（「新しい写真と映像」）
+    file: ""
+    status: check
+    note: 中身は未確認（ABC10 の記事で「いくつかの新しい写真と映像」とだけ）。けがの写真、焼き印、拘束具が体に付いた写真は使わない（unusable に分ける）。証拠品だけの写真なら候補
+  - id: sso_photo_papini
+    title: 本人の写真（保安官事務所の提供として報道に出たもの）
+    file: ""
+    status: check
+    note: "iHeart の記事の写真説明「Photo by Shasta County Sheriff's Office」。F-022 の本人の姿は、事情聴取の映像の1コマで足りるなら不要"
+  # ---------- 自作 ----------
+  - id: own_maps
+    title: 自作の地図（実データ：Natural Earth、Copernicus DEM、米国勢調査局 TIGER）。レディング（シャスタ郡）→ コスタメサ → ヨロ郡の州間高速5号線
+    file: ""
+    status: own
+    note: maps.yaml で作る。自宅は町の縮尺まで（いまも人が住む）。見つかった場所は「ヨロ郡の州間高速5号線の入口のそば」の縮尺まで。レディングとコスタメサの距離は自分で測る（報道は約600マイル）
+  # ---------- 参照のみ ----------
+  - id: ref_ktvu_2017
+    title: KTVU（2017年）発見の直前の映像の記事
+    file: ""
+    original: https://ktvu.com/news/sherri-papini-case-new-video-shows-missing-mother-minutes-before-she-was-located
+    status: reference
+    note: 映像の時刻は刑事が確かめた午前4時15分。4時22分に通報、通りかかったトラックの運転手が見つけた
+  - id: ref_cbs_2022_video
+    title: CBS Sacramento・FOX・SFGate（2022年9月20〜22日）事情聴取の映像の公開の記事
+    file: ""
+    original: https://www.cbsnews.com/sacramento/news/investigators-release-interrogation-video-of-sherri-papini-mom-who-faked-her-kidnapping-breaking-down
+    status: reference
+    note: 映像の中の発言（「DNAはうそをつかない」「レンタカー、燃料、走った距離、彼への電話、使い捨ての電話。全部証明できる」「わたしはひどい人間だ」）。訳すときは原本の音で確かめる
+  - id: ref_nbc_2017_sketches
+    title: NBC・CBS（2017年10月25日）FBI が似顔絵を公開
+    file: ""
+    original: https://www.nbcbayarea.com/news/national-international/fbi-offers-10k-reward-releases-suspect-sketches-for-info-in-sherri-papini-kidnapping-case/
+    status: reference
+    note: 似顔絵は FBI の担当者が描いた。公開に時間がかかったのは、本人が思い出すのに時間がかかったため（保安官事務所の説明）。NBC は「10か月後」、Law&Crime は「2017年9月に手配書を配った」と書いていて、10月25日の公開と合わない（要確認）。最大1万ドル。2017年の時点で、服に男性の DNA が残っていたことが公表された（IBTimes ほか）
+  - id: ref_abc_2025
+    title: ABC News（2025年6月20日）本人が本とテレビで「元交際相手に連れ去られた」と主張
+    file: ""
+    original: https://abc7.com/post/sherri-papini-doesnt-exist-new-book-redding-california-woman-claims-ex-boyfriend-abducted-2016-hoax-kidnapping-case/16799111/
+    status: reference
+    note: "元交際相手は否定していて、起訴されたことはない。保安官事務所は ABC の問い合わせに声明を出した（全文は未確認）。本人は答弁の合意のもとで約10か月服役した（報道）。本とテレビのシリーズの中身は使わない"
+  - id: ref_sentencing_reports
+    title: AP・NBC（2022年9月19日）判決の記事
+    file: ""
+    original: https://abc7news.com/sherri-papini-sentencing-ca-kidnapping-hoax-2016-fake-18-months-sentence/12240647/
+    status: reference
+    note: 検察は懲役8か月、保護観察の担当と弁護側は1か月と自宅拘禁7か月を求め、判事は18か月を言い渡した。補償の委員会から3万ドル余りを受け取っていた
+  # ---------- 使用不可 ----------
+  - id: no_injury_images
+    title: けが・焼き印・拘束具が体に付いた姿の写真と映像
+    file: ""
+    status: unusable
+    note: CLAUDE.md「警察の映像を使う回のルール」の使わない映像（血やけが）。言葉でも細部を言わない
+  - id: no_docs_tv
+    title: Hulu「Perfect Wife」（2024年）、ID のシリーズ（2025年）、ABC 20/20 が独自に入手した映像、ニュース局の写し、本人の本
+    file: ""
+    status: unusable
+    note: 制作会社・局・本人の著作物。事実確認にも、一次資料で確かめられることだけを使う
+  - id: no_family_photos
+    title: 行方不明の呼びかけに使われた家族の写真、子どもの写真
+    file: ""
+    status: unusable
+    note: 家族の著作物。子どもは出さない
