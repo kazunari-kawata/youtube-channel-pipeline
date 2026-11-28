@@ -28,7 +28,7 @@ import { BrickMaterial, Camera, CamKey, SceneProps, Stage, StreetLamp } from "./
 /* ---------- 本人の服装（plan.md の人物の設定。FBI の電報の特徴：細身で筋肉質、濃い茶色の波打つ髪を右で分ける、眼鏡なし） ---------- */
 
 // 1970年代の学生：襟付きのシャツにセーター、スラックス。002（ダーマー）の体つきは流用しない（肩幅をやや広く）
-export const BUNDY_STUDENT: Build = { shoulder: 0.9, width: 1.0, jacket: "#4b4a3e", trousers: "#2f3138", shoes: "#1a1512", skin: "#16110e", hair: "#2c2018", suit: { shirt: "#c9c1ad" } };
+export const BUNDY_STUDENT: Build = { shoulder: 0.9, width: 1.0, jacket: "#4b4a3e", trousers: "#55524a", shoes: "#1a1512", skin: "#16110e", hair: "#2c2018", suit: { shirt: "#c9c1ad" } };
 // 1979年の法廷：スーツ、白いシャツ、ネクタイ（F-036：襟と V とネクタイまで見せる）
 export const BUNDY_SUIT: Build = { shoulder: 0.9, width: 1.0, jacket: "#3a3a3c", trousers: "#333335", shoes: "#141210", skin: "#16110e", hair: "#2c2018", suit: { shirt: "#d6d2c8", tie: "#2b2f3d" } };
 
@@ -139,8 +139,9 @@ const CampusLamp: React.FC<{ x: number; z: number; on: boolean }> = ({ x, z, on 
   }, [x, z, on]);
   return (
     <group>
+      {/* 柱は太め（細い柱はカメラが動くと画素の境目でちらつく） */}
       <mesh position={[x, 1.6, z]}>
-        <cylinderGeometry args={[0.06, 0.08, 3.2, 8]} />
+        <cylinderGeometry args={[0.1, 0.12, 3.2, 10]} />
         <meshStandardMaterial color="#1d1d20" roughness={0.6} />
       </mesh>
       <mesh position={[x, 3.4, z]}>
@@ -178,7 +179,8 @@ export const InsertCampus004: React.FC<SceneProps> = ({ variant = "a" }) => {
   const night = look === "night";
   const cams: Record<string, [CamKey, CamKey]> = {
     a: [{ pos: [-14, 2.2, 22], target: [2, 3.5, -10], fov: 42 }, { pos: [-12.8, 2.2, 21], target: [2, 3.5, -10], fov: 41 }],
-    b: [{ pos: [6, 1.6, 9.5], target: [2, 1.2, 1], fov: 36 }, { pos: [5.4, 1.6, 9.2], target: [-2.5, 1.2, 1], fov: 36 }],
+    // b：歩く人物は遠目に（脚の細い動きが明るい道の上で明滅と判定された：カメラを約14m離す）
+    b: [{ pos: [7, 1.7, 15], target: [1.5, 1.3, 1], fov: 32 }, { pos: [6.4, 1.7, 14.6], target: [-2.5, 1.3, 1], fov: 32 }],
     c: [{ pos: [3.4, 0.8, 12.5], target: [0, 5.5, -12], fov: 40 }, { pos: [3.0, 0.8, 11.8], target: [0, 5.7, -12], fov: 39 }],
     d: [{ pos: [-8, 1.8, 16], target: [2, 2.6, -6], fov: 42 }, { pos: [-7.4, 1.8, 15.2], target: [2, 2.6, -6], fov: 41 }],
     e: [{ pos: [-6, 0.5, 16], target: [18, 4.0, -10], fov: 40 }, { pos: [-5.4, 0.5, 15.4], target: [18, 4.1, -10], fov: 39 }],
@@ -255,7 +257,8 @@ export const InsertCampus004: React.FC<SceneProps> = ({ variant = "a" }) => {
           <boxGeometry args={[9.4, 0.9, 1.3]} />
           <meshStandardMaterial color="#cfc8ba" roughness={0.9} />
         </mesh>
-        <mesh position={[0, 2.6, -0.06]}>
+        {/* 扉は校舎の窓（壁から 4cm）より前に置く。同じ深さだと重なった所が縞になる（F-001） */}
+        <mesh position={[0, 2.6, 0.04]}>
           <planeGeometry args={[2.0, 3.2]} />
           <meshStandardMaterial color="#3a2618" roughness={0.7} emissive={night ? "#e8b072" : "#000"} emissiveIntensity={night ? 0.12 : 0} />
         </mesh>
