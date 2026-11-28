@@ -10,6 +10,9 @@
 - `state.yaml` の `mode` が `auto` でない回のファイルを変えない（002〜008 は人の会話で進めている）
 - 人に質問しない（だれも答えない）。決めてほしいことは `auto.py ask` で残し、案を1つ選んで進める（止めるのは下の「止める判断」だけ）
 - 素材台帳で使用可でない素材（check・reference・unusable）を、画面に出す区間に使わない
+- **vidIQ 以外のコネクタを使わない**（読むだけでも。Gmail、Google Drive、Google Calendar、Google Slides、Notion、Canva、PostHog、Cloudflare、
+  Hugging Face、Claude Docs、Claude Code Remote など）。CLAUDE.md の「Claude Docs で構成案」は自動の回では作らない（plan.md が正本）。
+  アーティファクトを公開しない。定期実行（スケジュール）を作る・変える・動かさない。定期実行の設定ではほかのコネクタも入っているが、見張り（毎晩）が確かめている
 
 ## 手順
 
@@ -23,7 +26,7 @@
    python pipeline/auto.py next                # JSON。action が work / new_topic / idle
    ```
 2. `action` ごとに
-   - `idle`：`auto.py record --run $RUN --summary "待ち：…"` → 6 へ（何も作らない）
+   - `idle`：`auto.py record --run $RUN --connectors none --summary "待ち：…"` → 6 へ（何も作らない）
    - `new_topic`：`automation/stages/research.md` の「新しい題材」をする。回のフォルダは `auto.py new` で作る
    - `work`：`python pipeline/auto.py start <回> <工程> --run $RUN` → `doc` に書いてある工程の手順書を読む →
      その回の `state.yaml`（前の実行の `note`）、`plan.md`、`materials.yaml`、`timeline.md` を読んでから作業する
@@ -37,10 +40,11 @@
    - 工程が終わった：`python pipeline/auto.py done <回> <工程> --note "何をしたか、次の工程への申し送り"`
    - 途中まで：`python pipeline/auto.py progress <回> <工程> --note "どこまでやったか、残り"`（次の実行が続きから）
    - 人の判断がないと先へ進めない：`python pipeline/auto.py ask <回> <id> --q "決めてほしいこと（案と、案を選んだ理由）" --blocks <工程>`
-5. 記録：`python pipeline/auto.py record --run $RUN --episode <回> --stage <工程> --credits <vidIQで使った数> --summary "1行"`
+5. 記録：`python pipeline/auto.py record --run $RUN --episode <回> --stage <工程> --credits <vidIQで使った数> --connectors <vidIQ か none> --summary "1行"`
+   （`--connectors` はこの実行で呼んだコネクタを正直に書く。誤って vidIQ 以外を呼んだら、その名前も書き、最後のメッセージでも知らせる）
 6. 片付け：`python pipeline/auto.py unlock --run $RUN` → `python pipeline/auto.py save -m "auto: 終了 $RUN"`（ロックを外したことと記録も含めて push）
 7. 最後のメッセージ（このセッションを開いた人が読む）：日本語で3〜6行。何を進めたか、次に何が待っているか、人に決めてほしいこと。
-   回が review（人の確認待ち）に入ったら、1行目に「確認待ち：<回>」と書く
+   回が review（人の確認待ち）に入ったら、1行目に「確認待ち：<回>」と書く。最後の行は「使ったコネクタ：vidIQ（またはなし）」
 
 ## 止める判断（ask に --blocks を付けるとき）
 

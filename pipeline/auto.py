@@ -10,7 +10,8 @@
   python pipeline/auto.py ask EP GATE --q "..." [--blocks STAGE]   # 人に決めてほしいこと（blocks を付けるとその工程で止まる）
   python pipeline/auto.py approve EP GATE [--answer "..."]         # 人が決めた（関門を閉じる）。GATE が review なら確認済み
   python pipeline/auto.py new EP --title "..." --series profile [--priority N]
-  python pipeline/auto.py record --run RUN --summary "..." [--episode EP --stage S --credits N]
+  python pipeline/auto.py record --run RUN --summary "..." --connectors vidIQ|none [--episode EP --stage S --credits N]
+  python pipeline/auto.py audit [--hours 26]               # 記録のない実行・vidIQ 以外のコネクタを記録した実行を挙げる（見張り用）
   python pipeline/auto.py save -m "auto: 009 台本 第1章" [パス ...]   # コミットして push（重なったら pull --rebase してやり直す）
   python pipeline/auto.py waiting                          # 人の確認待ち（review）の回を1行ずつ（Windows の仮編集が使う）
 
@@ -225,6 +226,35 @@ def cmd_waiting(_a) -> None:
             print(ep)
 
 
+def cmd_audit(a) -> None:
+    """見張り：直近の実行の記録を読み、コネクタの記録がない実行と、vidIQ 以外を記録した実行を挙げる（自己申告。外の跡は見張りの定期実行が別に確かめる）"""
+    since = dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=a.hours)
+    runs, bad = [], []
+    for line in (RUNS.read_text(encoding="utf-8").splitlines() if RUNS.exists() else []):
+        try:
+            r = json.loads(line)
+            if parse_time(r["at"]) < since:
+                continue
+        except (json.JSONDecodeError, KeyError, ValueError):
+            continue
+        runs.append(r)
+        if "connectors" not in r:
+            bad.append(f"{r['at']} {r.get('run')}：使ったコネクタの記録がない")
+        else:
+            other = [c for c in r["connectors"] if norm_connector(c) not in ALLOWED_CONNECTORS]
+            if other:
+                bad.append(f"{r['at']} {r.get('run')}：vidIQ 以外のコネクタ {', '.join(other)}")
+    lk = yaml.safe_load(LOCK.read_text(encoding="utf-8")) if LOCK.exists() else None
+    print(f"直近 {a.hours:g} 時間の実行：{len(runs)} 回" + (f"（いまロック中：{lk.get('run')}、{lk.get('at')}）" if lk else ""))
+    for r in runs:
+        print(f"  {r['at']}  {r.get('run')}  {r.get('episode') or '-'} {r.get('stage') or '-'}  コネクタ：{('記録なし' if 'connectors' not in r else ', '.join(r['connectors']) or 'なし')}")
+    for b in bad:
+        print("  ！ " + b)
+    if bad:
+        sys.exit(1)
+    print("自己申告では問題なし")
+
+
 def cmd_unlock(a) -> None:
     if LOCK.exists():
         lk = yaml.safe_load(LOCK.read_text(encoding="utf-8")) or {}
@@ -296,9 +326,23 @@ def cmd_new(a) -> None:
     print(f"作りました：{state_path(a.episode).relative_to(ROOT)}")
 
 
+ALLOWED_CONNECTORS = {"vidiq"}  # 定期実行で使ってよいコネクタ（README.md「定期実行を作る」）
+
+
+def norm_connector(c: str) -> str:
+    """「vidIQ」「vidIQ_for_Claude」「vidiq for claude」を同じ名前にそろえる"""
+    n = "".join(ch for ch in c.lower() if ch.isalnum())
+    return n.removesuffix("forclaude")
+
+
+def parse_connectors(v: str) -> list[str]:
+    return [] if v.strip().lower() in ("", "none", "なし") else [x.strip() for x in v.split(",") if x.strip()]
+
+
 def cmd_record(a) -> None:
     RUNS.parent.mkdir(exist_ok=True)
-    rec = {"run": a.run, "at": now(), "episode": a.episode, "stage": a.stage, "credits": a.credits, "summary": a.summary}
+    rec = {"run": a.run, "at": now(), "episode": a.episode, "stage": a.stage, "credits": a.credits,
+           "connectors": parse_connectors(a.connectors), "summary": a.summary}
     with RUNS.open("a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
@@ -340,7 +384,11 @@ def main() -> None:
     p = sub.add_parser("record")
     p.add_argument("--run", required=True); p.add_argument("--summary", required=True)
     p.add_argument("--episode"); p.add_argument("--stage"); p.add_argument("--credits", type=int, default=0)
+    p.add_argument("--connectors", required=True, help="この実行で呼んだコネクタ（カンマ区切り。vidIQ だけなら vidIQ、使わなければ none）")
     p.set_defaults(f=cmd_record)
+    p = sub.add_parser("audit")
+    p.add_argument("--hours", type=float, default=26)
+    p.set_defaults(f=cmd_audit)
     a = ap.parse_args()
     a.f(a)
 
