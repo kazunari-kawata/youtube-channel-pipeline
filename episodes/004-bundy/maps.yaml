@@ -26,7 +26,7 @@ views:
       - {lat: 43.9, lon: -120.5, text: "オレゴン州"}
       - {lat: 45.0, lon: -125.0, text: "太平洋", kind: water}
   seattle:    # シアトルと湖畔の州立公園（1974年7月14日）
-    lon: [-122.75, -121.75]
+    lon: [-122.75, -121.35]
     lat: [47.30, 47.85]
     states: true
     lake_rank: 12
