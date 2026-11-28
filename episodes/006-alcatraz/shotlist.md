@@ -131,7 +131,7 @@
 
 ## 足りないもの
 
-- 効果音のファイル 24本（assets/sfx/。取得して LICENSES.md に記録する）：amb_bay_1.wav、amb_beach_1.wav、amb_boat_1.wav、amb_cell_1.wav、amb_cellhouse_1.wav、amb_corridor_1.wav、amb_hill_1.wav、amb_office_1.wav、amb_shore_1.wav、low_hit_1.wav、low_hit_2.wav、paper_1.wav、paper_2.wav、paper_3.wav、paper_4.wav、photo_1.wav、photo_2.wav、photo_3.wav、pin_1.wav、pin_2.wav、pin_3.wav、stamp_1.wav、stamp_2.wav、typewriter_1.wav
+- なし
 
 ## 注意（CLAUDE.md のルールに照らして）
 
