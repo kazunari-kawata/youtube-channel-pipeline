@@ -1,0 +1,128 @@
+# 004 テッド・バンディ：画面に出す資料（prepare_materials_004.py が読む）
+#   name: remotion/public/004/<name>.jpg。台本の visual が src と focus を持つときは <src>__<focus>
+#   src:  素材台帳（materials.yaml）の id
+#   kind: crop（既定。台帳の file のページから切り出す）／text（判決文の文を紙の上に組み直す）
+#   crop: [左, 上, 右, 下]（ページに対する割合）。null は「まだ画像で見て決めていない」
+#   redact: [[x0, y0, x1, y1], ...]  切り出す前のページに対する割合で黒く塗る
+#
+# FBI の文書は The Black Vault の写し（fbi/blackvault_tedbundy.pdf、145ページ）から。FBI の職員が書いたページだけ（新聞の切り抜きは使わない）。
+# 被害者の名前と遺体の記述の行は入れない（2026-11-28 に画像で見て位置を決めた）
+
+# ---------- FBI の文書 ----------
+- {name: fbi_bv_p30__eyes,   src: fbi_bv_p30, crop: [0.05, 0.18, 0.76, 0.327]}    # 電報の4枚目の頭：本人の特徴（青い目、眼鏡、髪）の4行
+- {name: fbi_bv_p29__utah,   src: fbi_bv_p29, crop: [0.05, 0.383, 0.76, 0.470]}   # 3枚目：ユタの有罪と刑の3行（上の黒塗りの行と、下の事件の行は入れない）
+- {name: fbi_bv_p28__escape, src: fbi_bv_p28, crop: [0.05, 0.343, 0.76, 0.445]}   # 2枚目：逃げた日時と方法の行（上の被害者の名前と遺体の記述の行は入れない）
+- {name: fbi_bv_p40__armed,  src: fbi_bv_p40, crop: [0.04, 0.24, 0.93, 0.585]}    # 通信（1977年6月11日）の宛先・件名・本文・太字の注意（下の配布先と黒塗りは入れない）
+- {name: fbi_bv_p92__lead,   src: fbi_bv_p92, crop: [0.04, 0.24, 0.93, 0.70]}     # 通信（1978年1月）の宛先・件名・手がかりの指示と注意（下の配布先は入れない）
+
+# ---------- 判決文（文字を組み直した引用。原文の文はそのまま、省いた所は [...]） ----------
+- name: ct_fla455_counts__counts
+  src: ct_fla455_counts
+  kind: text
+  caption: "Bundy v. State"
+  court: "Supreme Court of Florida, June 21, 1984"
+  cite: "455 So.2d 330"
+  paras:
+    - "This cause is before the Court on appeal from a circuit court judgment adjudicating Theodore Robert Bundy guilty of two counts of first-degree murder, three counts of attempted first-degree murder, and two counts of burglary. For the two crimes of first-degree murder the trial judge imposed sentences of death."
+- name: ct_fla455_facts__facts
+  src: ct_fla455_facts
+  kind: text
+  caption: "Bundy v. State"
+  court: "Supreme Court of Florida, June 21, 1984"
+  cite: "455 So.2d 330"
+  paras:
+    - "During the early morning hours of Sunday, January 15, 1978, an intruder entered the Chi Omega sorority house, adjacent to the campus of Florida State University in Tallahassee [...]."
+    - "Within approximately an hour of the attacks in the Chi Omega house, an intruder entered another home nearby [...]. All five women were university students."
+- name: ct_fla455_evidence__evidence
+  src: ct_fla455_evidence
+  kind: text
+  caption: "Bundy v. State"
+  court: "Supreme Court of Florida, June 21, 1984"
+  cite: "455 So.2d 330"
+  paras:
+    - "The principal items of evidence were: (1) the identification testimony of a resident of the Chi Omega sorority house who briefly saw Bundy in the house; and (2) expert analysis of teeth marks left by the perpetrator [...] and comparison of the marks with the teeth of appellant."
+- name: ct_fla471_arrest__arrest
+  src: ct_fla471_arrest
+  kind: text
+  caption: "Bundy v. State"
+  court: "Supreme Court of Florida, 1985"
+  cite: "471 So.2d 9"
+  paras:
+    - "On February 15, 1978, Bundy was arrested in Pensacola, Florida, after fleeing from a stop made by an officer whose suspicions had been aroused. At that time Bundy identified himself to the officer as [...]."
+    - "Over the next several days Bundy was extensively interviewed by officers from the Pensacola and Tallahassee Police Departments and the Leon County Sheriff's Office. During this time he revealed his true identity."
+- name: ct_fla538__denied
+  src: ct_fla538
+  kind: text
+  caption: "Bundy v. State"
+  court: "Supreme Court of Florida, January 20, 1989"
+  cite: "538 So.2d 445"
+  paras:
+    - "On January 17, 1989, the governor signed a second death warrant and scheduled Bundy's execution for January 24, 1989. [...]"
+    - "We affirm the order denying Bundy's motion for postconviction relief and Bundy's application for stay of execution. We also deny his application for stay of execution filed in this Court."
+- name: ct_ca11_1988__holding
+  src: ct_ca11_1988
+  kind: text
+  caption: "Bundy v. Dugger"
+  court: "U.S. Court of Appeals, Eleventh Circuit, July 7, 1988"
+  cite: "850 F.2d 1402"
+  paras:
+    - "On remand, the district court conducted an evidentiary hearing and concluded that Bundy was competent to stand trial. [...]"
+    - "Accordingly, we hold that none of the grounds asserted by Bundy for federal habeas corpus relief merits the granting of his petition. Therefore, we AFFIRM the district court."
+- name: ct_fsupp_edu__edu
+  src: ct_fsupp_edu
+  kind: text
+  caption: "Bundy v. Dugger"
+  court: "U.S. District Court, M.D. Florida, December 22, 1987"
+  cite: "675 F.Supp. 622, 625"
+  paras:
+    - "For example, Petitioner graduated with distinction from the University of Washington with a B.S. in psychology."
+- name: ct_fsupp_law__law
+  src: ct_fsupp_law
+  kind: text
+  caption: "Bundy v. Dugger"
+  court: "U.S. District Court, M.D. Florida, December 22, 1987"
+  cite: "675 F.Supp. 622, 633"
+  paras:
+    - "In law school, Petitioner, like so many other bright students before him, performed poorly during his first semester. However, Petitioner's grades did improve somewhat by the end of his second law school semester."
+- name: ct_fsupp_self__self
+  src: ct_fsupp_self
+  kind: text
+  caption: "Bundy v. Dugger"
+  court: "U.S. District Court, M.D. Florida, December 22, 1987"
+  cite: "675 F.Supp. 622, 629"
+  paras:
+    - "Consequently, this Court finds that Petitioner's decision to represent himself was not irrational or illogical under the circumstances."
+- name: ct_fsupp_boone__boone
+  src: ct_fsupp_boone
+  kind: text
+  caption: "Bundy v. Dugger"
+  court: "U.S. District Court, M.D. Florida, December 22, 1987"
+  cite: "675 F.Supp. 622, 631"
+  paras:
+    - "As such, the Court views the marriage to Carol Boone as a calculated risk by Petitioner to obtain sympathy from the jury during the penalty phase in an effort to avoid a jury recommendation of the death penalty."
+- name: ct_fsupp_people__people
+  src: ct_fsupp_people
+  kind: text
+  caption: "Bundy v. Dugger"
+  court: "U.S. District Court, M.D. Florida, December 22, 1987"
+  cite: "675 F.Supp. 622, 630-631"
+  paras:
+    - "According to Judge Jopling, Petitioner was one of the most intelligent defendants who had ever appeared before him."
+    - "Mr. Dekle stated that Petitioner's performance during the pretrial proceedings was exceptional for a layman."
+    - "Petitioner was very articulate, well mannered, and exhibited an understanding of the evidence and asked orderly, pointed questions."
+- name: ct_utah_approach__approach
+  src: ct_utah_approach
+  kind: text
+  caption: "State v. Bundy"
+  court: "Supreme Court of Utah, December 28, 1978"
+  cite: "589 P.2d 760"
+  paras:
+    - "[...] she was approached by a man who told her that someone had been trying to break into her automobile. [...] She thought that he was a police officer. [...] The man asked her to accompany him to the car to see if anything was missing. [...] He produced a wallet with a badge inside."
+- name: ct_utah_car__car
+  src: ct_utah_car
+  kind: text
+  caption: "State v. Bundy"
+  court: "Supreme Court of Utah, December 28, 1978"
+  cite: "589 P.2d 760"
+  paras:
+    - "[...] described by her as a Volkswagen with a rip on the top of the backseat [...], rust spots on the front, no license plate, and of light color, either white or beige."

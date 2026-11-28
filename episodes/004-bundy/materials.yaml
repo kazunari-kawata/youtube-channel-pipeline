@@ -10,7 +10,7 @@
 # この回の注意
 # - 被害者の写真・現場写真・歯型（かみ跡）の写真は使わない。被害者の名前は必要な場面だけ
 # - フロリダの3人目の被害者は12歳。事実だけを短く。判決文を画面に出すときは名前と遺体の記述の行を映さない
-# - 加害者を持ち上げない（「ハンサム」「魅力的」を売りにしない）。焦点は捜査・2度の逃走・州をまたぐ見落とし・裁判
+# - 切り口は「好青年・高学歴に見えた男」（2026-11-28 ユーザー決定、F-065）。外見・学歴は当時の見方として記録と並べ、ほめない
 # - 有罪が確定したのは、ユタの誘拐（1976年）とフロリダの3件の殺人。ほかの州の事件は「本人が死刑の直前に認めた」「容疑がかかった」と言い分ける
 # - 台帳の状態は調査の初回（2026-11-25）。ページ番号・撮影者はこれから原本で確かめる
 
@@ -37,6 +37,129 @@ items:
     original: https://www.fbi.gov/wanted/topten/topten-history/hires_images/FBI-360-TheodoreRobertBundy.jpg/view
     status: pd_federal
     note: FBIの作成。本人の顔写真が載っている → 最初の30秒に出す本人の姿（F-022）の第1候補。手配書の中の写真は地方の警察が撮ったものの可能性があるが、手配書そのものはFBIの刊行物。URL は表示ページなので、画像は手作業で保存する
+  # FBI の文書（The Black Vault の写しの中の、FBI の職員が書いたページ。2026-11-28 に画像で見て作成者と中身を確かめた）
+  # 権利は FBI の著作物であることによる（写しの置き場所は根拠にしない）。新聞の切り抜き（p22、26、83、101、103、117 など）と写真（p133、145、146）は使わない
+  - id: fbi_bv_p28
+    title: FBI デンバー支局のテレタイプ（1977年6月11日）の2枚目：アスペンの裁判所から逃げた日時と方法
+    file: fbi/blackvault_tedbundy.pdf#page=28
+    original: https://documents.theblackvault.com/documents/fbifiles/tedbundy.pdf
+    status: pd_federal
+    note: FBI の作成。上の行に被害者の名前と遺体の記述があるので入れない（cuts_004.yaml）。1枚目（p27）が日付と宛先
+  - id: fbi_bv_p29
+    title: 同じテレタイプの3枚目：ユタでの有罪と刑（1976年6月、1年から15年）、連邦の逃亡の訴え（1977年6月9日）、本人の生年月日
+    file: fbi/blackvault_tedbundy.pdf#page=29
+    original: https://documents.theblackvault.com/documents/fbifiles/tedbundy.pdf
+    status: pd_federal
+    note: FBI の作成。生年月日は1946年11月24日（42歳の計算のもと）
+  - id: fbi_bv_p30
+    title: 同じテレタイプの4枚目：本人の特徴（青い目は「いくらか人を引きつける特徴」、眼鏡で変装、濃い茶色の波打つ髪を右で分ける、細身で筋肉質）
+    file: fbi/blackvault_tedbundy.pdf#page=30
+    original: https://documents.theblackvault.com/documents/fbifiles/tedbundy.pdf
+    status: pd_federal
+    note: FBI の作成。冒頭の「人物像を記録と並べる」の柱。人物の設定（plan.md）のもとにも使う
+  - id: fbi_bv_p40
+    title: FBI デンバー支局からソルトレイクシティ支局への通信（エアテル、1977年6月11日）：逃げる直前の写真を送る、武器を持ちきわめて危険
+    file: fbi/blackvault_tedbundy.pdf#page=40
+    original: https://documents.theblackvault.com/documents/fbifiles/tedbundy.pdf
+    status: pd_federal
+    note: FBI の作成
+  - id: fbi_bv_p56
+    title: ユタ地区連邦検事の申し立てと命令（1977年6月13日・17日）：本人が捕まったので、連邦の逃亡の訴えを取り下げる
+    file: fbi/blackvault_tedbundy.pdf#page=56
+    original: https://documents.theblackvault.com/documents/fbifiles/tedbundy.pdf
+    status: pd_federal
+    note: 連邦検事・連邦裁判所の作成。台本では使っていない（「数日後に捕まる」の裏づけ）
+  - id: fbi_bv_p92
+    title: FBI ソルトレイクシティ支局からデンバー支局への通信（1978年1月）：郡の保安官事務所と連絡を保つ、武器を持ちきわめて危険
+    file: fbi/blackvault_tedbundy.pdf#page=92
+    original: https://documents.theblackvault.com/documents/fbifiles/tedbundy.pdf
+    status: pd_federal
+    note: FBI の作成。1978年1月1日と4日のテレタイプ・通信を受けたもの（12月の逃走のあと）
+  - id: fbi_foia_web
+    title: FBI の情報公開のページ「Theodore Robert Bundy」の説明文（2009年1月の保存。「5つの州で最大36件の殺人について事情を聞く対象」）
+    file: fbi/foia_web_2009.jpg
+    original: https://webarchive.library.unt.edu/eot2008/20090117185753/http:/foia.fbi.gov/foiaindex/bundy.htm
+    status: pd_federal
+    note: FBI のウェブページ（北テキサス大学の政府ウェブ保存）。画面の写しを Windows の Chrome で撮ってから使う（まだ撮っていない → 素材待ち）
+  # 判決文（文字を組み直した引用。cuts_004.yaml の kind: text）。裁判所の意見は著作権の対象外
+  - id: ct_fla455_counts
+    title: フロリダ州最高裁 455 So.2d 330（1984年6月21日）の冒頭の文：有罪の罪名と死刑
+    file: court/op-57772.txt
+    original: https://library.law.fsu.edu/Digital-Collections/flsupct/dockets/57772/57772.html
+    status: pd_other
+    note: 州の裁判所の意見で著作権の対象外。FSU の紙面の画像は出さない（Not for Commercial Use）。文字を組み直して出す
+  - id: ct_fla455_facts
+    title: 同じ判決の、事件の日時と場所・5人が大学生だったことの文（被害者の名前と傷の記述は省く）
+    file: court/op-57772.txt
+    original: https://library.law.fsu.edu/Digital-Collections/flsupct/dockets/57772/57772.html
+    status: pd_other
+    note: 同上
+  - id: ct_fla455_evidence
+    title: 同じ判決の、主な証拠を2つ挙げた文（体の部位の語は省く）
+    file: court/op-57772.txt
+    original: https://library.law.fsu.edu/Digital-Collections/flsupct/dockets/57772/57772.html
+    status: pd_other
+    note: 同上
+  - id: ct_fla471_arrest
+    title: フロリダ州最高裁 471 So.2d 9（1985年）の、ペンサコーラでの逮捕と名乗った名前の文（名乗った名前は省く）
+    file: court/op-59128.txt
+    original: https://library.law.fsu.edu/Digital-Collections/flsupct/dockets/59128/59128.html
+    status: pd_other
+    note: 同上。名乗った名前は実在の別人の名前なので出さない
+  - id: ct_fla538
+    title: フロリダ州最高裁 538 So.2d 445（1989年1月20日）の、2度目の執行令状と結びの文
+    file: court/op-73585.txt
+    original: https://library.law.fsu.edu/Digital-Collections/flsupct/dockets/73585/73585.html
+    status: pd_other
+    note: 同上。2026-11-28 に FSU から本文を取得（court/op-73585.pdf）
+  - id: ct_ca11_1988
+    title: 第11巡回区連邦控訴裁 850 F.2d 1402（1988年7月7日）の、差し戻しの審理の結論と結びの文
+    file: court/ca11_850f2d1402.html
+    url: https://law.resource.org/pub/us/case/reporter/F2/850/850.F2d.1402.86-3773.html
+    status: pd_federal
+    note: 連邦裁判所の意見
+  - id: ct_fsupp_edu
+    title: 連邦地裁 675 F.Supp. 622（M.D. Fla.、1987年12月22日）p.625 の学歴の文
+    file: ""
+    original: https://law.counselstack.com/opinion/bundy-v-dugger-flmd-1987
+    status: pd_federal
+    note: 連邦裁判所の意見。文は counselstack の全文で確かめた（星印のページ番号つき）。公開前に別の全文（vLex、leagle）でももう一度確かめる
+  - id: ct_fsupp_law
+    title: 同じ決定 p.633 の、法科大学院の成績の2文
+    file: ""
+    original: https://law.counselstack.com/opinion/bundy-v-dugger-flmd-1987
+    status: pd_federal
+    note: 同上
+  - id: ct_fsupp_self
+    title: 同じ決定 p.629 の、自分を弁護する決定についての文
+    file: ""
+    original: https://law.counselstack.com/opinion/bundy-v-dugger-flmd-1987
+    status: pd_federal
+    note: 同上
+  - id: ct_fsupp_boone
+    title: 同じ決定 p.631 の、法廷での結婚についての裁判所の見方の文
+    file: ""
+    original: https://law.counselstack.com/opinion/bundy-v-dugger-flmd-1987
+    status: pd_federal
+    note: 同上
+  - id: ct_fsupp_people
+    title: 同じ決定 p.630〜631 の、判事（Jopling）・検察官（Dekle）・検視官（Lipkovic）の証言の3文
+    file: ""
+    original: https://law.counselstack.com/opinion/bundy-v-dugger-flmd-1987
+    status: pd_federal
+    note: 同上。Jopling はレイクシティの事件（オーランド）の裁判の判事（538 So.2d 445 で確かめた）
+  - id: ct_utah_approach
+    title: ユタ州最高裁 State v. Bundy, 589 P.2d 760（1978年12月28日）の、男の声のかけ方の文
+    file: ""
+    original: https://hallapproved.com/ut/cases/supreme/1978/1418173/
+    status: pd_other
+    note: 州の裁判所の意見で著作権の対象外。文は hallapproved の全文で確かめた。公開前に別の全文でももう一度確かめる
+  - id: ct_utah_car
+    title: 同じ判決の、車の特徴の証言の文
+    file: ""
+    original: https://hallapproved.com/ut/cases/supreme/1978/1418173/
+    status: pd_other
+    note: 同上
   # ---------- フロリダ州立公文書館（Florida Memory） ----------
   # 権利：Florida Memory のFAQは全画像を Public Domain Mark 1.0 で提供すると書いている。使うときはフロリダ州法 257.35(6) に従い
   # 「State Archives of Florida, Florida Memory」とクレジットする（概要欄と config/attributions.yaml）。

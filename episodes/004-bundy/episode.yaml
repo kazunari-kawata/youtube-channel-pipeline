@@ -1,7 +1,9 @@
 series: profile   # シリーズ「犯罪者の紹介」（CLAUDE.md の「シリーズ」）
 title: "（仮）イケメンで法学部、選挙運動もした「好青年」は何をしたのか【テッド・バンディ】"
 bgm:
-  # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。仮に 002 の曲。時代（1970年代）に合う曲を選び直す
-  tracks: [assets/bgm/red_shift.mp3, assets/bgm/aether.mp3]
+  # assets/bgm/ の曲（assets/bgm/LICENSES.md に記録済みのものだけ）。
+  # 2026-11-28：声なしの仮編集のために、記録済みの候補から映画系の暗い2曲を仮で入れた（003・006 は AETHER と Red Shift なので、聞き比べられるように別の曲）。
+  # 2曲とも音の重心はまだ測っていない。声の下で邪魔にならないか、1970年代の空気に合うかを耳で確かめて、合わなければ入れ替える
+  tracks: [assets/bgm/house_on_the_hill.mp3, assets/bgm/twin_lynches.mp3]
 # 本人が写った使用可の素材（F-022。香盤表が最初の30秒に出ているかを確かめる）
 person_photos: [fbi_top_ten_360]

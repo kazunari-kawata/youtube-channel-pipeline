@@ -8,8 +8,8 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | red_shift.mp3 | Red Shift | The Grey Room / Density & Time | アンビエント / 悲しい | 4:12 | YouTube オーディオライブラリ（帰属表示不要） | 2026-11-25 | 002（2026-11-25 に入れた。耳で確認待ち） |
 | true_crime_documentary_and_chill.mp3 | True Crime Documentary and Chill | Rod Kim | ダンス＆エレクトロニック / 穏やか | 2:05 | YouTube オーディオライブラリ（帰属表示不要） | 2026-11-25 | 002 候補（耳で確認待ち） |
-| twin_lynches.mp3 | Twin Lynches | Density & Time | 映画 / 暗い | 4:14 | YouTube オーディオライブラリ（帰属表示不要） | 2026-11-25 | 002 候補（耳で確認待ち） |
-| house_on_the_hill.mp3 | House on the Hill | Everet Almond | 映画 / 暗い | 3:29 | YouTube オーディオライブラリ（帰属表示不要） | 2026-11-25 | 002 候補（耳で確認待ち） |
+| twin_lynches.mp3 | Twin Lynches | Density & Time | 映画 / 暗い | 4:14 | YouTube オーディオライブラリ（帰属表示不要） | 2026-11-25 | 002 候補（耳で確認待ち）、004 の仮編集で仮（2026-11-28） |
+| house_on_the_hill.mp3 | House on the Hill | Everet Almond | 映画 / 暗い | 3:29 | YouTube オーディオライブラリ（帰属表示不要） | 2026-11-25 | 002 候補（耳で確認待ち）、004 の仮編集で仮（2026-11-28） |
 | aether.mp3 | AETHER | Density & Time | アンビエント / 暗い | 8:47 | YouTube オーディオライブラリ（帰属表示不要） | 2026-11-25 | 002（2026-11-25 に入れた。耳で確認待ち） |
 | dead_wrong.mp3 | Dead Wrong | Jeremy Blake | 映画 / 暗い | 3:15 | YouTube オーディオライブラリ（帰属表示不要） | 2026-11-25 | 002 候補（耳で確認待ち） |
 | searching_for_time.mp3 | Searching For Time | Telecasted | 映画 / 暗い | 2:07 | YouTube オーディオライブラリ（帰属表示不要） | 2026-11-25 | 002 候補（耳で確認待ち） |

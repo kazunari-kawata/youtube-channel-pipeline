@@ -211,6 +211,9 @@ export const InsertCourthouse: React.FC<SceneProps> = ({ variant = "a" }) => {
     b: [{ pos: [-7, 2.0, 9], target: [-2, 6.5, -4], fov: 40 }, { pos: [-5.6, 2.1, 8.2], target: [-0.8, 6.6, -4], fov: 39 }],
     c: [{ pos: [3.5, 0.6, 7.5], target: [0, 8.0, -4], fov: 42 }, { pos: [3.0, 0.6, 6.8], target: [0, 8.2, -4], fov: 41 }],
     d: [{ pos: [22, 2.0, 18], target: [-2, 5.5, -4], fov: 34 }, { pos: [20.5, 2.0, 16.5], target: [-2, 5.6, -4], fov: 33 }],
+    // e・f は 2026-11-28 追加（004）：e 左の低い所から見上げる、f 正面の高い所から遠く
+    e: [{ pos: [-16, 1.2, 14], target: [1, 6.0, -4], fov: 40 }, { pos: [-15.2, 1.2, 13.4], target: [1, 6.1, -4], fov: 39 }],
+    f: [{ pos: [6, 7.5, 36], target: [0, 6.0, -4], fov: 34 }, { pos: [5.6, 7.4, 34.5], target: [0, 6.0, -4], fov: 33 }],
   };
   const [from, to] = cams[variant] ?? cams.a;
   return (
@@ -281,6 +284,9 @@ export const InsertPoliceCar: React.FC<SceneProps> = ({ variant = "a" }) => {
     c: [{ pos: [1.2, 0.9, -12.5], target: [-1.15, 0.8, -6.6], fov: 34 }, { pos: [1.0, 0.95, -12.0], target: [-1.15, 0.8, -6.6], fov: 33 }],
     d: [{ pos: [4.0, 6.5, 2.0], target: [-1.15, 0.5, -7.0], fov: 34 }, { pos: [3.8, 6.3, 1.4], target: [-1.15, 0.5, -7.2], fov: 33 }],
     e: [{ pos: [-9.5, 1.5, -3.0], target: [-1.0, 1.0, -8.0], fov: 32 }, { pos: [-9.1, 1.5, -3.4], target: [-1.0, 1.0, -8.2], fov: 31 }],
+    // f・g は 2026-11-28 追加（004）：f 通りの向かいの高い所から（パトカーと前の車）、g 前の左の低い所から
+    f: [{ pos: [-8.5, 4.6, -1.5], target: [-1.1, 0.7, -10.5], fov: 36 }, { pos: [-8.2, 4.5, -2.0], target: [-1.1, 0.7, -10.6], fov: 35 }],
+    g: [{ pos: [-4.4, 0.85, -11.2], target: [-1.15, 0.85, -6.4], fov: 36 }, { pos: [-4.25, 0.87, -10.9], target: [-1.15, 0.85, -6.4], fov: 35 }],
   };
   const [from, to] = cams[variant] ?? cams.a;
   return (
@@ -360,6 +366,11 @@ export const InsertPrisonFence: React.FC<SceneProps> = ({ variant = "a" }) => {
   const cams: Record<string, [CamKey, CamKey]> = {
     a: [{ pos: [-3.5, 1.6, 9], target: [1.5, 2.6, -8], fov: 40 }, { pos: [-2.8, 1.6, 8.4], target: [1.8, 2.6, -8], fov: 39 }],
     b: [{ pos: [8.5, 1.4, 6], target: [-2, 2.8, -6], fov: 38 }, { pos: [8.0, 1.4, 5.4], target: [-2, 2.8, -6], fov: 37 }],
+    // c〜f は 2026-11-28 追加（004）。網目がちらつかないよう、どれも遠くから、ほとんど動かさない
+    c: [{ pos: [0.5, 2.0, 26], target: [0, 3.0, -8], fov: 36 }, { pos: [0.5, 2.0, 25.2], target: [0, 3.0, -8], fov: 35.5 }], // 遠くから正面に
+    d: [{ pos: [9, 1.5, 15], target: [-5.5, 6.0, -14], fov: 38 }, { pos: [8.7, 1.5, 14.6], target: [-5.5, 6.0, -14], fov: 37.5 }], // 右から、監視塔へ
+    e: [{ pos: [-14, 6.0, 22], target: [2, 2.0, -8], fov: 40 }, { pos: [-13.6, 5.9, 21.4], target: [2, 2.0, -8], fov: 39.5 }], // 左の高い所から広く
+    f: [{ pos: [16, 2.6, 24], target: [-4, 2.6, -8], fov: 34 }, { pos: [15.6, 2.6, 23.4], target: [-4, 2.6, -8], fov: 33.5 }], // 右の遠くから、照明塔と奥の建物
   };
   const [from, to] = cams[variant] ?? cams.a;
   const flood = useMemo(() => {

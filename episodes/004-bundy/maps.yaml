@@ -1,0 +1,65 @@
+# 地図の範囲と地名（pipeline/make_maps.py。Natural Earth 10m）。004 テッド・バンディ（1974〜1989年）
+# note は画面に出る。見方に関わる注記だけを書き、制作上の配慮は書かない（F-016）
+# 決まり：地図は北を上に固定し、動かさない。点は町・市の位置まで（建物や家は出さない）。逃走の経路の線は引かない（分かっていない）
+# 緯度経度は一般の地名（市の中心）の概算
+places:
+  seattle: {lat: 47.6062, lon: -122.3321, label: "シアトル"}
+  # 湖畔の州立公園（レイク・サマミッシュ州立公園）。公園の中心の目安
+  sammamish: {lat: 47.5570, lon: -122.0640, label: "湖畔の州立公園"}
+  slc: {lat: 40.7608, lon: -111.8910, label: "ソルトレイクシティ"}
+  aspen: {lat: 39.1911, lon: -106.8175, label: "アスペン"}
+  glenwood: {lat: 39.5505, lon: -107.3248, label: "グレンウッドスプリングス"}
+  tallahassee: {lat: 30.4383, lon: -84.2807, label: "タラハシー"}
+  lake_city: {lat: 30.1897, lon: -82.6393, label: "レイクシティ"}
+  pensacola: {lat: 30.4213, lon: -87.2169, label: "ペンサコーラ"}
+
+views:
+  nw:         # 1974年、ワシントン州とオレゴン州（州を塗り、シアトルだけ点）
+    fit: contain
+    lon: [-125.8, -115.8]
+    lat: [41.6, 49.2]
+    states: true
+    highlight: [Washington, Oregon]
+    points: [seattle]
+    labels:
+      - {lat: 47.2, lon: -119.9, text: "ワシントン州"}
+      - {lat: 43.9, lon: -120.5, text: "オレゴン州"}
+      - {lat: 45.0, lon: -125.0, text: "太平洋", kind: water}
+  seattle:    # シアトルと湖畔の州立公園（1974年7月14日）
+    lon: [-122.75, -121.75]
+    lat: [47.30, 47.85]
+    states: true
+    lake_rank: 12
+    points: [seattle, sammamish]
+    labels:
+      - {lat: 47.66, lon: -122.50, text: "ピュージェット湾", kind: water}
+  west:       # シアトルからソルトレイクシティへ（線なし）
+    fit: contain
+    lon: [-125.5, -104.5]
+    lat: [36.5, 49.5]
+    states: true
+    highlight: [Washington, Utah]
+    points: [seattle, slc]
+  rockies:    # ユタからコロラドへ（アスペン）
+    fit: contain
+    lon: [-114.5, -102.5]
+    lat: [36.5, 42.5]
+    states: true
+    highlight: [Utah, Colorado]
+    points: [slc, aspen]
+  us:         # コロラドからフロリダへ（点だけ。経路は分かっていない）
+    fit: contain
+    lon: [-112.0, -78.0]
+    lat: [24.0, 44.0]
+    states: true
+    highlight: [Colorado, Florida]
+    points: [glenwood, tallahassee]
+  florida:    # フロリダ州の北部（タラハシー、レイクシティ、ペンサコーラ）
+    fit: contain
+    lon: [-88.2, -80.8]
+    lat: [27.8, 31.4]
+    states: true
+    highlight: [Florida]
+    points: [pensacola, tallahassee, lake_city]
+    labels:
+      - {lat: 29.0, lon: -86.0, text: "メキシコ湾", kind: water}

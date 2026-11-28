@@ -1,0 +1,74 @@
+{
+ "ct_ca11_1988__holding": [
+  1600,
+  516
+ ],
+ "ct_fla455_counts__counts": [
+  1600,
+  494
+ ],
+ "ct_fla455_evidence__evidence": [
+  1600,
+  494
+ ],
+ "ct_fla455_facts__facts": [
+  1600,
+  570
+ ],
+ "ct_fla471_arrest__arrest": [
+  1600,
+  624
+ ],
+ "ct_fla538__denied": [
+  1600,
+  570
+ ],
+ "ct_fsupp_boone__boone": [
+  1600,
+  440
+ ],
+ "ct_fsupp_edu__edu": [
+  1600,
+  386
+ ],
+ "ct_fsupp_law__law": [
+  1600,
+  440
+ ],
+ "ct_fsupp_people__people": [
+  1600,
+  646
+ ],
+ "ct_fsupp_self__self": [
+  1600,
+  386
+ ],
+ "ct_utah_approach__approach": [
+  1600,
+  494
+ ],
+ "ct_utah_car__car": [
+  1600,
+  386
+ ],
+ "fbi_bv_p28__escape": [
+  1207,
+  224
+ ],
+ "fbi_bv_p29__utah": [
+  1219,
+  192
+ ],
+ "fbi_bv_p30__eyes": [
+  1206,
+  322
+ ],
+ "fbi_bv_p40__armed": [
+  1509,
+  756
+ ],
+ "fbi_bv_p92__lead": [
+  1513,
+  1010
+ ]
+}

@@ -13,6 +13,7 @@ import { InsertIslandBoat006, InsertIslandFar006 } from "./Scenes006a";
 import { InsertCellEvening006, InsertCellFront006, InsertCellhouse006, InsertCellVent006, InsertFigures006, InsertPipeCorridor006, InsertTierCount006 } from "./Scenes006c";
 import { InsertSfOffice006 } from "./Scenes006d";
 import { InsertAngelSearch006, InsertBayNight006, InsertBeachDay006, InsertPatrolBoat006, InsertShoreNight006 } from "./Scenes006b";
+import { InsertCampaign004, InsertCampus004, InsertCarSeat004, InsertCollegeStreet004, InsertCourtroom004, InsertCourtroomFed004, InsertFigures004, InsertHotline004, InsertLakePark004, InsertMall004, InsertWinterJail004 } from "./Scenes004";
 import { InsertExitDiagram003, InsertForestFloor003, InsertPlaneClouds003, InsertRainForest003, InsertRainWindow003, InsertRiverBank003 } from "./Scenes003b";
 
 export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
@@ -58,4 +59,16 @@ export const INSERT_SCENES: Record<string, React.FC<SceneProps>> = {
   tier_count: InsertTierCount006,
   sf_office: InsertSfOffice006,
   figures_006: InsertFigures006, // 確認用（看守・兵士・艇の乗員）。台本では使わない
+  // 004 テッド・バンディ（1972〜1989年）
+  campus: InsertCampus004,
+  college_street: InsertCollegeStreet004,
+  hotline: InsertHotline004,
+  campaign: InsertCampaign004,
+  lakepark: InsertLakePark004,
+  carseat: InsertCarSeat004,
+  mall: InsertMall004,
+  winterjail: InsertWinterJail004,
+  courtroom: InsertCourtroom004,
+  courtroom_fed: InsertCourtroomFed004,
+  figures_004: InsertFigures004, // 確認用（本人の2つの服装）。台本では使わない
 };
