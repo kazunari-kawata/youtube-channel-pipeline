@@ -5,7 +5,9 @@
  *   rain_forest：ワシントン州南西部のダグラスファーの森（夜の雨、霧の明け方、雨の上がった朝）
  *   river_bank：冬のコロンビア川の岸（砂と流木、川の流れ）
  *   exit_diagram：727 の模式図。1972年の規則で「飛行中は開かない」作りになった、胴体の下側の後ろの階段を赤く示す
- * 飛び降りる姿や、落ちていく人は描かない（plan.md）。機体に航空会社の塗装・ロゴ・文字は入れない。
+ * 飛び降りる姿や、落ちていく人は描かない（plan.md）。例外はショートの jump だけ（2026-11-28 ユーザーの指定、F-063）：
+ *   顔のないシルエットが階段の端から跳び、雲の中へ落ちていくところまで。落ちた先・パラシュートが開くかは描かない。
+ * 機体に航空会社の塗装・ロゴ・文字は入れない。
  * 動くものはゆっくり（雨は降る筋を描かず、窓の粒と霧と音で出す。速く落ちる細い線はチラつきになる）。
  */
 import React, { useMemo } from "react";
@@ -13,7 +15,8 @@ import { AbsoluteFill, Easing, interpolate, random, useCurrentFrame, useVideoCon
 import * as THREE from "three";
 import { Camera, CamKey, SceneProps, Stage } from "./Inserts";
 import { FONT } from "../lib/font";
-import { bokehTexture, CloudLayer, Driftwood, dropsTexture, Forest, Jet727, sandTexture } from "./Props003";
+import { bokehTexture, CloudLayer, COOPER_71, Driftwood, dropsTexture, Forest, Jet727, sandTexture } from "./Props003";
+import { Figure } from "../lib/Figure";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 type V3 = [number, number, number];
@@ -52,8 +55,11 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
   if (variant === "e") return <RunwayNight t={t} />;
   if (variant === "f") return <TakeoffNight t={t} />;
   if (variant === "g") return <LandingNight t={t} />;
+  if (variant === "jumpchk") return <JumpPoseCheck />;
   // a・b・c：夜の雨雲の中。機体はゆっくり遠ざかる（画面の上で速く動かない距離に置く）
-  const planeX = -t * 4; // 機体はゆっくり遠ざかる（カメラも少し追う）
+  const jump = variant === "jump";
+  const planeX = jump ? 0 : -t * 4; // 機体はゆっくり遠ざかる（カメラも少し追う）。jump は機体を止め、雲を速く流して飛んでいるように見せる
+  const dk = jump ? 2.2 : 1; // jump の雲の流れの速さ
   const fade = variant === "c" ? interpolate(t, [1.5, 6.5], [0.9, 0], clamp) : 0.5;
   const cams: Record<string, [CamKey, CamKey]> = {
     a: [{ pos: [38, -5, 34], target: [0, 0, 0], fov: 34 }, { pos: [30, -4.5, 32], target: [-24, 0, 0], fov: 33 }], // 後ろ下から、雨雲の中を遠ざかる機体
@@ -68,6 +74,8 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
     // hook：ショートの最初の1コマ（003 ショート、F-059）。i と同じ「階段を下ろした機体」を、後ろの斜め下から近く大きく。
     // 機体と一緒にカメラも進めて、機体を画面の真ん中に置いたまま、雲だけが流れる。月明かりを強めて、機体の形がはっきり見えるように
     hook: [{ pos: [44, -12, 26], target: [4, -1, 0], fov: 30 }, { pos: [23.2, -12, 26], target: [-16.8, -1, 0], fov: 30 }],
+    // jump：ショートの2コマ目（F-063）。後ろの階段の端から人が跳び、後ろ下の雲へ落ちていく。尾部と階段を上に、落ちる先を下に
+    jump: [{ pos: [25.0, -9.5, 17], target: [22.6, -7.2, 0], fov: 30 }, { pos: [24.6, -9.6, 16.4], target: [22.7, -7.4, 0], fov: 30 }],
   };
   const [from, to] = cams[variant] ?? cams.a;
   // c は機体がないので、雲そのものを見せる：月明かりを強めて、雲を明るく濃くする（暗いままだと何も映らない画面になる）
@@ -82,8 +90,12 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
       <Camera from={from} to={to} />
       <directionalLight position={variant === "h" ? [-60, 25, 20] : [40, 60, 30]} intensity={cl.k} color={variant === "h" ? "#e6b894" : "#a8b8d8"} />
       {/* hook：カメラ側の下から月明かりを足し、機体の腹と階段を見せる */}
-      {variant === "hook" ? <directionalLight position={[30, -20, 25]} intensity={1.6} color="#c4d0e8" /> : null}
-      {variant !== "c" ? <Jet727 position={[planeX, 0, 0]} rotation={[variant === "h" ? 0.2 : 0, Math.PI, 0.02]} lights={0.9} cabin={0.6} stairs={variant === "i" || variant === "hook"} /> : null}
+      {variant === "hook" || jump ? <directionalLight position={[30, -20, 25]} intensity={1.6} color="#c4d0e8" /> : null}
+      {variant !== "c" ? (
+        <Jet727 position={[planeX, 0, 0]} rotation={[variant === "h" ? 0.2 : 0, Math.PI, 0.02]} lights={0.9} cabin={0.6}
+          stairs={variant === "i" || variant === "hook" || jump} stairsAft={variant === "hook" || jump} />
+      ) : null}
+      {jump ? <Jumper t={t} /> : null}
       {variant === "c" ? (
         // 遠い灯りだけ。だんだん雲に消えていく
         <mesh position={[-14 - t * 3, 3, -40]}>
@@ -91,16 +103,47 @@ export const InsertPlaneClouds003: React.FC<SceneProps> = ({ variant = "a" }) =>
           <meshBasicMaterial color={new THREE.Color("#ffffff").multiplyScalar(fade * 2)} toneMapped={false} transparent opacity={Math.min(1, fade * 2)} />
         </mesh>
       ) : null}
-      <CloudLayer t={t} y={-14} count={30} spread={220} drift={2.5} color={cl.lo} opacity={Math.min(1, 0.85 * cl.op)} seed={11} size={70} />
-      <CloudLayer t={t} y={16} count={26} spread={220} drift={1.6} color={cl.hi} opacity={Math.min(1, 0.7 * cl.op)} seed={12} size={80} />
+      <CloudLayer t={t} y={-14} count={30} spread={220} drift={2.5 * dk} color={cl.lo} opacity={Math.min(1, 0.85 * cl.op)} seed={11} size={70} />
+      <CloudLayer t={t} y={16} count={26} spread={220} drift={1.6 * dk} color={cl.hi} opacity={Math.min(1, 0.7 * cl.op)} seed={12} size={80} />
       <group position={[0, 0, -30]}>
-        <CloudLayer t={t} y={2} count={variant === "c" ? 22 : 14} spread={160} drift={3.2} color={cl.mid} opacity={Math.min(1, 0.5 * cl.op)} seed={13} size={50} />
+        <CloudLayer t={t} y={2} count={variant === "c" ? 22 : 14} spread={160} drift={3.2 * dk} color={cl.mid} opacity={Math.min(1, 0.5 * cl.op)} seed={13} size={50} />
       </group>
       {/* 手前を流れる薄い雲（雲の中を飛んでいる感じ）。カメラに近いのでごく薄く、ゆっくり */}
       <group position={[20, 0, 18]}>
-        <CloudLayer t={t} y={-1} count={8} spread={120} drift={2.0} color={cl.near} opacity={0.28} seed={14} size={40} />
+        <CloudLayer t={t} y={-1} count={8} spread={120} drift={2.0 * (jump ? 1.5 : 1)} color={cl.near} opacity={0.28} seed={14} size={40} />
       </group>
       {variant === "zz" ? <ambientLight intensity={2} /> : null}
+    </Stage>
+  );
+};
+
+/**
+ * ショートの jump（F-063）：後ろの階段の下の端にかがんだ人物（顔のないシルエット、COOPER_71）が跳び、
+ * 機体の後ろ下へ流されながら雲の中へ落ちていく。機体は止めたまま（世界の +x が機体の後ろ）。
+ * 0〜0.5秒はかがんで待つ（前のカットとの切り替えが0.27秒）。落ちる速さは実際よりずっと遅く（スローモーション）、一言の帯の上に収める
+ */
+const Jumper: React.FC<{ t: number }> = ({ t }) => {
+  const S: V3 = [21.92, -4.36, 0]; // 階段の下の端の上（Jet727 の stairsAft の下の端から 0.4m 上、機体の向きに直した位置）
+  const t0 = 0.5;
+  const u = Math.max(0, t - t0);
+  // ゆっくり落とす（スローモーション）。速く落とすと、小さな人物の縁がコマごとに明滅してチラつきの検査で落ちた（F-063）。
+  // 画面の上での速さを、終わりでも縦の画面の高さの約1/150コマ（QA の縮小で約2画素）までに抑える
+  const pos: V3 = [S[0] + 0.6 * u + 0.25 * u * u, S[1] + 1.2 * u - 1.2 * u * u, S[2]];
+  const clipT = Math.min(1.32, u * 0.8); // Jump_Start：かがむ → 跳ぶ → 宙で膝を曲げた姿勢（脚の動きもゆっくり）
+  const lean = Math.min(0.8, 0.35 * u); // 頭から後ろ下へ傾いていく
+  return <Figure clip="Jump_Start" freeze={clipT} position={pos} rotationY={Math.PI / 2} tilt={[lean, 0]} glasses={false} build={COOPER_71} />;
+};
+
+/** 確認用（本編・ショートでは使わない）：跳ぶ動きの姿勢を灰色の背景で並べて見る */
+const JumpPoseCheck: React.FC = () => {
+  const poses: [string, number][] = [["Idle_Loop", 0], ["Jump_Start", 0], ["Jump_Start", 0.35], ["Jump_Start", 0.7], ["Jump_Start", 1.0], ["Jump_Start", 1.3], ["Jump_Loop", 0], ["Jump_Loop", 1.2], ["Swim_Idle_Loop", 0.5]];
+  return (
+    <Stage fog={0} exposure={1.1} bloom={0} bg="#8a8a8a" hemi={["#ffffff", "#666666", 1.2]}>
+      <Camera from={{ pos: [0, 1.2, 15], target: [0, 1.0, 0], fov: 40 }} to={{ pos: [0, 1.2, 15], target: [0, 1.0, 0], fov: 40 }} />
+      <directionalLight position={[5, 10, 10]} intensity={2} />
+      {poses.map(([clip, at], i) => (
+        <Figure key={i} clip={clip} freeze={at} position={[-8 + i * 2, 0, 0]} rotationY={Math.PI / 2} glasses={false} build={COOPER_71} />
+      ))}
     </Stage>
   );
 };

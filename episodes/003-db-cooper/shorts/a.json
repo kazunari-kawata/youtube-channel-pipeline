@@ -58,11 +58,11 @@
     "visual": {
      "kind": "insert",
      "scene": "plane_clouds",
-     "var": "a",
+     "var": "jump",
      "zoom": 0.8,
      "aim": [
-      -14,
-      -8
+      0,
+      0
      ]
     }
    }

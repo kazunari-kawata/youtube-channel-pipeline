@@ -212,8 +212,8 @@ export const calendarTexture = () =>
 /* ---------- 旅客機（ボーイング727 の形。塗装・ロゴ・文字なし） ---------- */
 
 /** 長さ約46m を 1 とした縮尺ではなく、メートルで作る。原点は胴体の中心、機首は +x */
-export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; lights?: number; stairs?: boolean; cabin?: number; gear?: boolean; stairsHl?: number }> = ({
-  position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, lights = 0.6, stairs = false, cabin = 0.3, gear = false, stairsHl = 0,
+export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; lights?: number; stairs?: boolean; cabin?: number; gear?: boolean; stairsHl?: number; stairsAft?: boolean }> = ({
+  position = [0, 0, 0], rotation = [0, 0, 0], scale = 1, lights = 0.6, stairs = false, cabin = 0.3, gear = false, stairsHl = 0, stairsAft = false,
 }) => {
   const skin = useMemo(() => new THREE.MeshStandardMaterial({ color: "#aeb3b8", roughness: 0.45, metalness: 0.35 }), []);
   const dark = useMemo(() => new THREE.MeshStandardMaterial({ color: "#3b3f44", roughness: 0.6, metalness: 0.3 }), []);
@@ -301,7 +301,24 @@ export const Jet727: React.FC<{ position?: V3; rotation?: V3; scale?: number; li
         <mesh key={`h${sd}`} geometry={hstab} material={skin} position={[-19.2, 8.0 + (sd > 0 ? 0 : 0.18), sd * 0.2]} rotation={[sd * Math.PI / 2, 0, 0]} />
       ))}
       {/* 胴体の下の後ろの階段（閉じた状態か、下ろした状態） */}
-      {stairs ? (
+      {stairs && stairsAft ? (
+        // 実機どおり、尾部の下の付け根から後ろ下へ下ろした階段（ショートの hook・jump。上の端 (-18.5, -1.62)、下の端 (-22.3, -4.22)）。両側に手すり
+        <group position={[-20.4, -2.92, 0]} rotation={[0, 0, 0.6]}>
+          <mesh material={dark}>
+            <boxGeometry args={[4.6, 0.16, 0.9]} />
+          </mesh>
+          {[-1, 1].map((sd) => (
+            <mesh key={`r${sd}`} position={[-0.1, 0.55, sd * 0.43]} material={dark}>
+              <boxGeometry args={[4.3, 0.06, 0.06]} />
+            </mesh>
+          ))}
+          {[-1, 1].flatMap((sd) => [-1.9, 0, 1.9].map((px) => (
+            <mesh key={`p${sd}${px}`} position={[px, 0.28, sd * 0.43]} material={dark}>
+              <boxGeometry args={[0.05, 0.55, 0.05]} />
+            </mesh>
+          )))}
+        </group>
+      ) : stairs ? (
         <mesh position={[-21.2, -2.7, 0]} rotation={[0, 0, -0.55]} material={dark}>
           <boxGeometry args={[4.2, 0.18, 0.9]} />
         </mesh>
