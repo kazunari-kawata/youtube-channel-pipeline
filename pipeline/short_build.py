@@ -13,7 +13,8 @@
   max_pause  区間の中の声の切れ目（読点の間など）を、この秒数まで詰める
   hook       最初の区間のあいだ、画面に大きく出す一言（{"tag", "lines", "hl"}）。0秒から出し、動く絵の上に重ねる
   thumb      止まったサムネイルを最初に出すときだけ書く（hook と同時には使わない）
-区間ごと：skip（文頭の数文字を落とす。例 "中の"）、cut（1つ、またはリスト）、captions_off、
+  max_shot_sec  1つの絵の長さの上限（既定3秒。F-062。QA が検査）
+区間ごと：skip（文頭の数文字を落とす。例 "中の"）、cut（1つ、またはリスト）、captions_off、visual "same"（前の区間の絵を続ける）、
           notes（字幕の上に小さく足す説明。{"20万ドル": "今の価値で約2.6億円"} のように、字幕の区切りに含まれる語で引く）
 """
 from __future__ import annotations
@@ -339,7 +340,11 @@ def main():
         cuts = sorted(raw if isinstance(raw, list) else ([raw] if raw else []), key=lambda c: c["at"])
         bounds = [f0] + [int(round((g["t0"] + c["at"] * (g["t1"] - g["t0"])) * FPS)) for c in cuts] + [f_end]
         vis = [(s["visual"], s.get("sfx", []))] + [(c["visual"], c.get("sfx", [])) for c in cuts]
-        for (v, sx), b0_, b1_ in zip(vis, bounds, bounds[1:]):
+        for i_, ((v, sx), b0_, b1_) in enumerate(zip(vis, bounds, bounds[1:])):
+            if i_ == 0 and v == "same" and shots:
+                # 前の区間の最後の絵を、この区間の最初の切り替えまで続ける（区間の境目で同じ絵を出し直さない）
+                shots[-1]["to"] = b1_
+                continue
             shots.append({"from": b0_, "to": b1_, "visual": v, "sfx": sx})
     caps = [c for g in segs if not g["spec"].get("captions_off") for c in g["caps"]]
     for c in caps:
@@ -417,6 +422,7 @@ def main():
     data = {
         "id": sid, "episode": args.episode, "dir": args.episode.split("-")[0], "fps": FPS, "durationInFrames": n_total,
         "audio": f"shorts/{sid}/audio.wav", "thumb": {**(spec.get("thumb") or {}), "frames": thumb_f}, "hook": hook,
+        "max_shot_sec": spec.get("max_shot_sec", 3.0),
         "end": {"from": int(round(end_from * FPS)), "text": spec["end"]["text"]},
         "shots": [{k: v for k, v in sh.items() if k != "sfx"} for sh in shots], "captions": caps,
     }

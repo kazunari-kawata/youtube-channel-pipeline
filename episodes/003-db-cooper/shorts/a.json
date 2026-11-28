@@ -52,7 +52,20 @@
     "一人の男が",
     "20万ドルとともに",
     "夜の空へ消えました"
-   ]
+   ],
+   "cut": {
+    "at": 0.5,
+    "visual": {
+     "kind": "insert",
+     "scene": "plane_clouds",
+     "var": "a",
+     "zoom": 0.8,
+     "aim": [
+      -14,
+      -8
+     ]
+    }
+   }
   },
   {
    "id": "s003",
@@ -83,8 +96,8 @@
    "visual": {
     "kind": "insert",
     "scene": "cabin_seat",
-    "var": "ask",
-    "zoom": 0.7
+    "var": "a",
+    "zoom": 0.75
    },
    "sfx": [
     {
@@ -99,7 +112,16 @@
    ],
    "hl": [
     "封筒"
-   ]
+   ],
+   "cut": {
+    "at": 0.5,
+    "visual": {
+     "kind": "insert",
+     "scene": "cabin_seat",
+     "var": "ask",
+     "zoom": 0.7
+    }
+   }
   },
   {
    "id": "s014",
@@ -127,7 +149,16 @@
    ],
    "hl": [
     "爆発物"
-   ]
+   ],
+   "cut": {
+    "at": 0.5,
+    "visual": {
+     "kind": "insert",
+     "scene": "cabin_seat",
+     "var": "b",
+     "zoom": 0.75
+    }
+   }
   },
   {
    "id": "s015",
@@ -157,6 +188,21 @@
    ],
    "notes": {
     "20万ドル": "今の価値で 約2.6億円"
+   },
+   "cut": {
+    "at": 0.62,
+    "visual": {
+     "kind": "photo",
+     "src": "fbi_parachute",
+     "label": "機内に残されたパラシュート（FBI）"
+    },
+    "sfx": [
+     {
+      "file": "photo_2.wav",
+      "level": "light",
+      "at": 0.05
+     }
+    ]
    }
   },
   {
@@ -181,41 +227,66 @@
    ],
    "hl": [
     "後ろの階段"
-   ]
-  },
-  {
-   "id": "s025",
-   "visual": {
-    "kind": "insert",
-    "scene": "cabin_seat",
-    "var": "c",
-    "zoom": 0.75
-   },
-   "sfx": [
-    {
-     "file": "amb_cabin_1.wav",
-     "level": "bed"
-    }
    ],
    "cut": {
-    "at": 0.45,
+    "at": 0.95,
     "visual": {
-     "kind": "doc",
-     "src": "fbi_v76_p78",
-     "focus": "line",
-     "ja": [
-      "FBIのまとめ：午後8時11分",
-      "高度1万フィートで機内の気圧が揺れ、男が機外に出たと考えられた"
-     ]
+     "kind": "insert",
+     "scene": "cabin_seat",
+     "var": "c",
+     "zoom": 0.75
     },
     "sfx": [
      {
-      "file": "paper_2.wav",
-      "level": "light",
-      "at": 0.05
+      "file": "amb_cabin_1.wav",
+      "level": "bed"
      }
     ]
-   },
+   }
+  },
+  {
+   "id": "s025",
+   "visual": "same",
+   "cut": [
+    {
+     "at": 0.33,
+     "visual": {
+      "kind": "doc",
+      "src": "fbi_v76_p78",
+      "focus": "line",
+      "ja": [
+       "FBIのまとめ：午後8時11分",
+       "高度1万フィートで機内の気圧が揺れ、男が機外に出たと考えられた"
+      ]
+     },
+     "sfx": [
+      {
+       "file": "paper_2.wav",
+       "level": "light",
+       "at": 0.05
+      }
+     ]
+    },
+    {
+     "at": 0.66,
+     "visual": {
+      "kind": "insert",
+      "scene": "plane_clouds",
+      "var": "i",
+      "zoom": 0.8,
+      "aim": [
+       0,
+       -4
+      ]
+     },
+     "sfx": [
+      {
+       "file": "amb_wind_high_1.wav",
+       "level": "bed"
+      }
+     ]
+    }
+   ],
    "captions": [
     "そして午後8時11分",
     "機内の気圧が揺れ",
@@ -254,7 +325,16 @@
    "hl": [
     "男の姿",
     "消えて"
-   ]
+   ],
+   "cut": {
+    "at": 0.5,
+    "visual": {
+     "kind": "insert",
+     "scene": "cabin_seat",
+     "var": "d",
+     "zoom": 0.75
+    }
+   }
   },
   {
    "id": "s044",
@@ -296,7 +376,7 @@
     }
    ],
    "cut": {
-    "at": 0.5,
+    "at": 0.48,
     "visual": {
      "kind": "insert",
      "scene": "field_office",
@@ -326,8 +406,8 @@
    "id": "s006",
    "visual": {
     "kind": "photo",
-    "src": "fbi_sketches_web",
-    "label": "FBIが公開している似顔絵"
+    "src": "fbi_ticket",
+    "label": "男が「ダン・クーパー」の名で買った航空券（FBI）"
    },
    "sfx": [
     {
@@ -343,7 +423,22 @@
    ],
    "hl": [
     "本当の名前"
-   ]
+   ],
+   "cut": {
+    "at": 0.45,
+    "visual": {
+     "kind": "photo",
+     "src": "fbi_sketches_web",
+     "label": "FBIが公開している似顔絵"
+    },
+    "sfx": [
+     {
+      "file": "photo_1.wav",
+      "level": "light",
+      "at": 0.05
+     }
+    ]
+   }
   },
   {
    "id": "s007",
@@ -386,5 +481,6 @@
    ]
   }
  ],
- "yen_note": "円は米労働統計局の消費者物価指数（1971年→2026年）と2026年11月27日の為替（1ドル約159円）で換算"
+ "yen_note": "円は米労働統計局の消費者物価指数（1971年→2026年）と2026年11月27日の為替（1ドル約159円）で換算",
+ "max_shot_sec": 3.0
 }

@@ -308,6 +308,13 @@ const FadeIn: React.FC<{ children: React.ReactNode; instant?: boolean }> = ({ ch
   return <AbsoluteFill style={{ opacity: o }}>{children}</AbsoluteFill>;
 };
 
+/** 一言を、次のカットの切り替えと同じ長さでなめらかに消す（1コマで消すと、文字の所が暗くなってから次の絵で明るくなり、チラつきになる） */
+const FadeOut: React.FC<{ children: React.ReactNode; len: number }> = ({ children, len }) => {
+  const f = useCurrentFrame();
+  const o = interpolate(f, [len, len + XF], [1, 0], { ...clamp, easing: Easing.inOut(Easing.ease) });
+  return <AbsoluteFill style={{ opacity: o }}>{children}</AbsoluteFill>;
+};
+
 const Captions: React.FC<{ caps: Caption[] }> = ({ caps }) => {
   const f = useCurrentFrame();
   const c = caps.find((x) => f >= x.from && f < x.to);
@@ -363,8 +370,10 @@ export const Short: React.FC<Props> = ({ data }) => {
         </Sequence>
       ) : null}
       {d.hook ? (
-        <Sequence from={d.hook.from} durationInFrames={d.hook.to - d.hook.from} layout="none">
-          <Hook h={d.hook} />
+        <Sequence from={d.hook.from} durationInFrames={d.hook.to - d.hook.from + XF} layout="none">
+          <FadeOut len={d.hook.to - d.hook.from}>
+            <Hook h={d.hook} />
+          </FadeOut>
         </Sequence>
       ) : null}
       <Captions caps={d.captions} />
