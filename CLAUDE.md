@@ -36,6 +36,17 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 6. フィードバックをもらったら「フィードバックを受けたとき」の手順
 7. OKが出たら `metadata.yaml` を確定し、アップロードと公開予約（`docs/youtube-upload.md`）
 
+## 自動で進める回（2026-11-28 ユーザー決定、F-061）
+
+- 企画の調査から、声のない仮編集（見た目の動画）までを、クラウドの定期実行が進める。仕組みは `automation/README.md`、1回の手順は `automation/RUNNER.md`
+- 対象は `episodes/<回>/state.yaml` の `mode: auto` の回だけ。state.yaml のない回・`manual` の回（002〜008）には、定期実行は触らない
+- **定期実行では声（ElevenLabs）を作らない。** 人が仮編集を見て OK（`python pipeline/auto.py approve <回> review`）を出すと `manual` になり、声から先は会話で進める
+- 自動の回では、上の流れの「問いと結論は人が決める」を「案を選んで進め、質問（`auto.py ask`）に残し、review でまとめて確かめる」に置き換える。Docs の構成案は作らなくてよい（plan.md が正本）
+- 止めて質問を残すのは、権利の判断が要る素材（`check`）が工程の中心のとき、背骨の事実が一次資料で決まらないとき、共有の部品の変更がほかの回を壊すおそれがあるときだけ
+- 仮編集（声なし・見積もりの尺）は確認用で、上の流れ5の QA の対象ではない。QA は声を作って本番の尺で書き出したあと
+- 会話で自動の回を触るとき：先に `python pipeline/auto.py status` で、定期実行のロック（`automation/lock.yaml`）がないか確かめる。
+  会話で工程を進めたり戻したりしたら、`state.yaml` も合わせる（`auto.py done` / `progress`）。直しは F-◯◯◯ に残し、定期実行の手順書（`automation/stages/`）にも反映する
+
 ## 絶対ルール（過去の指摘から。番号は docs/feedback.md）
 
 - **字幕を画面に入れない**（F-004）。必要ならYouTubeのキャプションで出す（本編の決まり。ショートは「ショート動画」の節のとおり入れる）
@@ -274,7 +285,8 @@ YouTubeチャンネル（Syncage）の動画を、毎回同じ品質で作るた
 | --- | --- |
 | チャンネル共通の設定（声・音量・QA基準） | `config/channel.yaml` |
 | 概要欄の出典文 | `config/attributions.yaml` |
-| 回ごとの台本・設定・概要欄 | `episodes/<id>/`（`narration.json`, `episode.yaml`, `metadata.yaml`, `plan.md`） |
+| 回ごとの台本・設定・概要欄 | `episodes/<id>/`（`narration.json`, `episode.yaml`, `metadata.yaml`, `plan.md`。自動の回は `state.yaml`） |
+| 自動化（定期実行）の手順・設定・題材の候補 | `automation/` |
 | 回ごとの素材台帳・時系列 | `episodes/<id>/materials.yaml`, `timeline.md`（取得した素材は `build/materials/`） |
 | 回ごとの生成物（音声・動画・QA結果） | `episodes/<id>/build/`（Gitに入らない） |
 | 処理スクリプト | `pipeline/` |

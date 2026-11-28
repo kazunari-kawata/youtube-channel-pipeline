@@ -1,0 +1,52 @@
+# 自動化の状態（pipeline/auto.py が書く。人が直してもよい。説明は automation/README.md）
+# mode: auto＝定期実行が進める / manual＝人の会話で進める（定期実行は触らない）
+mode: auto
+priority: 2
+title: カメラに映らずに出る道は、本当になかったのか（仮）
+series: profile
+created: '2026-11-28T00:00:00Z'
+stages:
+  research:
+    status: done
+    finished: '2026-11-28T00:00:00Z'
+    note: 人の会話で調べた（2026-11-28、vidIQ。Project「次の3本の企画調査_2026-11-28」。plan.md の「題材に選んだ理由」）
+  materials:
+    status: done
+    finished: '2026-11-28T00:00:00Z'
+    note: 台帳と時系列の初回（2026-11-28、人の会話）。原本はまだ保存していない。WebFetch が通らず、検索の抜粋で書いた所は note に書いてある
+  fetch:
+    status: todo
+  plan:
+    status: done
+    finished: '2026-11-28T00:00:00Z'
+    note: 構成案の第1稿（2026-11-28、人の会話。Claude Docs と plan.md）。fetch で原文を確かめたら、章立てと「要確認」を見直す
+  script:
+    status: todo
+  visuals:
+    status: todo
+  checks:
+    status: todo
+  review:
+    status: todo
+gates:
+- id: rights_cctv
+  q: 防犯カメラの静止画と映像（cpd_cctv_stills、cpd_cctv_video。報道ではコロンバス市警の提供、撮ったのはビルのカメラ）を使うか。この回の中心で、冒頭の本人の姿（F-022）もこれ。使うなら status を決めてほしい
+  blocks: visuals
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: question
+  q: 問いと結論は plan.md の案から決めてほしい（いまは第1案で進める）
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: title
+  q: 題を決めてほしい（いまは plan.md の第1案「カメラに映らずに出る道は、本当になかったのか」で仮）
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: series
+  q: 未解決の行方不明。シリーズを profile のままにするか、新しいシリーズ（例：未解決・失踪）にするか
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: manual_fbi
+  q: fbi.gov の ViCAP のページと PDF（shaffera-9-7-18.pdf）を Windows の Chrome で保存してほしい
+  status: open
+  asked: '2026-11-28T00:00:00Z'

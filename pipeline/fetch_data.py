@@ -1,6 +1,7 @@
 """地形・夜景・国境・フォントの元データを data/raw/ にダウンロードする（初回だけ。約700MB）
 
   python pipeline/fetch_data.py
+  python pipeline/fetch_data.py --light   # 地形・夜景を除く（地図・フォント・人物だけ。約60MB）。定期実行のクラウドで使う
 
 取得元（すべて実データ。AI生成の地図は使わない）
   data/sources/glo90.txt        Copernicus DEM GLO-90（日本全体）
@@ -23,6 +24,8 @@ from common import DATA_RAW, PUBLIC, ROOT  # noqa: E402
 NE_URL = "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_countries.zip"
 FONT_URL = "https://raw.githubusercontent.com/google/fonts/main/ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf"
 FIGURE_URL = "https://opengameart.org/sites/default/files/universal_animation_librarystandard.zip"
+# make_maps.py が読む Natural Earth 10m（陸地・湖・州境）。国境は NE_URL
+NE_MAPS = ["physical/ne_10m_land", "physical/ne_10m_lakes", "cultural/ne_10m_admin_1_states_provinces"]
 
 
 def get(url: str, dest: Path) -> str:
@@ -48,21 +51,23 @@ def get(url: str, dest: Path) -> str:
     return "error"
 
 
-def jobs():
-    for name, sub in (("glo90", "glo90"), ("glo30", "glo30")):
+def jobs(light: bool = False):
+    for name, sub in (() if light else (("glo90", "glo90"), ("glo30", "glo30"))):
         for url in (ROOT / "data" / "sources" / f"{name}.txt").read_text().split():
             yield url, DATA_RAW / sub / url.rsplit("/", 1)[1]
-    for url in (ROOT / "data" / "sources" / "blackmarble.txt").read_text().split():
+    for url in ([] if light else (ROOT / "data" / "sources" / "blackmarble.txt").read_text().split()):
         parts = url.removesuffix(".png").split("/")
         row, col = parts[-2], parts[-1]
         yield url, DATA_RAW / "bm" / f"bm_{row}_{col}.png"
     yield NE_URL, DATA_RAW / "ne" / "ne_10m_admin_0_countries.zip"
+    for n in NE_MAPS:
+        yield f"https://naciscdn.org/naturalearth/10m/{n}.zip", DATA_RAW / "ne" / (n.split("/")[1] + ".zip")
     yield FONT_URL, PUBLIC / "fonts" / "NotoSansJP.ttf"
     yield FIGURE_URL, DATA_RAW / "figures" / "universal_animation_library_standard.zip"
 
 
 def main():
-    todo = list(jobs())
+    todo = list(jobs(light="--light" in sys.argv[1:]))
     stats = {}
     with ThreadPoolExecutor(8) as ex:
         for (url, dest), res in zip(todo, ex.map(lambda j: get(*j), todo)):
@@ -70,9 +75,9 @@ def main():
             stats[key] = stats.get(key, 0) + 1
             if res.startswith("error"):
                 print(f"  失敗: {url} ({res})")
-    z = DATA_RAW / "ne" / "ne_10m_admin_0_countries.zip"
-    if z.exists() and not (DATA_RAW / "ne" / "ne_10m_admin_0_countries.shp").exists():
-        zipfile.ZipFile(z).extractall(z.parent)
+    for z in sorted((DATA_RAW / "ne").glob("ne_10m_*.zip")):
+        if not z.with_suffix(".shp").exists():
+            zipfile.ZipFile(z).extractall(z.parent)
     fz = DATA_RAW / "figures" / "universal_animation_library_standard.zip"
     glb = PUBLIC / "figures" / "mannequin.glb"
     if fz.exists() and not glb.exists():

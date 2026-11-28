@@ -1,0 +1,47 @@
+# 自動化の状態（pipeline/auto.py が書く。人が直してもよい。説明は automation/README.md）
+# mode: auto＝定期実行が進める / manual＝人の会話で進める（定期実行は触らない）
+mode: auto
+priority: 1
+title: 同じ扉から入った男は誰なのか（仮）
+series: profile
+created: '2026-11-28T00:00:00Z'
+stages:
+  research:
+    status: done
+    finished: '2026-11-28T00:00:00Z'
+    note: 人の会話で調べた（2026-11-28、vidIQ。Project「次の3本の企画調査_2026-11-28」。plan.md の「題材に選んだ理由」）
+  materials:
+    status: done
+    finished: '2026-11-28T00:00:00Z'
+    note: 台帳と時系列の初回（2026-11-28、人の会話）。原本はまだ保存していない。WebFetch が通らず、検索の抜粋で書いた所は note に書いてある
+  fetch:
+    status: todo
+  plan:
+    status: done
+    finished: '2026-11-28T00:00:00Z'
+    note: 構成案の第1稿（2026-11-28、人の会話。Claude Docs と plan.md）。fetch で原文を確かめたら、章立てと「要確認」を見直す
+  script:
+    status: todo
+  visuals:
+    status: todo
+  checks:
+    status: todo
+  review:
+    status: todo
+gates:
+- id: question
+  q: 問いと結論は plan.md の案から決めてほしい（いまは第1案で進める）
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: title
+  q: 題を決めてほしい（いまは「同じ扉から入った男は誰なのか」で仮）
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: series
+  q: 犯人の名前が公表されていない盗難。シリーズを profile のままにするか、新しいシリーズ（例：未解決）にするか
+  status: open
+  asked: '2026-11-28T00:00:00Z'
+- id: manual_fbi
+  q: fbi.gov の素材（容疑者の似顔絵 fbi_suspect_sketches、ガードナーのページ、ボストン支局の発表文）を Windows の Chrome で保存してほしい。冒頭30秒の本人の姿（F-022）に使う
+  status: open
+  asked: '2026-11-28T00:00:00Z'
